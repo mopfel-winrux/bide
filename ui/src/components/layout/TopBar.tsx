@@ -7,9 +7,14 @@ export function TopBar() {
   let statusText = 'Idle';
   if (state?.activeAction) {
     const aa = state.activeAction;
-    const skillName = defs?.skills[aa.skill]?.name ?? aa.skill;
-    const actionName = defs?.skills[aa.skill]?.actions.find((a) => a.id === aa.target)?.name ?? aa.target;
-    statusText = `${skillName}: ${actionName}`;
+    if (aa.type === 'skilling') {
+      const skillName = defs?.skills[aa.skill]?.name ?? aa.skill;
+      const actionName = defs?.skills[aa.skill]?.actions.find((a) => a.id === aa.target)?.name ?? aa.target;
+      statusText = `${skillName}: ${actionName}`;
+    } else if (aa.type === 'combat') {
+      const monsterName = defs?.monsters[aa.monster]?.name ?? aa.monster;
+      statusText = `Fighting: ${monsterName}`;
+    }
   }
 
   return (

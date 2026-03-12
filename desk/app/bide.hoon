@@ -5,21 +5,45 @@
 /-  *bide
 /+  dbug, verb, default-agent, server
 /+  bide-xp, bide-skills, bide-items
+/+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 ::
 |%
 +$  card  card:agent:gall
+::
 +$  state-0
   $:  %0
+      gs=game-state-0
+  ==
+::
++$  game-state-0
+  $:  player=player-info
+      skills=(map skill-id skill-state)
+      bank=bank-state
+      equipment=[active-set=@ud]
+      active-action=(unit active-action-0)
+      stats=game-stats
+      last-tick=@da
+      rng-seed=@uvJ
+  ==
+::
++$  active-action-0
+  $%  [%skilling skill=skill-id target=action-id started=@da]
+  ==
+::
++$  state-1
+  $:  %1
       gs=game-state
   ==
+::
 +$  versioned-state
   $%  state-0
+      state-1
   ==
 --
 ::
 %-  agent:dbug
 %+  verb  |
-=|  state-0
+=|  state-1
 =*  state  -
 ^-  agent:gall
 =<
@@ -33,6 +57,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  =/  hp-xp=@ud  1.154  ::  XP for level 10
   =.  gs
     :*  :*  gp=0
             hitpoints-current=100
@@ -41,11 +66,16 @@
         ==
         ^-  (map skill-id skill-state)
         %-  ~(gas by *(map skill-id skill-state))
-        :~  :-  %woodcutting
-            [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]
+        :~  [%woodcutting [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%attack [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%strength [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%defence [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%hitpoints [xp=hp-xp level=10 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%ranged [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%magic [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
         ==
         [items=*(map item-id @ud) slots-max=12]
-        [active-set=0]
+        [slots=*(map equipment-slot item-id) auto-eat-threshold=50 selected-food=~]
         ~
         [actions-completed=*(map action-id @ud)]
         now.bowl
@@ -63,7 +93,44 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-vase)
   ?-  -.old
-    %0  `this(state old)
+    %1  `this(state old)
+  ::
+      %0
+    ::  Migrate state-0 → state-1
+    =/  hp-xp=@ud  1.154
+    =/  old-gs  gs.old
+    ::  carry over skilling active-action
+    =/  new-aa=(unit active-action)
+      ?~  active-action.old-gs  ~
+      =/  aa  u.active-action.old-gs
+      ?-  -.aa
+        %skilling  `[%skilling skill.aa target.aa started.aa]
+      ==
+    ::  add combat skills if missing
+    =/  new-skills=(map skill-id skill-state)  skills.old-gs
+    =?  new-skills  !(~(has by new-skills) %attack)
+      (~(put by new-skills) %attack [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =?  new-skills  !(~(has by new-skills) %strength)
+      (~(put by new-skills) %strength [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =?  new-skills  !(~(has by new-skills) %defence)
+      (~(put by new-skills) %defence [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =?  new-skills  !(~(has by new-skills) %hitpoints)
+      (~(put by new-skills) %hitpoints [xp=hp-xp level=10 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =?  new-skills  !(~(has by new-skills) %ranged)
+      (~(put by new-skills) %ranged [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =?  new-skills  !(~(has by new-skills) %magic)
+      (~(put by new-skills) %magic [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  new-gs=game-state
+      :*  player.old-gs
+          new-skills
+          bank.old-gs
+          [slots=*(map equipment-slot item-id) auto-eat-threshold=50 selected-food=~]
+          new-aa
+          stats.old-gs
+          last-tick.old-gs
+          rng-seed.old-gs
+      ==
+    `this(state [%1 new-gs])
   ==
 ::
 ++  on-poke
@@ -127,9 +194,6 @@
 ::  ┌─────────────────────────────────┐
 ::  │  helper core                    │
 ::  └─────────────────────────────────┘
-::
-::  Helpers return (quip card game-state) so the agent arms
-::  can thread state changes with =^  cards  gs.
 ::
 |%
 ::
@@ -237,6 +301,33 @@
           ['skill' [%s skill.aa]]
           ['target' [%s target.aa]]
       ==
+    ::
+      %combat
+      %-  pairs:enjs:format
+      :~  ['type' [%s 'combat']]
+          ['area' [%s area.aa]]
+          ['monster' [%s monster.aa]]
+          ['style' [%s style.aa]]
+          ['enemyHp' (numb:enjs:format enemy-hp.aa)]
+          ['enemyMaxHp' (numb:enjs:format enemy-max-hp.aa)]
+          ['playerAttackTimer' (numb:enjs:format player-attack-timer.aa)]
+          ['enemyAttackTimer' (numb:enjs:format enemy-attack-timer.aa)]
+          ['kills' (numb:enjs:format kills.aa)]
+      ==
+    ==
+  ::  equipment slots to json
+  =/  eq-pairs=(list [@t json])
+    %+  turn  ~(tap by slots.equipment.gs)
+    |=  [slot=equipment-slot iid=item-id]
+    ^-  [@t json]
+    [(scot %tas slot) [%s iid]]
+  =/  eq-json=json
+    %-  pairs:enjs:format
+    :~  ['slots' [%o (~(gas by *(map @t json)) eq-pairs)]]
+        ['autoEatThreshold' (numb:enjs:format auto-eat-threshold.equipment.gs)]
+        :-  'selectedFood'
+        ?~  selected-food.equipment.gs  ~
+        [%s u.selected-food.equipment.gs]
     ==
   %-  pairs:enjs:format
   :~  ['gp' (numb:enjs:format gp.player.gs)]
@@ -246,6 +337,7 @@
       ['bank' bank-json]
       ['slotsMax' (numb:enjs:format slots-max.bank.gs)]
       ['activeAction' action-json]
+      ['equipment' eq-json]
   ==
 ::
 ++  defs-to-json
@@ -271,9 +363,83 @@
         ['category' [%s category.idef]]
         ['sellPrice' (numb:enjs:format sell-price.idef)]
     ==
+  ::  monster defs
+  =/  monster-defs=(list [@t json])
+    %+  turn  ~(tap by monster-registry:bide-monsters)
+    |=  [mid=monster-id md=monster-def]
+    ^-  [@t json]
+    :-  mid
+    %-  pairs:enjs:format
+    :~  ['name' [%s name.md]]
+        ['hitpoints' (numb:enjs:format hitpoints.md)]
+        ['maxHit' (numb:enjs:format max-hit.md)]
+        ['attackLevel' (numb:enjs:format attack-level.md)]
+        ['strengthLevel' (numb:enjs:format strength-level.md)]
+        ['defenceLevel' (numb:enjs:format defence-level.md)]
+        ['attackSpeed' (numb:enjs:format attack-speed.md)]
+        ['attackStyle' [%s attack-style.md]]
+        ['combatXp' (numb:enjs:format combat-xp.md)]
+        ['gpMin' (numb:enjs:format gp-min.md)]
+        ['gpMax' (numb:enjs:format gp-max.md)]
+        :-  'lootTable'
+        :-  %a
+        %+  turn  loot-table.md
+        |=  le=loot-entry
+        %-  pairs:enjs:format
+        :~  ['item' [%s item.le]]
+            ['minQty' (numb:enjs:format min-qty.le)]
+            ['maxQty' (numb:enjs:format max-qty.le)]
+            ['chance' (numb:enjs:format chance.le)]
+        ==
+    ==
+  ::  area defs
+  =/  area-defs=(list [@t json])
+    %+  turn  ~(tap by area-registry:bide-areas)
+    |=  [aid=area-id ad=area-def]
+    ^-  [@t json]
+    :-  aid
+    %-  pairs:enjs:format
+    :~  ['name' [%s name.ad]]
+        ['monsters' [%a (turn monsters.ad |=(m=monster-id [%s m]))]]
+        ['levelReq' (numb:enjs:format level-req.ad)]
+    ==
+  ::  equipment stats
+  =/  equip-stat-defs=(list [@t json])
+    %+  turn  ~(tap by equipment-registry:bide-equipment)
+    |=  [iid=item-id es=equipment-stats]
+    ^-  [@t json]
+    :-  iid
+    %-  pairs:enjs:format
+    :~  ['slot' [%s slot.es]]
+        ['attackBonus' (numb:enjs:format attack-bonus.es)]
+        ['strengthBonus' (numb:enjs:format strength-bonus.es)]
+        ['rangedAttackBonus' (numb:enjs:format ranged-attack-bonus.es)]
+        ['rangedStrengthBonus' (numb:enjs:format ranged-strength-bonus.es)]
+        ['magicAttackBonus' (numb:enjs:format magic-attack-bonus.es)]
+        ['magicStrengthBonus' (numb:enjs:format magic-strength-bonus.es)]
+        ['defenceBonus' (numb:enjs:format defence-bonus.es)]
+        ['attackSpeed' (numb:enjs:format attack-speed.es)]
+        :-  'levelReqs'
+        :-  %o
+        %-  ~(gas by *(map @t json))
+        %+  turn  ~(tap by level-reqs.es)
+        |=  [sid=skill-id lvl=@ud]
+        ^-  [@t json]
+        [sid (numb:enjs:format lvl)]
+    ==
+  ::  food healing
+  =/  food-defs=(list [@t json])
+    %+  turn  ~(tap by food-registry:bide-food)
+    |=  [iid=item-id heal=@ud]
+    ^-  [@t json]
+    [iid (numb:enjs:format heal)]
   %-  pairs:enjs:format
   :~  ['skills' [%o (~(gas by *(map @t json)) skill-defs)]]
       ['items' [%o (~(gas by *(map @t json)) item-defs)]]
+      ['monsters' [%o (~(gas by *(map @t json)) monster-defs)]]
+      ['areas' [%o (~(gas by *(map @t json)) area-defs)]]
+      ['equipmentStats' [%o (~(gas by *(map @t json)) equip-stat-defs)]]
+      ['foodHealing' [%o (~(gas by *(map @t json)) food-defs)]]
   ==
 ::
 ++  handle-post
@@ -297,6 +463,33 @@
       [%sell-all @ ~]
     =/  item=@tas  i.t.site
     (handle-action [%sell-all item] bowl)
+  ::
+      [%equip @ ~]
+    =/  item=@tas  i.t.site
+    (handle-action [%equip item] bowl)
+  ::
+      [%unequip @ ~]
+    =/  slot=@tas  i.t.site
+    ?>  ?=  $?(%helmet %platebody %weapon %shield)  slot
+    (handle-action [%unequip slot] bowl)
+  ::
+      [%start-combat @ @ @ ~]
+    =/  area=@tas  i.t.site
+    =/  monster=@tas  i.t.t.site
+    =/  style=@tas  i.t.t.t.site
+    ?>  ?=  combat-style  style
+    (handle-action [%start-combat area monster style] bowl)
+  ::
+      [%stop-combat ~]
+    (handle-action [%stop-combat ~] bowl)
+  ::
+      [%set-auto-eat @ @ ~]
+    =/  threshold=@ud  (slav %ud i.t.site)
+    =/  food-str=@tas  i.t.t.site
+    =/  food=(unit item-id)
+      ?:  =(food-str 'none')  ~
+      `food-str
+    (handle-action [%set-auto-eat threshold food] bowl)
   ==
 ::
 ++  handle-action
@@ -322,6 +515,17 @@
       (fall (~(get by skills.gs) skill.act) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
     ?.  (gte level.ss level-req.u.adef)
       ~&  [%bide %level-too-low need=level-req.u.adef have=level.ss]
+      `gs
+    ::  check player has required inputs
+    =/  has-inputs=?
+      =/  inps=(list [item=item-id qty=@ud])  inputs.u.adef
+      |-
+      ?~  inps  %.y
+      =/  have=@ud  (fall (~(get by items.bank.gs) item.i.inps) 0)
+      ?.  (gte have qty.i.inps)  %.n
+      $(inps t.inps)
+    ?.  has-inputs
+      ~&  [%bide %missing-inputs target.act]
       `gs
     =.  active-action.gs  `[%skilling skill.act target.act now.bowl]
     `gs
@@ -357,6 +561,103 @@
   ::
       %buy
     `gs
+  ::
+      %equip
+    =/  reg  equipment-registry:bide-equipment
+    =/  stats=(unit equipment-stats)  (~(get by reg) item.act)
+    ?~  stats
+      ~&  [%bide %not-equippable item.act]
+      `gs
+    ::  check bank has item
+    =/  have=@ud  (fall (~(get by items.bank.gs) item.act) 0)
+    ?:  =(have 0)
+      ~&  [%bide %item-not-in-bank item.act]
+      `gs
+    ::  check level requirements
+    =/  reqs=(list [sid=skill-id lvl=@ud])  ~(tap by level-reqs.u.stats)
+    =/  meets-reqs=?
+      |-
+      ?~  reqs  %.y
+      =/  ss  (~(get by skills.gs) sid.i.reqs)
+      =/  plvl=@ud  ?~(ss 1 level.u.ss)
+      ?.  (gte plvl lvl.i.reqs)  %.n
+      $(reqs t.reqs)
+    ?.  meets-reqs
+      ~&  [%bide %level-req-not-met item.act]
+      `gs
+    =/  slot  slot.u.stats
+    ::  remove item from bank
+    =/  new-have=@ud  (sub have 1)
+    =.  items.bank.gs
+      ?:  =(new-have 0)
+        (~(del by items.bank.gs) item.act)
+      (~(put by items.bank.gs) item.act new-have)
+    ::  return old item to bank (if any)
+    =/  old-item=(unit item-id)  (~(get by slots.equipment.gs) slot)
+    =?  items.bank.gs  ?=(^ old-item)
+      =/  old-qty=@ud  (fall (~(get by items.bank.gs) u.old-item) 0)
+      (~(put by items.bank.gs) u.old-item (add old-qty 1))
+    ::  equip new item
+    =.  slots.equipment.gs  (~(put by slots.equipment.gs) slot item.act)
+    `gs
+  ::
+      %unequip
+    =/  cur=(unit item-id)  (~(get by slots.equipment.gs) slot.act)
+    ?~  cur
+      ~&  [%bide %slot-empty slot.act]
+      `gs
+    ::  return to bank
+    =/  cur-qty=@ud  (fall (~(get by items.bank.gs) u.cur) 0)
+    =.  items.bank.gs  (~(put by items.bank.gs) u.cur (add cur-qty 1))
+    ::  clear slot
+    =.  slots.equipment.gs  (~(del by slots.equipment.gs) slot.act)
+    `gs
+  ::
+      %start-combat
+    ::  validate area
+    =/  adef=(unit area-def)  (~(get by area-registry:bide-areas) area.act)
+    ?~  adef
+      ~&  [%bide %unknown-area area.act]
+      `gs
+    ::  validate monster is in area
+    =/  in-area=?
+      =/  ml=(list monster-id)  monsters.u.adef
+      |-
+      ?~  ml  %.n
+      ?:  =(i.ml monster.act)  %.y
+      $(ml t.ml)
+    ?.  in-area
+      ~&  [%bide %monster-not-in-area monster.act]
+      `gs
+    ::  validate monster exists
+    =/  mdef=(unit monster-def)  (~(get by monster-registry:bide-monsters) monster.act)
+    ?~  mdef
+      ~&  [%bide %unknown-monster monster.act]
+      `gs
+    ::  set up combat state
+    =.  active-action.gs
+      :-  ~
+      :*  %combat
+          area.act
+          monster.act
+          style.act
+          hitpoints.u.mdef
+          hitpoints.u.mdef
+          0
+          0
+          0
+          now.bowl
+      ==
+    `gs
+  ::
+      %stop-combat
+    =.  active-action.gs  ~
+    `gs
+  ::
+      %set-auto-eat
+    =.  auto-eat-threshold.equipment.gs  (min 100 threshold.act)
+    =.  selected-food.equipment.gs  food.act
+    `gs
   ==
 ::
 ++  process-tick
@@ -367,6 +668,7 @@
   =/  act  u.active-action.gs
   ?-  -.act
     %skilling  (process-skill-tick act bowl)
+    %combat    (process-combat-tick act bowl)
   ==
 ::
 ++  process-skill-tick
@@ -440,4 +742,157 @@
   =.  active-action.gs
     `[%skilling skill.act target.act (sub now.bowl leftover)]
   `gs
+::
+::  ┌─────────────────────────────────┐
+::  │  Combat tick processing          │
+::  └─────────────────────────────────┘
+::
+++  process-combat-tick
+  |=  [act=active-action =bowl:gall]
+  ^-  (quip card game-state)
+  ?>  ?=(%combat -.act)
+  =/  mdef=(unit monster-def)  (~(get by monster-registry:bide-monsters) monster.act)
+  ?~  mdef
+    =.  active-action.gs  ~
+    `gs
+  ::  cap catch-up ticks to 300 (5 minutes of offline)
+  =/  elapsed=@dr  (sub now.bowl started.act)
+  =/  num-ticks=@ud  (min 300 (div elapsed ~s1))
+  ?:  =(num-ticks 0)  `gs
+  ::  process ticks in a loop
+  =/  e-hp=@ud  enemy-hp.act
+  =/  e-max=@ud  enemy-max-hp.act
+  =/  p-atk-timer=@ud  player-attack-timer.act
+  =/  e-atk-timer=@ud  enemy-attack-timer.act
+  =/  k=@ud  kills.act
+  =/  seed=@uvJ  rng-seed.gs
+  =/  p-hp=@ud  hitpoints-current.player.gs
+  =/  p-hp-max=@ud  hitpoints-max.player.gs
+  =/  tick-n=@ud  0
+  |-
+  ?:  =(tick-n num-ticks)
+    ::  write back state
+    =.  rng-seed.gs  seed
+    =.  hitpoints-current.player.gs  p-hp
+    =.  active-action.gs
+      :-  ~
+      :*  %combat
+          area.act  monster.act  style.act
+          e-hp  e-max
+          p-atk-timer  e-atk-timer
+          k
+          (sub now.bowl (mod elapsed ~s1))
+      ==
+    `gs
+  ::  advance timers by 1000ms
+  =.  p-atk-timer  (add p-atk-timer 1.000)
+  =.  e-atk-timer  (add e-atk-timer 1.000)
+  =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+  ::
+  ::  player attacks
+  ::
+  =/  pa-result=[s=@uvJ hp=@ud pt=@ud]
+    ?.  (gte p-atk-timer weapon-spd)
+      [seed e-hp p-atk-timer]
+    =^  dmg  seed
+      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef)
+    [seed ?:((gte e-hp dmg) (sub e-hp dmg) 0) 0]
+  =.  seed  s.pa-result
+  =.  e-hp  hp.pa-result
+  =.  p-atk-timer  pt.pa-result
+  ::
+  ::  enemy killed?
+  ::
+  ?:  =(e-hp 0)
+    ::  award xp
+    =/  xp-total=@ud  combat-xp.u.mdef
+    =/  style-xp=@ud  (div (mul xp-total 2) 3)
+    =/  hp-xp=@ud  (div xp-total 3)
+    =/  style-skill=skill-id
+      ?-  style.act
+        %melee-attack    %attack
+        %melee-strength  %strength
+        %melee-defence   %defence
+        %ranged          %ranged
+        %magic           %magic
+      ==
+    ::  update style skill
+    =/  sss=skill-state
+      (fall (~(get by skills.gs) style-skill) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  new-sxp=@ud  (add xp.sss style-xp)
+    =.  sss  sss(xp new-sxp, level (level-from-xp:bide-xp new-sxp))
+    =.  skills.gs  (~(put by skills.gs) style-skill sss)
+    ::  update hitpoints skill
+    =/  hss=skill-state
+      (fall (~(get by skills.gs) %hitpoints) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  new-hxp=@ud  (add xp.hss hp-xp)
+    =/  new-hp-level=@ud  (level-from-xp:bide-xp new-hxp)
+    =.  hss  hss(xp new-hxp, level new-hp-level)
+    =.  skills.gs  (~(put by skills.gs) %hitpoints hss)
+    ::  update hitpoints-max from hp level
+    =.  p-hp-max  (mul new-hp-level 10)
+    =.  hitpoints-max.player.gs  p-hp-max
+    ::  roll loot
+    =^  loot-items  seed  (roll-loot:bide-combat seed loot-table.u.mdef)
+    =.  bank.gs
+      =/  li=(list [iid=item-id qty=@ud])  loot-items
+      |-
+      ?~  li  bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) iid.i.li) 0)
+      =.  items.bank.gs  (~(put by items.bank.gs) iid.i.li (add cur qty.i.li))
+      $(li t.li)
+    ::  roll gp
+    =^  gp-drop  seed  (roll-gp:bide-combat seed gp-min.u.mdef gp-max.u.mdef)
+    =.  gp.player.gs  (add gp.player.gs gp-drop)
+    ::  spawn next monster (same type)
+    =.  e-hp  hitpoints.u.mdef
+    =.  e-max  hitpoints.u.mdef
+    =.  e-atk-timer  0
+    =.  k  (add k 1)
+    $(tick-n (add tick-n 1))
+  ::
+  ::  enemy attacks player
+  ::
+  =/  ea-result=[s=@uvJ hp=@ud et=@ud]
+    ?.  (gte e-atk-timer attack-speed.u.mdef)
+      [seed p-hp e-atk-timer]
+    =^  dmg  seed
+      (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act)
+    [seed ?:((gte p-hp dmg) (sub p-hp dmg) 0) 0]
+  =.  seed  s.ea-result
+  =.  p-hp  hp.ea-result
+  =.  e-atk-timer  et.ea-result
+  ::
+  ::  auto-eat check
+  ::
+  =/  ae-result=[s=@uvJ hp=@ud]
+    ?.  ?&  (gth auto-eat-threshold.equipment.gs 0)
+            ?=(^ selected-food.equipment.gs)
+            (lte (mul p-hp 100) (mul p-hp-max auto-eat-threshold.equipment.gs))
+        ==
+      [seed p-hp]
+    =/  food-id  u.selected-food.equipment.gs
+    =/  food-qty=@ud  (fall (~(get by items.bank.gs) food-id) 0)
+    =/  heal-amt=@ud  (fall (~(get by food-registry:bide-food) food-id) 0)
+    ?.  (gth food-qty 0)  [seed p-hp]
+    ?.  (gth heal-amt 0)  [seed p-hp]
+    ::  consume food
+    =/  new-qty=@ud  (sub food-qty 1)
+    =.  items.bank.gs
+      ?:  =(new-qty 0)
+        (~(del by items.bank.gs) food-id)
+      (~(put by items.bank.gs) food-id new-qty)
+    [seed (min p-hp-max (add p-hp heal-amt))]
+  =.  seed  s.ae-result
+  =.  p-hp  hp.ae-result
+  ::
+  ::  death check
+  ::
+  ?:  =(p-hp 0)
+    =.  hitpoints-current.player.gs  p-hp-max
+    =.  rng-seed.gs  seed
+    =.  active-action.gs  ~
+    `gs
+  ::
+  $(tick-n (add tick-n 1))
 --

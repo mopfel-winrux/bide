@@ -4,6 +4,8 @@ import { Badge } from '../ui/Badge';
 import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS } from '../../shared/constants';
 import type { SkillType } from '../../shared/types';
 
+const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']);
+
 export function Sidebar() {
   const { defs, getDisplaySkill } = useGame();
 
@@ -48,10 +50,13 @@ export function Sidebar() {
               {sids.map((sid) => {
                 const sd = defs.skills[sid];
                 const ds = getDisplaySkill(sid);
+                // Combat skills link to /combat instead of /skill/:id
+                const isCombatSkill = COMBAT_SKILLS.has(sid);
+                const linkTo = isCombatSkill ? '/combat' : `/skill/${sid}`;
                 return (
                   <NavLink
                     key={sid}
-                    to={`/skill/${sid}`}
+                    to={linkTo}
                     className={({ isActive }) =>
                       `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
                         isActive
@@ -77,6 +82,18 @@ export function Sidebar() {
           <div className="px-6 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
             Other
           </div>
+          <NavLink
+            to="/equipment"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
+                isActive
+                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
+                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
+              }`
+            }
+          >
+            <span>Equipment</span>
+          </NavLink>
           <NavLink
             to="/bank"
             className={({ isActive }) =>

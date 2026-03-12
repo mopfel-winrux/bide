@@ -6,8 +6,9 @@ export function MobileNav() {
   const params = useParams<{ skillId: string }>();
 
   // Show the current skill if we're on a skill page, otherwise show active skill
+  const activeSkill = state?.activeAction?.type === 'skilling' ? state.activeAction.skill : null;
   const currentSkill = params.skillId
-    ?? state?.activeAction?.skill
+    ?? activeSkill
     ?? null;
 
   const currentSkillName = currentSkill && defs?.skills[currentSkill]

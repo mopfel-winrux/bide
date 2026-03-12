@@ -4,6 +4,8 @@ import { AppShell } from './components/layout/AppShell';
 import { OverviewPage } from './pages/OverviewPage';
 import { SkillPage } from './pages/SkillPage';
 import { BankPage } from './pages/BankPage';
+import { CombatPage } from './pages/CombatPage';
+import { EquipmentPage } from './pages/EquipmentPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 function ErrorScreen() {
@@ -40,6 +42,8 @@ function AppRoutes() {
         <Route index element={<OverviewPage />} />
         <Route path="skill/:skillId" element={<SkillPage />} />
         <Route path="bank" element={<BankPage />} />
+        <Route path="combat" element={<CombatPage />} />
+        <Route path="equipment" element={<EquipmentPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

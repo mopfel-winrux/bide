@@ -1,4 +1,4 @@
-import type { GameState, GameDefs, SkillId, ActionId, ItemId } from './types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot } from './types';
 
 let onAuthFailure = () => {
   window.location.href = '/~/login?redirect=' + encodeURIComponent(window.location.pathname);
@@ -33,4 +33,11 @@ export const api = {
   stopAction: () => post('stop'),
   sell: (item: ItemId, qty: number) => post(`sell/${item}/${qty}`),
   sellAll: (item: ItemId) => post(`sell-all/${item}`),
+  equip: (item: ItemId) => post(`equip/${item}`),
+  unequip: (slot: EquipmentSlot) => post(`unequip/${slot}`),
+  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle) =>
+    post(`start-combat/${area}/${monster}/${style}`),
+  stopCombat: () => post('stop-combat'),
+  setAutoEat: (threshold: number, food: ItemId | null) =>
+    post(`set-auto-eat/${threshold}/${food ?? 'none'}`),
 };

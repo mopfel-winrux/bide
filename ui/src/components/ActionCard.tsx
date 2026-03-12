@@ -13,8 +13,12 @@ interface Props {
 export function ActionCard({ action, skillId, playerLevel }: Props) {
   const { state, defs, startAction, stopAction, getDisplayBank } = useGame();
   const locked = action.levelReq > playerLevel;
-  const isActive = state?.activeAction?.skill === skillId && state?.activeAction?.target === action.id;
+  const aa = state?.activeAction;
+  const isActive = aa?.type === 'skilling' && aa.skill === skillId && aa.target === action.id;
   const bank = getDisplayBank();
+
+  const hasInputs = action.inputs.every(inp => (bank[inp.item] || 0) >= inp.qty);
+  const canStart = !locked && hasInputs;
 
   const outputName = action.outputs.length > 0
     ? (defs?.items[action.outputs[0].item]?.name ?? action.outputs[0].item)
@@ -82,7 +86,9 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
         ) : isActive ? (
           <Button variant="stop" onClick={stopAction}>Stop</Button>
         ) : (
-          <Button variant="start" onClick={() => startAction(skillId, action.id)}>Start</Button>
+          <Button variant="start" disabled={!canStart} onClick={() => startAction(skillId, action.id)}>
+            {!hasInputs && !locked ? 'No Materials' : 'Start'}
+          </Button>
         )}
       </div>
     </Card>

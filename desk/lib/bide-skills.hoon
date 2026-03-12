@@ -1,6 +1,6 @@
 ::  lib/bide/data/skills.hoon — skill and action definitions
 ::
-::  Phase 2-3: Gathering skills
+::  Phase 2-5: Gathering, Artisan, and Combat skills
 ::
 /-  *bide
 |%
@@ -19,6 +19,13 @@
       [%crafting crafting-def]
       [%runecrafting runecrafting-def]
       [%herblore herblore-def]
+      ::  combat skills
+      [%attack attack-def]
+      [%strength strength-def]
+      [%defence defence-def]
+      [%hitpoints hitpoints-def]
+      [%ranged ranged-def]
+      [%magic magic-def]
   ==
 ::
 ++  woodcutting-def
@@ -1245,5 +1252,62 @@
           outputs=~[[item=%super-defence-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
       ==
+  ==
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Combat Skills (leveled via combat, empty action lists)   │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  attack-def
+  ^-  skill-def
+  :*  id=%attack
+      name='Attack'
+      skill-type=%combat
+      max-level=99
+      actions=~
+  ==
+::
+++  strength-def
+  ^-  skill-def
+  :*  id=%strength
+      name='Strength'
+      skill-type=%combat
+      max-level=99
+      actions=~
+  ==
+::
+++  defence-def
+  ^-  skill-def
+  :*  id=%defence
+      name='Defence'
+      skill-type=%combat
+      max-level=99
+      actions=~
+  ==
+::
+++  hitpoints-def
+  ^-  skill-def
+  :*  id=%hitpoints
+      name='Hitpoints'
+      skill-type=%passive
+      max-level=99
+      actions=~
+  ==
+::
+++  ranged-def
+  ^-  skill-def
+  :*  id=%ranged
+      name='Ranged'
+      skill-type=%combat
+      max-level=99
+      actions=~
+  ==
+::
+++  magic-def
+  ^-  skill-def
+  :*  id=%magic
+      name='Magic'
+      skill-type=%combat
+      max-level=99
+      actions=~
   ==
 --

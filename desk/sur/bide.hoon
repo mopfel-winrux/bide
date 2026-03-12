@@ -1,7 +1,6 @@
 ::  sur/bide.hoon — core type definitions for Bide (Melvor Idle on Urbit)
 ::
-::  Phase 1+2: Woodcutting skill, Bank, basic infrastructure.
-::  Designed for extension — new skills, combat, mastery, etc.
+::  Phase 1-5: Skills, Bank, Equipment, Combat
 ::
 |%
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -11,6 +10,8 @@
 +$  skill-id     @tas                          ::  e.g. %woodcutting
 +$  action-id    @tas                          ::  e.g. %cut-normal-logs
 +$  item-id      @tas                          ::  e.g. %normal-logs
++$  monster-id   @tas                          ::  e.g. %chicken
++$  area-id      @tas                          ::  e.g. %farmlands
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Top-level game state                                    │
@@ -20,7 +21,7 @@
   $:  player=player-info                       ::  gold, hp, timestamps
       skills=(map skill-id skill-state)        ::  per-skill xp & level
       bank=bank-state                          ::  inventory of items
-      equipment=equipment-state                ::  worn gear (stub)
+      equipment=equipment-state                ::  worn gear + auto-eat
       active-action=(unit active-action)       ::  what we're doing now
       stats=game-stats                         ::  lifetime counters
       last-tick=@da                            ::  last processed time
@@ -50,11 +51,55 @@
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
+::  │  Equipment & combat style                                │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  equipment-slot  $?(%helmet %platebody %weapon %shield)
+::
++$  combat-style
+  $?  %melee-attack
+      %melee-strength
+      %melee-defence
+      %ranged
+      %magic
+  ==
+::
++$  equipment-stats
+  $:  slot=equipment-slot
+      attack-bonus=@ud
+      strength-bonus=@ud
+      ranged-attack-bonus=@ud
+      ranged-strength-bonus=@ud
+      magic-attack-bonus=@ud
+      magic-strength-bonus=@ud
+      defence-bonus=@ud
+      attack-speed=@ud                         ::  ms, 0 for non-weapons
+      level-reqs=(map skill-id @ud)
+  ==
+::
++$  equipment-state
+  $:  slots=(map equipment-slot item-id)       ::  equipped items
+      auto-eat-threshold=@ud                   ::  0-100 percent
+      selected-food=(unit item-id)             ::  food to auto-eat
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Active action — tagged union, extended per phase        │
 ::  └──────────────────────────────────────────────────────────┘
 ::
 +$  active-action
   $%  [%skilling skill=skill-id target=action-id started=@da]
+      $:  %combat
+          area=area-id
+          monster=monster-id
+          style=combat-style
+          enemy-hp=@ud
+          enemy-max-hp=@ud
+          player-attack-timer=@ud
+          enemy-attack-timer=@ud
+          kills=@ud
+          started=@da
+      ==
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -64,14 +109,6 @@
 +$  bank-state
   $:  items=(map item-id @ud)                  ::  item-id -> quantity
       slots-max=@ud                            ::  max unique item slots
-  ==
-::
-::  ┌──────────────────────────────────────────────────────────┐
-::  │  Equipment (stub for Phase 1)                            │
-::  └──────────────────────────────────────────────────────────┘
-::
-+$  equipment-state
-  $:  active-set=@ud                           ::  equipment set index
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -92,6 +129,11 @@
       [%sell item=item-id qty=@ud]
       [%sell-all item=item-id]
       [%buy item=item-id qty=@ud]
+      [%equip item=item-id]
+      [%unequip slot=equipment-slot]
+      [%start-combat area=area-id monster=monster-id style=combat-style]
+      [%stop-combat ~]
+      [%set-auto-eat threshold=@ud food=(unit item-id)]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -169,5 +211,39 @@
       description=@t
       category=item-category
       sell-price=@ud                           ::  gp from selling
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Monster & area definitions (static data)                │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  loot-entry
+  $:  item=item-id
+      min-qty=@ud
+      max-qty=@ud
+      chance=@ud                               ::  percentage 0-100
+  ==
+::
++$  monster-def
+  $:  id=monster-id
+      name=@t
+      hitpoints=@ud
+      max-hit=@ud
+      attack-level=@ud
+      strength-level=@ud
+      defence-level=@ud
+      attack-speed=@ud                         ::  ms between attacks
+      attack-style=combat-style
+      loot-table=(list loot-entry)
+      gp-min=@ud
+      gp-max=@ud
+      combat-xp=@ud
+  ==
+::
++$  area-def
+  $:  id=area-id
+      name=@t
+      monsters=(list monster-id)
+      level-req=@ud
   ==
 --

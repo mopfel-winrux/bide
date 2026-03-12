@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot } from '../shared/types';
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
 import { useActionTimer } from '../hooks/useActionTimer';
@@ -20,6 +20,11 @@ interface GameContextValue {
   startAction: (skill: SkillId, action: ActionId) => void;
   stopAction: () => void;
   sellAll: (item: ItemId) => void;
+  equip: (item: ItemId) => void;
+  unequip: (slot: EquipmentSlot) => void;
+  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle) => void;
+  stopCombat: () => void;
+  setAutoEat: (threshold: number, food: ItemId | null) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -98,11 +103,33 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.sellAll(item);
   }, []);
 
+  const equip = useCallback((item: ItemId) => {
+    api.equip(item);
+  }, []);
+
+  const unequip = useCallback((slot: EquipmentSlot) => {
+    api.unequip(slot);
+  }, []);
+
+  const startCombat = useCallback((area: AreaId, monster: MonsterId, style: CombatStyle) => {
+    api.startCombat(area, monster, style);
+  }, []);
+
+  const stopCombat = useCallback(() => {
+    api.stopCombat();
+  }, []);
+
+  const setAutoEat = useCallback((threshold: number, food: ItemId | null) => {
+    api.setAutoEat(threshold, food);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
       getDisplaySkill, getDisplayBank,
       startAction, stopAction, sellAll,
+      equip, unequip,
+      startCombat, stopCombat, setAutoEat,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

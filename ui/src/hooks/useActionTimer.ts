@@ -60,7 +60,7 @@ export function useActionTimer(
     if (elapsed >= duration) {
       // Cycle complete
       const s = stateRef.current;
-      if (s?.activeAction) {
+      if (s?.activeAction && s.activeAction.type === 'skilling') {
         const ad = getActionDef(s.activeAction.skill, s.activeAction.target);
         if (ad) {
           const outputs: Record<string, number> = {};
@@ -97,7 +97,19 @@ export function useActionTimer(
 
   // Sync timer with game state
   useEffect(() => {
-    if (!state?.activeAction) {
+    // Combat actions don't use client-side timer cycling
+    if (state?.activeAction?.type === 'combat') {
+      actionKeyRef.current = '';
+      actionStartRef.current = 0;
+      actionDurationRef.current = 0;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+      setTimerState({ progress: 0, remaining: 0, isActive: false });
+      if (progressBarRef.current) progressBarRef.current.style.width = '0%';
+      return;
+    }
+
+    if (!state?.activeAction || state.activeAction.type !== 'skilling') {
       actionKeyRef.current = '';
       actionStartRef.current = 0;
       actionDurationRef.current = 0;
