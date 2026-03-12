@@ -1,0 +1,26 @@
+{
+  "name": "Bide",
+  "short_name": "Bide",
+  "description": "An idle RPG for Urbit",
+  "start_url": "/apps/bide/",
+  "display": "standalone",
+  "theme_color": "#d97706",
+  "background_color": "#0a0e17",
+  "icons": [
+    {
+      "src": "/apps/bide/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/apps/bide/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/apps/bide/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

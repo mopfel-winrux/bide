@@ -1,0 +1,9 @@
+:~  title+'Bide'
+    info+'An idle RPG for Urbit'
+    color+0xd9.7706
+    version+[0 1 0]
+    website+'https://github.com/amadeo/bide'
+    license+'MIT'
+    base+'bide'
+    site+/apps/bide
+==

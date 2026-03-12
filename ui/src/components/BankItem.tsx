@@ -1,0 +1,49 @@
+import { useGame } from '../context/GameContext';
+import { Button } from './ui/Button';
+import { fmt } from '../shared/format';
+import { CATEGORY_COLORS } from '../shared/constants';
+import type { ItemId, ItemCategory } from '../shared/types';
+
+interface Props {
+  itemId: ItemId;
+  qty: number;
+}
+
+export function BankItem({ itemId, qty }: Props) {
+  const { defs, sellAll } = useGame();
+  const idef = defs?.items[itemId];
+  const name = idef?.name ?? itemId;
+  const price = idef?.sellPrice ?? 0;
+  const category = idef?.category as ItemCategory | undefined;
+  const borderColor = category ? CATEGORY_COLORS[category] : '#374151';
+
+  return (
+    <div
+      className="relative bg-[#111827] border border-[#374151] rounded-md p-4 text-center transition-all duration-200 hover:border-gray-500 hover:shadow-[0_0_8px_rgba(255,255,255,0.03)]"
+      style={{ borderTopColor: borderColor, borderTopWidth: '2px' }}
+      title={idef ? `${name}\nCategory: ${idef.category}\nSell: ${fmt(price)} GP each\nTotal: ${fmt(price * qty)} GP` : name}
+    >
+      <div className="absolute top-1.5 right-1.5 min-w-[22px] h-[18px] px-1.5 text-[11px] font-bold leading-[18px] text-center bg-[#374151] text-gray-100 rounded-[9px]">
+        {fmt(qty)}
+      </div>
+      <div className="w-14 h-14 mx-auto mb-3 bg-[#1f2937] rounded-md flex items-center justify-center text-[22px] text-gray-500">
+        &#x1f4e6;
+      </div>
+      <div className="text-[13px] font-medium text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">
+        {name}
+      </div>
+      {price > 0 && (
+        <div className="text-xs text-gray-500 mt-0.5">{fmt(price)} GP</div>
+      )}
+      <div className="mt-3">
+        <Button
+          size="sm"
+          onClick={() => sellAll(itemId)}
+          title={`Sell for ${fmt(price * qty)} GP`}
+        >
+          Sell All
+        </Button>
+      </div>
+    </div>
+  );
+}

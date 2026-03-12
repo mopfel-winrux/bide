@@ -1,0 +1,63 @@
+# Development Phases
+
+## Completed
+
+### Phase 1 — Skeleton & Infrastructure
+Gall agent with `=<` helper core pattern, Eyre HTTP binding, Behn 1-second timer loop, scry endpoints (`/x/state`, `/x/defs`), `state-0` versioned state, type definitions in `sur/bide.hoon`.
+
+### Phase 2 — Woodcutting & Bank
+First skill (Woodcutting, 9 tree types), XP system with 99-level RuneScape table (`lib/bide-xp.hoon`), bank with item storage, sell and sell-all for GP, React frontend with Vite, polling-based state sync.
+
+### Phase 3 — Gathering Skills
+Added Fishing (12 actions), Mining (12 actions), Thieving (9 NPCs). Introduced data-driven skill/item registries so new skills require only data additions.
+
+### Phase 4 — Processing/Artisan Skills
+Added Firemaking, Cooking, Smithing, Fletching, Crafting, Runecrafting, Herblore (7 skills, ~80 actions). Engine extended to consume input items and auto-stop when inputs run out.
+
+### UI Overhaul
+Dark theme, smooth client-side timers, optimistic XP/item updates via pending refs, XP drop animations, level-up toast notifications, responsive layout.
+
+---
+
+## Planned
+
+### Phase 5 — Combat System
+- Equipment slots (helmet, platebody, weapon, shield, etc.)
+- Equipment stats: attack bonus, strength bonus, defence bonus, attack speed
+- Combat engine: turn-based auto-combat with hit/miss/damage calculations
+- Monster definitions: HP, max hit, attack speed, loot tables
+- Combat areas: lists of monsters, area requirements
+- Food consumption + auto-eat threshold
+- 3 combat styles: melee (Attack/Strength/Defence), ranged, magic
+- 6 combat skills: Attack, Strength, Defence, Hitpoints, Ranged, Magic
+
+### Phase 6 — Advanced Combat
+- Prayer skill with prayer points and overhead prayers
+- Slayer skill with slayer tasks and slayer-only monsters
+- Dungeons: multi-room encounters with boss fights
+- Special attacks on weapons
+- Combat potions (use existing herblore potions)
+
+### Phase 7 — Passive Skills
+- Farming: seed plots, growth timers, herb/food harvesting
+- Agility: obstacle courses granting global bonuses
+- Astrology: constellation bonuses to skill efficiency
+- Summoning: combat familiars and skilling helpers
+
+### Phase 8 — Economy & Polish
+- Shop: buy items with GP, stock limits
+- Township: idle town-builder minigame
+- Alt Magic: crafting spells that consume runes for utility effects
+- Pets: rare drops that give small bonuses
+- Modifier engine: equipment/prayer/potion/mastery bonuses applied uniformly
+- Completion log: track total progress percentage
+
+### Phase 9 — Content Population
+- Full item/monster/action data to match content depth
+- Balance tuning: XP rates, sell prices, drop rates, combat stats
+
+### Phase 10 — Multiplayer
+- Peer-to-peer features leveraging Urbit networking
+- Guilds: shared goals, group challenges
+- Trading between ships
+- Leaderboards via scry
