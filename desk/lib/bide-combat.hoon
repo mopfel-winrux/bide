@@ -172,6 +172,13 @@
       ?(%melee-attack %melee-strength %melee-defence)  str.bonuses
     ==
   =/  max-hit=@ud  (calc-max-hit eff-str str-bonus)
+  ::  unarmed kick: guarantee min max-hit of 2
+  =/  has-weapon=?  (~(has by slots) %weapon)
+  =?  max-hit  ?&  !has-weapon
+                   ?=(?(%melee-attack %melee-strength %melee-defence) style)
+                   (lth max-hit 2)
+               ==
+    2
   =/  atk-roll=@ud  (calc-attack-roll eff-atk atk-bonus)
   =/  def-roll=@ud  (calc-defence-roll enemy-def-level 0)
   =/  accuracy=@ud  (calc-accuracy atk-roll def-roll)
@@ -199,7 +206,7 @@
   |=  slots=(map equipment-slot item-id)
   ^-  @ud
   =/  weapon=(unit item-id)  (~(get by slots) %weapon)
-  ?~  weapon  3.000  ::  unarmed: 3s
+  ?~  weapon  2.400  ::  unarmed kick: 2.4s
   =/  reg  equipment-registry:bide-equipment
   =/  stats=(unit equipment-stats)  (~(get by reg) u.weapon)
   ?~  stats  3.000

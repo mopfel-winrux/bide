@@ -95,9 +95,13 @@
           style=combat-style
           enemy-hp=@ud
           enemy-max-hp=@ud
-          player-attack-timer=@ud
-          enemy-attack-timer=@ud
+          player-next-attack=@da               ::  absolute time of next attack
+          enemy-next-attack=@da                ::  absolute time of next attack
           kills=@ud
+          player-atk-count=@ud                 ::  monotonic counter
+          enemy-atk-count=@ud                  ::  monotonic counter
+          player-last-dmg=@ud                  ::  damage dealt in last player attack
+          enemy-last-dmg=@ud                   ::  damage dealt in last enemy attack
           started=@da
       ==
   ==

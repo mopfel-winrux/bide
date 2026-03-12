@@ -30,20 +30,84 @@
   $%  [%skilling skill=skill-id target=action-id started=@da]
   ==
 ::
++$  active-action-1
+  $%  [%skilling skill=skill-id target=action-id started=@da]
+      $:  %combat
+          area=area-id
+          monster=monster-id
+          style=combat-style
+          enemy-hp=@ud
+          enemy-max-hp=@ud
+          player-attack-timer=@ud
+          enemy-attack-timer=@ud
+          kills=@ud
+          started=@da
+      ==
+  ==
+::
++$  game-state-1
+  $:  player=player-info
+      skills=(map skill-id skill-state)
+      bank=bank-state
+      equipment=equipment-state
+      active-action=(unit active-action-1)
+      stats=game-stats
+      last-tick=@da
+      rng-seed=@uvJ
+  ==
+::
 +$  state-1
   $:  %1
+      gs=game-state-1
+  ==
+::
++$  active-action-2
+  $%  [%skilling skill=skill-id target=action-id started=@da]
+      $:  %combat
+          area=area-id
+          monster=monster-id
+          style=combat-style
+          enemy-hp=@ud
+          enemy-max-hp=@ud
+          player-next-attack=@da
+          enemy-next-attack=@da
+          kills=@ud
+          started=@da
+      ==
+  ==
+::
++$  game-state-2
+  $:  player=player-info
+      skills=(map skill-id skill-state)
+      bank=bank-state
+      equipment=equipment-state
+      active-action=(unit active-action-2)
+      stats=game-stats
+      last-tick=@da
+      rng-seed=@uvJ
+  ==
+::
++$  state-2
+  $:  %2
+      gs=game-state-2
+  ==
+::
++$  state-3
+  $:  %3
       gs=game-state
   ==
 ::
 +$  versioned-state
   $%  state-0
       state-1
+      state-2
+      state-3
   ==
 --
 ::
 %-  agent:dbug
 %+  verb  |
-=|  state-1
+=|  state-3
 =*  state  -
 ^-  agent:gall
 =<
@@ -93,20 +157,62 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-vase)
   ?-  -.old
-    %1  `this(state old)
+    %3  `this(state old)
+  ::
+      %2
+    ::  Migrate state-2 → state-3 (combat counters added)
+    =/  old-gs  gs.old
+    =/  new-aa=(unit active-action)
+      ?~  active-action.old-gs  ~
+      =/  aa  u.active-action.old-gs
+      ?-  -.aa
+        %skilling  `[%skilling skill.aa target.aa started.aa]
+        %combat    ~  :: clear combat (structure changed)
+      ==
+    =/  new-gs=game-state
+      :*  player.old-gs
+          skills.old-gs
+          bank.old-gs
+          equipment.old-gs
+          new-aa
+          stats.old-gs
+          last-tick.old-gs
+          rng-seed.old-gs
+      ==
+    `this(state [%3 new-gs])
+  ::
+      %1
+    ::  Migrate state-1 → state-3 (combat timer type changed + counters)
+    =/  old-gs  gs.old
+    =/  new-aa=(unit active-action)
+      ?~  active-action.old-gs  ~
+      =/  aa  u.active-action.old-gs
+      ?-  -.aa
+        %skilling  `[%skilling skill.aa target.aa started.aa]
+        %combat    ~  :: clear combat (timer structure changed)
+      ==
+    =/  new-gs=game-state
+      :*  player.old-gs
+          skills.old-gs
+          bank.old-gs
+          equipment.old-gs
+          new-aa
+          stats.old-gs
+          last-tick.old-gs
+          rng-seed.old-gs
+      ==
+    `this(state [%3 new-gs])
   ::
       %0
-    ::  Migrate state-0 → state-1
+    ::  Migrate state-0 → state-3
     =/  hp-xp=@ud  1.154
     =/  old-gs  gs.old
-    ::  carry over skilling active-action
     =/  new-aa=(unit active-action)
       ?~  active-action.old-gs  ~
       =/  aa  u.active-action.old-gs
       ?-  -.aa
         %skilling  `[%skilling skill.aa target.aa started.aa]
       ==
-    ::  add combat skills if missing
     =/  new-skills=(map skill-id skill-state)  skills.old-gs
     =?  new-skills  !(~(has by new-skills) %attack)
       (~(put by new-skills) %attack [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
@@ -130,7 +236,7 @@
           last-tick.old-gs
           rng-seed.old-gs
       ==
-    `this(state [%1 new-gs])
+    `this(state [%3 new-gs])
   ==
 ::
 ++  on-poke
@@ -177,13 +283,42 @@
     =^  cards  gs  (process-tick bowl)
     :_  this
     (snoc cards [%pass /timer/tick %arvo %b [%wait (add now.bowl ~s1)]])
+  ::
+      [%combat %player @ ~]
+    ?>  ?=([%behn %wake *] sign)
+    ?^  error.sign
+      %-  (slog u.error.sign)
+      `this
+    ::  ignore stale wakes
+    =/  aa  active-action.gs
+    ?~  aa  `this
+    =/  act  u.aa
+    ?.  ?=(%combat -.act)  `this
+    =/  wire-time=@da  (slav %da i.t.t.wire)
+    ?.  =(wire-time player-next-attack.act)  `this
+    =^  cards  gs  (process-combat-events bowl)
+    [cards this]
+  ::
+      [%combat %enemy @ ~]
+    ?>  ?=([%behn %wake *] sign)
+    ?^  error.sign
+      %-  (slog u.error.sign)
+      `this
+    =/  aa  active-action.gs
+    ?~  aa  `this
+    =/  act  u.aa
+    ?.  ?=(%combat -.act)  `this
+    =/  wire-time=@da  (slav %da i.t.t.wire)
+    ?.  =(wire-time enemy-next-attack.act)  `this
+    =^  cards  gs  (process-combat-events bowl)
+    [cards this]
   ==
 ::
 ++  on-peek
   |=  =(pole knot)
   ^-  (unit (unit cage))
   ?+  pole  (on-peek:def pole)
-      [%x %state ~]  ``json+!>(state-to-json)
+      [%x %state ~]  ``json+!>((state-to-json now.bowl))
       [%x %defs ~]   ``json+!>(defs-to-json)
   ==
 ::
@@ -242,7 +377,7 @@
     t.t.t.site
   ?:  =(%'GET' method.request.req)
     :_  gs
-    (handle-get eyre-id site)
+    (handle-get eyre-id site now.bowl)
   ?.  =(%'POST' method.request.req)
     :_  gs
     (give-simple-payload:app:server eyre-id [[405 ~] ~])
@@ -252,13 +387,13 @@
   (give-simple-payload:app:server eyre-id [[204 ~] ~])
 ::
 ++  handle-get
-  |=  [eyre-id=@ta site=(list @t)]
+  |=  [eyre-id=@ta site=(list @t) now=@da]
   ^-  (list card)
   ?+  site
     (give-simple-payload:app:server eyre-id [[404 ~] ~])
   ::
       [%state ~]
-    (give-json eyre-id state-to-json)
+    (give-json eyre-id (state-to-json now))
   ::
       [%defs ~]
     (give-json eyre-id defs-to-json)
@@ -273,6 +408,7 @@
   [[200 ['content-type' 'application/json'] ~] `data]
 ::
 ++  state-to-json
+  |=  now=@da
   ^-  json
   =/  skill-pairs=(list [@t json])
     %+  turn  ~(tap by skills.gs)
@@ -303,6 +439,23 @@
       ==
     ::
       %combat
+      ::  compute elapsed timer values from absolute next-attack times
+      =/  ms-per=@dr  (div ~s1 1.000)
+      =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+      =/  p-remaining=@dr
+        ?:  (gth player-next-attack.aa now)
+          (sub player-next-attack.aa now)
+        *@dr
+      =/  p-remaining-ms=@ud  (div p-remaining ms-per)
+      =/  p-elapsed=@ud  (sub weapon-spd (min weapon-spd p-remaining-ms))
+      =/  mdef=(unit monster-def)  (~(get by monster-registry:bide-monsters) monster.aa)
+      =/  enemy-spd=@ud  ?~(mdef 3.000 attack-speed.u.mdef)
+      =/  e-remaining=@dr
+        ?:  (gth enemy-next-attack.aa now)
+          (sub enemy-next-attack.aa now)
+        *@dr
+      =/  e-remaining-ms=@ud  (div e-remaining ms-per)
+      =/  e-elapsed=@ud  (sub enemy-spd (min enemy-spd e-remaining-ms))
       %-  pairs:enjs:format
       :~  ['type' [%s 'combat']]
           ['area' [%s area.aa]]
@@ -310,9 +463,13 @@
           ['style' [%s style.aa]]
           ['enemyHp' (numb:enjs:format enemy-hp.aa)]
           ['enemyMaxHp' (numb:enjs:format enemy-max-hp.aa)]
-          ['playerAttackTimer' (numb:enjs:format player-attack-timer.aa)]
-          ['enemyAttackTimer' (numb:enjs:format enemy-attack-timer.aa)]
+          ['playerAttackTimer' (numb:enjs:format p-elapsed)]
+          ['enemyAttackTimer' (numb:enjs:format e-elapsed)]
           ['kills' (numb:enjs:format kills.aa)]
+          ['playerAtkCount' (numb:enjs:format player-atk-count.aa)]
+          ['enemyAtkCount' (numb:enjs:format enemy-atk-count.aa)]
+          ['playerLastDmg' (numb:enjs:format player-last-dmg.aa)]
+          ['enemyLastDmg' (numb:enjs:format enemy-last-dmg.aa)]
       ==
     ==
   ::  equipment slots to json
@@ -634,7 +791,29 @@
     ?~  mdef
       ~&  [%bide %unknown-monster monster.act]
       `gs
-    ::  set up combat state
+    ::  validate combat style matches weapon type
+    =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
+    =/  wstats=(unit equipment-stats)
+      ?~  weapon  ~
+      (~(get by equipment-registry:bide-equipment) u.weapon)
+    =/  is-ranged=?
+      ?~  wstats  %.n
+      (gth ranged-attack-bonus.u.wstats 0)
+    =/  is-magic=?
+      ?~  wstats  %.n
+      (gth magic-attack-bonus.u.wstats 0)
+    =/  style-ok=?
+      ?:  is-ranged  ?=(%ranged style.act)
+      ?:  is-magic   ?=(%magic style.act)
+      ?=(?(%melee-attack %melee-strength %melee-defence) style.act)
+    ?.  style-ok
+      ~&  [%bide %style-mismatch style.act]
+      `gs
+    ::  set up combat state with independent Behn timers
+    =/  ms-per=@dr  (div ~s1 1.000)
+    =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+    =/  p-next=@da  (add now.bowl (mul ms-per weapon-spd))
+    =/  e-next=@da  (add now.bowl (mul ms-per attack-speed.u.mdef))
     =.  active-action.gs
       :-  ~
       :*  %combat
@@ -643,16 +822,33 @@
           style.act
           hitpoints.u.mdef
           hitpoints.u.mdef
-          0
-          0
-          0
+          p-next
+          e-next
+          0           ::  kills
+          0           ::  player-atk-count
+          0           ::  enemy-atk-count
+          0           ::  player-last-dmg
+          0           ::  enemy-last-dmg
           now.bowl
       ==
-    `gs
+    :_  gs
+    :~  [%pass /combat/player/(scot %da p-next) %arvo %b [%wait p-next]]
+        [%pass /combat/enemy/(scot %da e-next) %arvo %b [%wait e-next]]
+    ==
   ::
       %stop-combat
+    =/  aa  active-action.gs
+    ?~  aa
+      `gs
+    =/  act  u.aa
     =.  active-action.gs  ~
-    `gs
+    ?.  ?=(%combat -.act)
+      `gs
+    ::  cancel pending combat timers
+    :_  gs
+    :~  [%pass /combat/player/(scot %da player-next-attack.act) %arvo %b [%rest player-next-attack.act]]
+        [%pass /combat/enemy/(scot %da enemy-next-attack.act) %arvo %b [%rest enemy-next-attack.act]]
+    ==
   ::
       %set-auto-eat
     =.  auto-eat-threshold.equipment.gs  (min 100 threshold.act)
@@ -664,11 +860,12 @@
   |=  =bowl:gall
   ^-  (quip card game-state)
   =.  last-tick.gs  now.bowl
-  ?~  active-action.gs  `gs
-  =/  act  u.active-action.gs
+  =/  aa  active-action.gs
+  ?~  aa  `gs
+  =/  act  u.aa
   ?-  -.act
     %skilling  (process-skill-tick act bowl)
-    %combat    (process-combat-tick act bowl)
+    %combat    `gs  :: combat uses its own Behn timers
   ==
 ::
 ++  process-skill-tick
@@ -744,66 +941,67 @@
   `gs
 ::
 ::  ┌─────────────────────────────────┐
-::  │  Combat tick processing          │
+::  │  Combat event processing         │
 ::  └─────────────────────────────────┘
 ::
-++  process-combat-tick
-  |=  [act=active-action =bowl:gall]
+::  Two independent Behn timers drive combat. This arm processes
+::  all overdue events in chronological order (handles offline catch-up).
+::
+++  process-combat-events
+  |=  =bowl:gall
   ^-  (quip card game-state)
+  =/  aa  active-action.gs
+  ?~  aa  `gs
+  =/  act  u.aa
   ?>  ?=(%combat -.act)
   =/  mdef=(unit monster-def)  (~(get by monster-registry:bide-monsters) monster.act)
   ?~  mdef
     =.  active-action.gs  ~
     `gs
-  ::  cap catch-up ticks to 300 (5 minutes of offline)
-  =/  elapsed=@dr  (sub now.bowl started.act)
-  =/  num-ticks=@ud  (min 300 (div elapsed ~s1))
-  ?:  =(num-ticks 0)  `gs
-  ::  process ticks in a loop
   =/  e-hp=@ud  enemy-hp.act
   =/  e-max=@ud  enemy-max-hp.act
-  =/  p-atk-timer=@ud  player-attack-timer.act
-  =/  e-atk-timer=@ud  enemy-attack-timer.act
+  =/  p-next=@da  player-next-attack.act
+  =/  e-next=@da  enemy-next-attack.act
   =/  k=@ud  kills.act
+  =/  p-atk-count=@ud  player-atk-count.act
+  =/  e-atk-count=@ud  enemy-atk-count.act
+  =/  p-last-dmg=@ud   player-last-dmg.act
+  =/  e-last-dmg=@ud   enemy-last-dmg.act
   =/  seed=@uvJ  rng-seed.gs
   =/  p-hp=@ud  hitpoints-current.player.gs
   =/  p-hp-max=@ud  hitpoints-max.player.gs
-  =/  tick-n=@ud  0
+  =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+  =/  ms-per=@dr  (div ~s1 1.000)
+  =/  weapon-dr=@dr  (mul ms-per weapon-spd)
+  =/  enemy-dr=@dr  (mul ms-per attack-speed.u.mdef)
+  =/  iterations=@ud  0
   |-
-  ?:  =(tick-n num-ticks)
-    ::  write back state
+  ::  find next event
+  =/  p-first=?  (lte p-next e-next)
+  =/  next-event=@da  ?:(p-first p-next e-next)
+  ::  nothing overdue? write back state & schedule timers
+  ?:  |((gth next-event now.bowl) (gte iterations 300))
     =.  rng-seed.gs  seed
     =.  hitpoints-current.player.gs  p-hp
     =.  active-action.gs
-      :-  ~
-      :*  %combat
-          area.act  monster.act  style.act
-          e-hp  e-max
-          p-atk-timer  e-atk-timer
-          k
-          (sub now.bowl (mod elapsed ~s1))
-      ==
-    `gs
-  ::  advance timers by 1000ms
-  =.  p-atk-timer  (add p-atk-timer 1.000)
-  =.  e-atk-timer  (add e-atk-timer 1.000)
-  =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+      `[%combat area.act monster.act style.act e-hp e-max p-next e-next k p-atk-count e-atk-count p-last-dmg e-last-dmg started.act]
+    :_  gs
+    :~  [%pass /combat/player/(scot %da p-next) %arvo %b [%wait p-next]]
+        [%pass /combat/enemy/(scot %da e-next) %arvo %b [%wait e-next]]
+    ==
   ::
-  ::  player attacks
+  ::  player attacks next
   ::
-  =/  pa-result=[s=@uvJ hp=@ud pt=@ud]
-    ?.  (gte p-atk-timer weapon-spd)
-      [seed e-hp p-atk-timer]
+  ?:  p-first
     =^  dmg  seed
       (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef)
-    [seed ?:((gte e-hp dmg) (sub e-hp dmg) 0) 0]
-  =.  seed  s.pa-result
-  =.  e-hp  hp.pa-result
-  =.  p-atk-timer  pt.pa-result
-  ::
-  ::  enemy killed?
-  ::
-  ?:  =(e-hp 0)
+    =.  p-atk-count  (add p-atk-count 1)
+    =.  p-last-dmg  dmg
+    =.  e-hp  ?:((gte e-hp dmg) (sub e-hp dmg) 0)
+    =.  p-next  (add p-next weapon-dr)
+    ::  enemy killed?
+    ?.  =(e-hp 0)
+      $(iterations (add iterations 1))
     ::  award xp
     =/  xp-total=@ud  combat-xp.u.mdef
     =/  style-xp=@ud  (div (mul xp-total 2) 3)
@@ -816,20 +1014,17 @@
         %ranged          %ranged
         %magic           %magic
       ==
-    ::  update style skill
     =/  sss=skill-state
       (fall (~(get by skills.gs) style-skill) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
     =/  new-sxp=@ud  (add xp.sss style-xp)
     =.  sss  sss(xp new-sxp, level (level-from-xp:bide-xp new-sxp))
     =.  skills.gs  (~(put by skills.gs) style-skill sss)
-    ::  update hitpoints skill
     =/  hss=skill-state
       (fall (~(get by skills.gs) %hitpoints) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
     =/  new-hxp=@ud  (add xp.hss hp-xp)
     =/  new-hp-level=@ud  (level-from-xp:bide-xp new-hxp)
     =.  hss  hss(xp new-hxp, level new-hp-level)
     =.  skills.gs  (~(put by skills.gs) %hitpoints hss)
-    ::  update hitpoints-max from hp level
     =.  p-hp-max  (mul new-hp-level 10)
     =.  hitpoints-max.player.gs  p-hp-max
     ::  roll loot
@@ -844,55 +1039,45 @@
     ::  roll gp
     =^  gp-drop  seed  (roll-gp:bide-combat seed gp-min.u.mdef gp-max.u.mdef)
     =.  gp.player.gs  (add gp.player.gs gp-drop)
-    ::  spawn next monster (same type)
+    ::  spawn next monster
     =.  e-hp  hitpoints.u.mdef
     =.  e-max  hitpoints.u.mdef
-    =.  e-atk-timer  0
+    =.  e-next  (add p-next enemy-dr)
     =.  k  (add k 1)
-    $(tick-n (add tick-n 1))
+    $(iterations (add iterations 1))
   ::
-  ::  enemy attacks player
+  ::  enemy attacks next
   ::
-  =/  ea-result=[s=@uvJ hp=@ud et=@ud]
-    ?.  (gte e-atk-timer attack-speed.u.mdef)
-      [seed p-hp e-atk-timer]
-    =^  dmg  seed
-      (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act)
-    [seed ?:((gte p-hp dmg) (sub p-hp dmg) 0) 0]
-  =.  seed  s.ea-result
-  =.  p-hp  hp.ea-result
-  =.  e-atk-timer  et.ea-result
-  ::
-  ::  auto-eat check
-  ::
-  =/  ae-result=[s=@uvJ hp=@ud]
+  =^  dmg  seed
+    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act)
+  =.  e-atk-count  (add e-atk-count 1)
+  =.  e-last-dmg  dmg
+  =.  p-hp  ?:((gte p-hp dmg) (sub p-hp dmg) 0)
+  =.  e-next  (add e-next enemy-dr)
+  ::  auto-eat
+  =^  heal-amt  items.bank.gs
     ?.  ?&  (gth auto-eat-threshold.equipment.gs 0)
             ?=(^ selected-food.equipment.gs)
             (lte (mul p-hp 100) (mul p-hp-max auto-eat-threshold.equipment.gs))
         ==
-      [seed p-hp]
+      [0 items.bank.gs]
     =/  food-id  u.selected-food.equipment.gs
     =/  food-qty=@ud  (fall (~(get by items.bank.gs) food-id) 0)
-    =/  heal-amt=@ud  (fall (~(get by food-registry:bide-food) food-id) 0)
-    ?.  (gth food-qty 0)  [seed p-hp]
-    ?.  (gth heal-amt 0)  [seed p-hp]
-    ::  consume food
+    =/  heal=@ud  (fall (~(get by food-registry:bide-food) food-id) 0)
+    ?.  ?&((gth food-qty 0) (gth heal 0))
+      [0 items.bank.gs]
     =/  new-qty=@ud  (sub food-qty 1)
-    =.  items.bank.gs
-      ?:  =(new-qty 0)
-        (~(del by items.bank.gs) food-id)
-      (~(put by items.bank.gs) food-id new-qty)
-    [seed (min p-hp-max (add p-hp heal-amt))]
-  =.  seed  s.ae-result
-  =.  p-hp  hp.ae-result
-  ::
+    :-  heal
+    ?:  =(new-qty 0)
+      (~(del by items.bank.gs) food-id)
+    (~(put by items.bank.gs) food-id new-qty)
+  =?  p-hp  (gth heal-amt 0)
+    (min p-hp-max (add p-hp heal-amt))
   ::  death check
-  ::
   ?:  =(p-hp 0)
     =.  hitpoints-current.player.gs  p-hp-max
     =.  rng-seed.gs  seed
     =.  active-action.gs  ~
     `gs
-  ::
-  $(tick-n (add tick-n 1))
+  $(iterations (add iterations 1))
 --

@@ -1,24 +1,29 @@
 import type { CombatStyle } from '../shared/types';
 
+export type WeaponType = 'melee' | 'ranged' | 'magic';
+
 interface CombatStyleSelectorProps {
   selected: CombatStyle;
   onSelect: (style: CombatStyle) => void;
+  weaponType: WeaponType;
 }
 
-const STYLES: { value: CombatStyle; label: string; desc: string }[] = [
-  { value: 'melee-attack', label: 'Attack', desc: 'Train Attack' },
-  { value: 'melee-strength', label: 'Strength', desc: 'Train Strength' },
-  { value: 'melee-defence', label: 'Defence', desc: 'Train Defence' },
-  { value: 'ranged', label: 'Ranged', desc: 'Train Ranged' },
-  { value: 'magic', label: 'Magic', desc: 'Train Magic' },
+const STYLES: { value: CombatStyle; label: string; desc: string; type: WeaponType }[] = [
+  { value: 'melee-attack', label: 'Attack', desc: 'Train Attack', type: 'melee' },
+  { value: 'melee-strength', label: 'Strength', desc: 'Train Strength', type: 'melee' },
+  { value: 'melee-defence', label: 'Defence', desc: 'Train Defence', type: 'melee' },
+  { value: 'ranged', label: 'Ranged', desc: 'Train Ranged', type: 'ranged' },
+  { value: 'magic', label: 'Magic', desc: 'Train Magic', type: 'magic' },
 ];
 
-export function CombatStyleSelector({ selected, onSelect }: CombatStyleSelectorProps) {
+export function CombatStyleSelector({ selected, onSelect, weaponType }: CombatStyleSelectorProps) {
+  const available = STYLES.filter((s) => s.type === weaponType);
+
   return (
     <div>
       <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-2">Combat Style</h2>
       <div className="flex flex-wrap gap-2">
-        {STYLES.map((s) => (
+        {available.map((s) => (
           <button
             key={s.value}
             onClick={() => onSelect(s.value)}

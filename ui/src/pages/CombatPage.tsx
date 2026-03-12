@@ -1,15 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { MonsterCard } from '../components/MonsterCard';
 import { CombatPanel } from '../components/CombatPanel';
-import { CombatStyleSelector } from '../components/CombatStyleSelector';
-import type { AreaId, MonsterId, CombatStyle } from '../shared/types';
+import { CombatStyleSelector, type WeaponType } from '../components/CombatStyleSelector';
+import type { AreaId, MonsterId, CombatStyle, GameDefs, EquipmentState } from '../shared/types';
+
+const DEFAULT_STYLE: Record<WeaponType, CombatStyle> = {
+  melee: 'melee-attack',
+  ranged: 'ranged',
+  magic: 'magic',
+};
+
+function getWeaponType(equipment: EquipmentState | undefined, defs: GameDefs): WeaponType {
+  const weaponId = equipment?.slots?.weapon;
+  if (!weaponId) return 'melee';
+  const stats = defs.equipmentStats[weaponId];
+  if (!stats) return 'melee';
+  if (stats.rangedAttackBonus > 0) return 'ranged';
+  if (stats.magicAttackBonus > 0) return 'magic';
+  return 'melee';
+}
 
 export function CombatPage() {
   const { defs, state, startCombat, stopCombat } = useGame();
   const [selectedArea, setSelectedArea] = useState<AreaId | null>(null);
   const [selectedMonster, setSelectedMonster] = useState<MonsterId | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<CombatStyle>('melee-attack');
+
+  const weaponType = defs && state ? getWeaponType(state.equipment, defs) : 'melee';
+
+  // Auto-select a valid style when weapon type changes
+  useEffect(() => {
+    setSelectedStyle((prev) => {
+      const melee: CombatStyle[] = ['melee-attack', 'melee-strength', 'melee-defence'];
+      if (weaponType === 'melee' && melee.includes(prev)) return prev;
+      if (weaponType === 'ranged' && prev === 'ranged') return prev;
+      if (weaponType === 'magic' && prev === 'magic') return prev;
+      return DEFAULT_STYLE[weaponType];
+    });
+  }, [weaponType]);
 
   if (!defs || !state) return null;
 
@@ -22,6 +51,14 @@ export function CombatPage() {
     if (selectedArea && selectedMonster) {
       startCombat(selectedArea, selectedMonster, selectedStyle);
     }
+  };
+
+  // Compute player weapon speed for attack timer bar
+  const getWeaponSpeed = (): number => {
+    const weaponId = state.equipment?.slots?.weapon;
+    if (!weaponId) return 2400; // unarmed kick
+    const stats = defs.equipmentStats[weaponId];
+    return stats?.attackSpeed || 2400;
   };
 
   // If combat is active, show the combat panel
@@ -43,6 +80,7 @@ export function CombatPage() {
           monsterDef={monsterDef}
           playerHp={state.hp}
           playerHpMax={state.hpMax}
+          weaponSpeed={getWeaponSpeed()}
         />
       </div>
     );
@@ -54,7 +92,7 @@ export function CombatPage() {
 
       {/* Combat style selector */}
       <div className="mb-6">
-        <CombatStyleSelector selected={selectedStyle} onSelect={setSelectedStyle} />
+        <CombatStyleSelector selected={selectedStyle} onSelect={setSelectedStyle} weaponType={weaponType} />
       </div>
 
       {/* Area selector */}

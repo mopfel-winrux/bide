@@ -126,6 +126,10 @@ export interface ActiveCombatAction {
   playerAttackTimer: number;
   enemyAttackTimer: number;
   kills: number;
+  playerAtkCount: number;
+  enemyAtkCount: number;
+  playerLastDmg: number;
+  enemyLastDmg: number;
 }
 
 export type ActiveAction = ActiveSkillingAction | ActiveCombatAction;
