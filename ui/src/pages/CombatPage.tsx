@@ -84,6 +84,7 @@ export function CombatPage() {
           playerHpMax={state.hpMax}
           prayerPoints={state.prayerPoints ?? 0}
           prayerMax={state.prayerMax ?? 0}
+          prayerLevel={state.skills?.prayer?.level ?? 1}
           weaponSpeed={getWeaponSpeed()}
           activePotions={state.activePotions ?? []}
           activePrayers={state.activePrayers ?? []}

@@ -9,6 +9,7 @@ interface CombatPanelProps {
   playerHpMax: number;
   prayerPoints: number;
   prayerMax: number;
+  prayerLevel: number;
   weaponSpeed: number;
   activePotions: PotionEffect[];
   activePrayers: PrayerId[];
@@ -19,7 +20,7 @@ interface CombatPanelProps {
   onTogglePrayer: (prayer: PrayerId) => void;
 }
 
-export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, prayerPoints, prayerMax, weaponSpeed, activePotions, activePrayers, bank, defs, onDrinkPotion, onSpecialAttack, onTogglePrayer }: CombatPanelProps) {
+export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, prayerPoints, prayerMax, prayerLevel, weaponSpeed, activePotions, activePrayers, bank, defs, onDrinkPotion, onSpecialAttack, onTogglePrayer }: CombatPanelProps) {
   const enemyDmgRef = useRef<HTMLDivElement | null>(null);
   const playerDmgRef = useRef<HTMLDivElement | null>(null);
 
@@ -229,6 +230,42 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
                 </span>
               </button>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Prayers */}
+      {defs.prayers && Object.keys(defs.prayers).length > 0 && (
+        <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-semibold text-gray-400">Prayers</span>
+            <span className="text-xs text-gray-500">
+              Points: <span className="text-cyan-400">{prayerPoints}/{prayerMax}</span>
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(defs.prayers)
+              .sort((a, b) => a[1].levelReq - b[1].levelReq)
+              .map(([prayerId, prayer]) => {
+                const isActive = activePrayers.includes(prayerId);
+                const locked = prayerLevel < prayer.levelReq;
+                return (
+                  <button
+                    key={prayerId}
+                    onClick={() => !locked && onTogglePrayer(prayerId)}
+                    disabled={locked}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                      isActive
+                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
+                        : 'bg-[#1f2937] border-[#374151] text-gray-300 hover:border-cyan-500/50 hover:text-cyan-300'
+                    }`}
+                  >
+                    {prayer.name}
+                    <span className="text-gray-600">Lv{prayer.levelReq}</span>
+                    {isActive && <span className="text-cyan-400">ON</span>}
+                  </button>
+                );
+              })}
           </div>
         </div>
       )}

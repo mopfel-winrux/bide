@@ -7,108 +7,15 @@
 /+  bide-xp, bide-skills, bide-items
 /+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 /+  bide-potions, bide-prayers, bide-slayer, bide-specials, bide-dungeons
+/+  bide-state
 ::
 |%
 +$  card  card:agent:gall
-::
-+$  state-0
-  $:  %0
-      gs=game-state-0
-  ==
-::
-+$  game-state-0
-  $:  player=player-info
-      skills=(map skill-id skill-state)
-      bank=bank-state
-      equipment=[active-set=@ud]
-      active-action=(unit active-action-0)
-      stats=game-stats
-      last-tick=@da
-      rng-seed=@uvJ
-  ==
-::
-+$  active-action-0
-  $%  [%skilling skill=skill-id target=action-id started=@da]
-  ==
-::
-+$  active-action-1
-  $%  [%skilling skill=skill-id target=action-id started=@da]
-      $:  %combat
-          area=area-id
-          monster=monster-id
-          style=combat-style
-          enemy-hp=@ud
-          enemy-max-hp=@ud
-          player-attack-timer=@ud
-          enemy-attack-timer=@ud
-          kills=@ud
-          started=@da
-      ==
-  ==
-::
-+$  game-state-1
-  $:  player=player-info
-      skills=(map skill-id skill-state)
-      bank=bank-state
-      equipment=equipment-state
-      active-action=(unit active-action-1)
-      stats=game-stats
-      last-tick=@da
-      rng-seed=@uvJ
-  ==
-::
-+$  state-1
-  $:  %1
-      gs=game-state-1
-  ==
-::
-+$  active-action-2
-  $%  [%skilling skill=skill-id target=action-id started=@da]
-      $:  %combat
-          area=area-id
-          monster=monster-id
-          style=combat-style
-          enemy-hp=@ud
-          enemy-max-hp=@ud
-          player-next-attack=@da
-          enemy-next-attack=@da
-          kills=@ud
-          started=@da
-      ==
-  ==
-::
-+$  game-state-2
-  $:  player=player-info
-      skills=(map skill-id skill-state)
-      bank=bank-state
-      equipment=equipment-state
-      active-action=(unit active-action-2)
-      stats=game-stats
-      last-tick=@da
-      rng-seed=@uvJ
-  ==
-::
-+$  state-2
-  $:  %2
-      gs=game-state-2
-  ==
-::
-+$  state-3
-  $:  %3
-      gs=game-state
-  ==
-::
-+$  versioned-state
-  $%  state-0
-      state-1
-      state-2
-      state-3
-  ==
 --
 ::
 %-  agent:dbug
 %+  verb  |
-=|  state-3
+=|  state-0:bide-state
 =*  state  -
 ^-  agent:gall
 =<
@@ -163,121 +70,9 @@
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  =/  old  !<(versioned-state old-vase)
+  =/  old  !<(versioned-state:bide-state old-vase)
   ?-  -.old
-    %3  `this(state old)
-  ::
-      %2
-    ::  Migrate state-2 → state-3 (combat counters added)
-    =/  old-gs  gs.old
-    =/  new-aa=(unit active-action)
-      ?~  active-action.old-gs  ~
-      =/  aa  u.active-action.old-gs
-      ?-  -.aa
-        %skilling  `[%skilling skill.aa target.aa started.aa]
-        %combat    ~  :: clear combat (structure changed)
-      ==
-    =/  new-player=player-info
-      :*  gp.player.old-gs
-          hitpoints-current.player.old-gs
-          hitpoints-max.player.old-gs
-          prayer-points=0
-          prayer-max=10
-          created.player.old-gs
-      ==
-    =/  new-gs=game-state
-      :*  new-player
-          skills.old-gs
-          bank.old-gs
-          equipment.old-gs
-          new-aa
-          stats.old-gs
-          last-tick.old-gs
-          rng-seed.old-gs
-          ~              ::  active-potions
-          *(set prayer-id)
-          ~              ::  slayer-task
-      ==
-    `this(state [%3 new-gs])
-  ::
-      %1
-    ::  Migrate state-1 → state-3 (combat timer type changed + counters)
-    =/  old-gs  gs.old
-    =/  new-aa=(unit active-action)
-      ?~  active-action.old-gs  ~
-      =/  aa  u.active-action.old-gs
-      ?-  -.aa
-        %skilling  `[%skilling skill.aa target.aa started.aa]
-        %combat    ~  :: clear combat (timer structure changed)
-      ==
-    =/  new-player=player-info
-      :*  gp.player.old-gs
-          hitpoints-current.player.old-gs
-          hitpoints-max.player.old-gs
-          prayer-points=0
-          prayer-max=10
-          created.player.old-gs
-      ==
-    =/  new-gs=game-state
-      :*  new-player
-          skills.old-gs
-          bank.old-gs
-          equipment.old-gs
-          new-aa
-          stats.old-gs
-          last-tick.old-gs
-          rng-seed.old-gs
-          ~
-          *(set prayer-id)
-          ~
-      ==
-    `this(state [%3 new-gs])
-  ::
-      %0
-    ::  Migrate state-0 → state-3
-    =/  hp-xp=@ud  1.154
-    =/  old-gs  gs.old
-    =/  new-aa=(unit active-action)
-      ?~  active-action.old-gs  ~
-      =/  aa  u.active-action.old-gs
-      ?-  -.aa
-        %skilling  `[%skilling skill.aa target.aa started.aa]
-      ==
-    =/  new-skills=(map skill-id skill-state)  skills.old-gs
-    =?  new-skills  !(~(has by new-skills) %attack)
-      (~(put by new-skills) %attack [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =?  new-skills  !(~(has by new-skills) %strength)
-      (~(put by new-skills) %strength [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =?  new-skills  !(~(has by new-skills) %defence)
-      (~(put by new-skills) %defence [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =?  new-skills  !(~(has by new-skills) %hitpoints)
-      (~(put by new-skills) %hitpoints [xp=hp-xp level=10 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =?  new-skills  !(~(has by new-skills) %ranged)
-      (~(put by new-skills) %ranged [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =?  new-skills  !(~(has by new-skills) %magic)
-      (~(put by new-skills) %magic [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =/  new-player=player-info
-      :*  gp.player.old-gs
-          hitpoints-current.player.old-gs
-          hitpoints-max.player.old-gs
-          prayer-points=0
-          prayer-max=10
-          created.player.old-gs
-      ==
-    =/  new-gs=game-state
-      :*  new-player
-          new-skills
-          bank.old-gs
-          [slots=*(map equipment-slot item-id) auto-eat-threshold=50 selected-food=~]
-          new-aa
-          stats.old-gs
-          last-tick.old-gs
-          rng-seed.old-gs
-          ~
-          *(set prayer-id)
-          ~
-      ==
-    `this(state [%3 new-gs])
+    %0  `this(state old)
   ==
 ::
 ++  on-poke
@@ -294,6 +89,10 @@
     =/  act  !<(action vase)
     =^  cards  gs  (handle-action act bowl)
     [cards this]
+  ::
+      %noun
+    =.  gs  (game-state q.vase)
+    `this
   ==
 ::
 ++  on-watch
@@ -1037,12 +836,12 @@
     `gs
   ::
       %drink-potion
-    ::  must be in combat
+    ::  must be in combat or dungeon
     =/  aa  active-action.gs
     ?~  aa
       ~&  [%bide %not-in-combat]
       `gs
-    ?.  ?=(%combat -.u.aa)
+    ?.  ?=(?(%combat %dungeon) -.u.aa)
       ~&  [%bide %not-in-combat]
       `gs
     ::  validate potion exists in registry
@@ -1123,7 +922,7 @@
     ?~  aa
       ~&  [%bide %not-in-combat]
       `gs
-    ?.  ?=(%combat -.u.aa)
+    ?.  ?=(?(%combat %dungeon) -.u.aa)
       ~&  [%bide %not-in-combat]
       `gs
     ::  check weapon has a special
@@ -1135,11 +934,17 @@
     ?~  sdef
       ~&  [%bide %weapon-has-no-special]
       `gs
-    ::  check enough energy
-    ?.  (gte special-energy.u.aa energy-cost.u.sdef)
-      ~&  [%bide %not-enough-energy need=energy-cost.u.sdef have=special-energy.u.aa]
+    ::  check enough energy + queue (branch for type narrowing)
+    ?:  ?=(%combat -.u.aa)
+      ?.  (gte special-energy.u.aa energy-cost.u.sdef)
+        ~&  [%bide %not-enough-energy]
+        `gs
+      =.  active-action.gs  `u.aa(special-queued %.y)
       `gs
-    ::  queue special for next attack
+    ?>  ?=(%dungeon -.u.aa)
+    ?.  (gte special-energy.u.aa energy-cost.u.sdef)
+      ~&  [%bide %not-enough-energy]
+      `gs
     =.  active-action.gs  `u.aa(special-queued %.y)
     `gs
   ::
