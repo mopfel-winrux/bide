@@ -34,7 +34,6 @@ Four new skills providing passive bonuses computed on-the-fly from levels/master
 
 ### Phase 8 — Economy & Polish
 - Shop: buy items with GP, stock limits
-- Township: idle town-builder minigame
 - Alt Magic: crafting spells that consume runes for utility effects
 - Pets: rare drops that give small bonuses
 - Modifier engine: equipment/prayer/potion/mastery bonuses applied uniformly
@@ -48,7 +47,14 @@ Four new skills providing passive bonuses computed on-the-fly from levels/master
 - Use MCP skill to generate assets for the game
 - Work with the user to capture consistent graphics for all assets
 
-### Phase 11 — Multiplayer
+---
+
+## Future Work
+
+### Township
+- Idle town-builder minigame with buildings, resources, and upgrades
+
+### Multiplayer
 - Peer-to-peer features leveraging Urbit networking
 - Guilds: shared goals, group challenges
 - Trading between ships
