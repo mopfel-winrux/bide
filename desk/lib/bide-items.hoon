@@ -174,6 +174,139 @@
       [%enchanted-mithril-bar enchanted-mithril-bar-def]
       [%enchanted-adamantite-bar enchanted-adamantite-bar-def]
       [%enchanted-runite-bar enchanted-runite-bar-def]
+      ::  bones (prayer training)
+      [%bones bones-def]
+      [%big-bones big-bones-def]
+      [%dragon-bones dragon-bones-def]
+      ::  raw materials — leather and dragonhide
+      [%leather leather-def]
+      [%green-dhide green-dhide-def]
+      [%blue-dhide blue-dhide-def]
+      [%red-dhide red-dhide-def]
+      [%black-dhide black-dhide-def]
+      ::  herblore — new herbs
+      [%grimy-avantoe grimy-avantoe-def]
+      [%grimy-lantadyme grimy-lantadyme-def]
+      [%grimy-cadantine grimy-cadantine-def]
+      [%grimy-snapdragon grimy-snapdragon-def]
+      ::  farming — new seeds
+      [%avantoe-seed avantoe-seed-def]
+      [%lantadyme-seed lantadyme-seed-def]
+      [%cadantine-seed cadantine-seed-def]
+      [%snapdragon-seed snapdragon-seed-def]
+      ::  gems
+      [%topaz topaz-def]
+      [%sapphire sapphire-def]
+      [%ruby ruby-def]
+      [%emerald emerald-def]
+      [%diamond diamond-def]
+      ::  new potions
+      [%ranged-potion ranged-potion-def]
+      [%magic-potion magic-potion-def]
+      [%super-ranged-potion super-ranged-potion-def]
+      [%super-magic-potion super-magic-potion-def]
+      ::  smithing — forged weapons (daggers)
+      [%bronze-dagger bronze-dagger-def]
+      [%iron-dagger iron-dagger-def]
+      [%steel-dagger steel-dagger-def]
+      [%mithril-dagger mithril-dagger-def]
+      [%adamantite-dagger adamantite-dagger-def]
+      [%runite-dagger runite-dagger-def]
+      [%dragonite-dagger dragonite-dagger-def]
+      ::  smithing — forged weapons (swords, non-bronze)
+      [%iron-sword iron-sword-def]
+      [%steel-sword steel-sword-def]
+      [%mithril-sword mithril-sword-def]
+      [%adamantite-sword adamantite-sword-def]
+      [%runite-sword runite-sword-def]
+      [%dragonite-sword dragonite-sword-def]
+      ::  smithing — forged weapons (battleaxes)
+      [%bronze-battleaxe bronze-battleaxe-def]
+      [%iron-battleaxe iron-battleaxe-def]
+      [%steel-battleaxe steel-battleaxe-def]
+      [%mithril-battleaxe mithril-battleaxe-def]
+      [%adamantite-battleaxe adamantite-battleaxe-def]
+      [%runite-battleaxe runite-battleaxe-def]
+      [%dragonite-battleaxe dragonite-battleaxe-def]
+      ::  smithing — forged weapons (2h swords)
+      [%bronze-2h-sword bronze-2h-sword-def]
+      [%iron-2h-sword iron-2h-sword-def]
+      [%steel-2h-sword steel-2h-sword-def]
+      [%mithril-2h-sword mithril-2h-sword-def]
+      [%adamantite-2h-sword adamantite-2h-sword-def]
+      [%runite-2h-sword runite-2h-sword-def]
+      [%dragonite-2h-sword dragonite-2h-sword-def]
+      ::  smithing — shields
+      [%bronze-shield bronze-shield-def]
+      [%iron-shield iron-shield-def]
+      [%steel-shield steel-shield-def]
+      [%mithril-shield mithril-shield-def]
+      [%adamantite-shield adamantite-shield-def]
+      [%runite-shield runite-shield-def]
+      [%dragonite-shield dragonite-shield-def]
+      ::  fletching — crossbows
+      [%normal-crossbow normal-crossbow-def]
+      [%oak-crossbow oak-crossbow-def]
+      [%willow-crossbow willow-crossbow-def]
+      [%maple-crossbow maple-crossbow-def]
+      [%yew-crossbow yew-crossbow-def]
+      [%magic-crossbow magic-crossbow-def]
+      [%redwood-crossbow redwood-crossbow-def]
+      ::  fletching — arrows
+      [%bronze-arrows bronze-arrows-def]
+      [%iron-arrows iron-arrows-def]
+      [%steel-arrows steel-arrows-def]
+      [%mithril-arrows mithril-arrows-def]
+      [%adamantite-arrows adamantite-arrows-def]
+      [%runite-arrows runite-arrows-def]
+      [%dragonite-arrows dragonite-arrows-def]
+      ::  crafting — leather armor
+      [%leather-cowl leather-cowl-def]
+      [%leather-body leather-body-def]
+      ::  crafting — dragonhide armor
+      [%green-dhide-coif green-dhide-coif-def]
+      [%green-dhide-body green-dhide-body-def]
+      [%blue-dhide-coif blue-dhide-coif-def]
+      [%blue-dhide-body blue-dhide-body-def]
+      [%red-dhide-coif red-dhide-coif-def]
+      [%red-dhide-body red-dhide-body-def]
+      [%black-dhide-coif black-dhide-coif-def]
+      [%black-dhide-body black-dhide-body-def]
+      ::  crafting — jewelry
+      [%topaz-ring topaz-ring-def]
+      [%topaz-necklace topaz-necklace-def]
+      [%sapphire-ring sapphire-ring-def]
+      [%sapphire-necklace sapphire-necklace-def]
+      [%ruby-ring ruby-ring-def]
+      [%ruby-necklace ruby-necklace-def]
+      [%emerald-ring emerald-ring-def]
+      [%emerald-necklace emerald-necklace-def]
+      [%diamond-ring diamond-ring-def]
+      [%diamond-necklace diamond-necklace-def]
+      ::  skill capes
+      [%woodcutting-cape woodcutting-cape-def]
+      [%fishing-cape fishing-cape-def]
+      [%mining-cape mining-cape-def]
+      [%thieving-cape thieving-cape-def]
+      [%firemaking-cape firemaking-cape-def]
+      [%cooking-cape cooking-cape-def]
+      [%smithing-cape smithing-cape-def]
+      [%fletching-cape fletching-cape-def]
+      [%crafting-cape crafting-cape-def]
+      [%runecrafting-cape runecrafting-cape-def]
+      [%herblore-cape herblore-cape-def]
+      [%farming-cape farming-cape-def]
+      [%agility-cape agility-cape-def]
+      [%astrology-cape astrology-cape-def]
+      [%summoning-cape summoning-cape-def]
+      [%attack-cape attack-cape-def]
+      [%strength-cape strength-cape-def]
+      [%defence-cape defence-cape-def]
+      [%hitpoints-cape hitpoints-cape-def]
+      [%ranged-cape ranged-cape-def]
+      [%magic-cape magic-cape-def]
+      [%prayer-cape prayer-cape-def]
+      [%slayer-cape slayer-cape-def]
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Woodcutting logs                                        │
@@ -723,6 +856,20 @@
   [id=%snape-grass name='Snape Grass' description='A tall blade of snape grass.' category=%food sell-price=175]
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
+::  │  Bones (prayer training)                                │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bones-def
+  ^-  item-def
+  [id=%bones name='Bones' description='A pile of bones.' category=%bones sell-price=4]
+++  big-bones-def
+  ^-  item-def
+  [id=%big-bones name='Big Bones' description='A pile of large bones.' category=%bones sell-price=15]
+++  dragon-bones-def
+  ^-  item-def
+  [id=%dragon-bones name='Dragon Bones' description='Bones from a mighty dragon.' category=%bones sell-price=50]
+::
+::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Summoning — tablets                                    │
 ::  └──────────────────────────────────────────────────────────┘
 ::
@@ -767,4 +914,423 @@
 ++  enchanted-runite-bar-def
   ^-  item-def
   [id=%enchanted-runite-bar name='Enchanted Runite Bar' description='A magically enhanced runite bar.' category=%processed sell-price=3.300]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Raw materials — leather and dragonhide                  │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  leather-def
+  ^-  item-def
+  [id=%leather name='Leather' description='A piece of tanned leather.' category=%raw-material sell-price=10]
+++  green-dhide-def
+  ^-  item-def
+  [id=%green-dhide name='Green Dragonhide' description='Hide from a green dragon.' category=%raw-material sell-price=100]
+++  blue-dhide-def
+  ^-  item-def
+  [id=%blue-dhide name='Blue Dragonhide' description='Hide from a blue dragon.' category=%raw-material sell-price=250]
+++  red-dhide-def
+  ^-  item-def
+  [id=%red-dhide name='Red Dragonhide' description='Hide from a red dragon.' category=%raw-material sell-price=500]
+++  black-dhide-def
+  ^-  item-def
+  [id=%black-dhide name='Black Dragonhide' description='Hide from a black dragon.' category=%raw-material sell-price=1.000]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Herblore — new herbs                                    │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  grimy-avantoe-def
+  ^-  item-def
+  [id=%grimy-avantoe name='Grimy Avantoe' description='A grimy avantoe herb.' category=%raw-material sell-price=125]
+++  grimy-lantadyme-def
+  ^-  item-def
+  [id=%grimy-lantadyme name='Grimy Lantadyme' description='A grimy lantadyme herb.' category=%raw-material sell-price=200]
+++  grimy-cadantine-def
+  ^-  item-def
+  [id=%grimy-cadantine name='Grimy Cadantine' description='A grimy cadantine herb.' category=%raw-material sell-price=400]
+++  grimy-snapdragon-def
+  ^-  item-def
+  [id=%grimy-snapdragon name='Grimy Snapdragon' description='A grimy snapdragon herb.' category=%raw-material sell-price=700]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Farming — new seeds                                     │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  avantoe-seed-def
+  ^-  item-def
+  [id=%avantoe-seed name='Avantoe Seed' description='A seed for growing avantoe herbs.' category=%seed sell-price=75]
+++  lantadyme-seed-def
+  ^-  item-def
+  [id=%lantadyme-seed name='Lantadyme Seed' description='A seed for growing lantadyme herbs.' category=%seed sell-price=125]
+++  cadantine-seed-def
+  ^-  item-def
+  [id=%cadantine-seed name='Cadantine Seed' description='A seed for growing cadantine herbs.' category=%seed sell-price=250]
+++  snapdragon-seed-def
+  ^-  item-def
+  [id=%snapdragon-seed name='Snapdragon Seed' description='A seed for growing snapdragon herbs.' category=%seed sell-price=450]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Gems                                                    │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  topaz-def
+  ^-  item-def
+  [id=%topaz name='Topaz' description='A yellow topaz gem.' category=%gem sell-price=100]
+++  sapphire-def
+  ^-  item-def
+  [id=%sapphire name='Sapphire' description='A blue sapphire gem.' category=%gem sell-price=250]
+++  ruby-def
+  ^-  item-def
+  [id=%ruby name='Ruby' description='A red ruby gem.' category=%gem sell-price=500]
+++  emerald-def
+  ^-  item-def
+  [id=%emerald name='Emerald' description='A green emerald gem.' category=%gem sell-price=1.000]
+++  diamond-def
+  ^-  item-def
+  [id=%diamond name='Diamond' description='A brilliant diamond.' category=%gem sell-price=2.500]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  New potions                                             │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  ranged-potion-def
+  ^-  item-def
+  [id=%ranged-potion name='Ranged Potion' description='A potion that boosts ranged attack.' category=%potion sell-price=200]
+++  magic-potion-def
+  ^-  item-def
+  [id=%magic-potion name='Magic Potion' description='A potion that boosts magic attack.' category=%potion sell-price=350]
+++  super-ranged-potion-def
+  ^-  item-def
+  [id=%super-ranged-potion name='Super Ranged Potion' description='A potent potion that boosts ranged attack.' category=%potion sell-price=1.000]
+++  super-magic-potion-def
+  ^-  item-def
+  [id=%super-magic-potion name='Super Magic Potion' description='A potent potion that boosts magic attack.' category=%potion sell-price=1.800]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Smithing — forged weapons (daggers)                     │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bronze-dagger-def
+  ^-  item-def
+  [id=%bronze-dagger name='Bronze Dagger' description='A dagger forged from bronze.' category=%equipment sell-price=18]
+++  iron-dagger-def
+  ^-  item-def
+  [id=%iron-dagger name='Iron Dagger' description='A dagger forged from iron.' category=%equipment sell-price=68]
+++  steel-dagger-def
+  ^-  item-def
+  [id=%steel-dagger name='Steel Dagger' description='A dagger forged from steel.' category=%equipment sell-price=165]
+++  mithril-dagger-def
+  ^-  item-def
+  [id=%mithril-dagger name='Mithril Dagger' description='A dagger forged from mithril.' category=%equipment sell-price=375]
+++  adamantite-dagger-def
+  ^-  item-def
+  [id=%adamantite-dagger name='Adamantite Dagger' description='A dagger forged from adamantite.' category=%equipment sell-price=790]
+++  runite-dagger-def
+  ^-  item-def
+  [id=%runite-dagger name='Runite Dagger' description='A dagger forged from runite.' category=%equipment sell-price=1.650]
+++  dragonite-dagger-def
+  ^-  item-def
+  [id=%dragonite-dagger name='Dragonite Dagger' description='A dagger forged from dragonite.' category=%equipment sell-price=3.750]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Smithing — forged weapons (swords, non-bronze)          │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  iron-sword-def
+  ^-  item-def
+  [id=%iron-sword name='Iron Sword' description='A sword forged from iron.' category=%equipment sell-price=135]
+++  steel-sword-def
+  ^-  item-def
+  [id=%steel-sword name='Steel Sword' description='A sword forged from steel.' category=%equipment sell-price=330]
+++  mithril-sword-def
+  ^-  item-def
+  [id=%mithril-sword name='Mithril Sword' description='A sword forged from mithril.' category=%equipment sell-price=750]
+++  adamantite-sword-def
+  ^-  item-def
+  [id=%adamantite-sword name='Adamantite Sword' description='A sword forged from adamantite.' category=%equipment sell-price=1.575]
+++  runite-sword-def
+  ^-  item-def
+  [id=%runite-sword name='Runite Sword' description='A sword forged from runite.' category=%equipment sell-price=3.300]
+++  dragonite-sword-def
+  ^-  item-def
+  [id=%dragonite-sword name='Dragonite Sword' description='A sword forged from dragonite.' category=%equipment sell-price=7.500]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Smithing — forged weapons (battleaxes)                  │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bronze-battleaxe-def
+  ^-  item-def
+  [id=%bronze-battleaxe name='Bronze Battleaxe' description='A battleaxe forged from bronze.' category=%equipment sell-price=54]
+++  iron-battleaxe-def
+  ^-  item-def
+  [id=%iron-battleaxe name='Iron Battleaxe' description='A battleaxe forged from iron.' category=%equipment sell-price=203]
+++  steel-battleaxe-def
+  ^-  item-def
+  [id=%steel-battleaxe name='Steel Battleaxe' description='A battleaxe forged from steel.' category=%equipment sell-price=495]
+++  mithril-battleaxe-def
+  ^-  item-def
+  [id=%mithril-battleaxe name='Mithril Battleaxe' description='A battleaxe forged from mithril.' category=%equipment sell-price=1.125]
+++  adamantite-battleaxe-def
+  ^-  item-def
+  [id=%adamantite-battleaxe name='Adamantite Battleaxe' description='A battleaxe forged from adamantite.' category=%equipment sell-price=2.363]
+++  runite-battleaxe-def
+  ^-  item-def
+  [id=%runite-battleaxe name='Runite Battleaxe' description='A battleaxe forged from runite.' category=%equipment sell-price=4.950]
+++  dragonite-battleaxe-def
+  ^-  item-def
+  [id=%dragonite-battleaxe name='Dragonite Battleaxe' description='A battleaxe forged from dragonite.' category=%equipment sell-price=11.250]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Smithing — forged weapons (2h swords)                   │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bronze-2h-sword-def
+  ^-  item-def
+  [id=%bronze-2h-sword name='Bronze 2H Sword' description='A two-handed sword forged from bronze.' category=%equipment sell-price=90]
+++  iron-2h-sword-def
+  ^-  item-def
+  [id=%iron-2h-sword name='Iron 2H Sword' description='A two-handed sword forged from iron.' category=%equipment sell-price=338]
+++  steel-2h-sword-def
+  ^-  item-def
+  [id=%steel-2h-sword name='Steel 2H Sword' description='A two-handed sword forged from steel.' category=%equipment sell-price=825]
+++  mithril-2h-sword-def
+  ^-  item-def
+  [id=%mithril-2h-sword name='Mithril 2H Sword' description='A two-handed sword forged from mithril.' category=%equipment sell-price=1.875]
+++  adamantite-2h-sword-def
+  ^-  item-def
+  [id=%adamantite-2h-sword name='Adamantite 2H Sword' description='A two-handed sword forged from adamantite.' category=%equipment sell-price=3.938]
+++  runite-2h-sword-def
+  ^-  item-def
+  [id=%runite-2h-sword name='Runite 2H Sword' description='A two-handed sword forged from runite.' category=%equipment sell-price=8.250]
+++  dragonite-2h-sword-def
+  ^-  item-def
+  [id=%dragonite-2h-sword name='Dragonite 2H Sword' description='A two-handed sword forged from dragonite.' category=%equipment sell-price=18.750]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Smithing — shields                                      │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bronze-shield-def
+  ^-  item-def
+  [id=%bronze-shield name='Bronze Shield' description='A shield forged from bronze.' category=%equipment sell-price=72]
+++  iron-shield-def
+  ^-  item-def
+  [id=%iron-shield name='Iron Shield' description='A shield forged from iron.' category=%equipment sell-price=270]
+++  steel-shield-def
+  ^-  item-def
+  [id=%steel-shield name='Steel Shield' description='A shield forged from steel.' category=%equipment sell-price=660]
+++  mithril-shield-def
+  ^-  item-def
+  [id=%mithril-shield name='Mithril Shield' description='A shield forged from mithril.' category=%equipment sell-price=1.500]
+++  adamantite-shield-def
+  ^-  item-def
+  [id=%adamantite-shield name='Adamantite Shield' description='A shield forged from adamantite.' category=%equipment sell-price=3.150]
+++  runite-shield-def
+  ^-  item-def
+  [id=%runite-shield name='Runite Shield' description='A shield forged from runite.' category=%equipment sell-price=6.600]
+++  dragonite-shield-def
+  ^-  item-def
+  [id=%dragonite-shield name='Dragonite Shield' description='A shield forged from dragonite.' category=%equipment sell-price=15.000]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Fletching — crossbows                                   │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  normal-crossbow-def
+  ^-  item-def
+  [id=%normal-crossbow name='Normal Crossbow' description='A simple crossbow.' category=%equipment sell-price=15]
+++  oak-crossbow-def
+  ^-  item-def
+  [id=%oak-crossbow name='Oak Crossbow' description='A crossbow made with oak.' category=%equipment sell-price=120]
+++  willow-crossbow-def
+  ^-  item-def
+  [id=%willow-crossbow name='Willow Crossbow' description='A crossbow made with willow.' category=%equipment sell-price=280]
+++  maple-crossbow-def
+  ^-  item-def
+  [id=%maple-crossbow name='Maple Crossbow' description='A crossbow made with maple.' category=%equipment sell-price=600]
+++  yew-crossbow-def
+  ^-  item-def
+  [id=%yew-crossbow name='Yew Crossbow' description='A crossbow made with yew.' category=%equipment sell-price=1.200]
+++  magic-crossbow-def
+  ^-  item-def
+  [id=%magic-crossbow name='Magic Crossbow' description='A crossbow made with magic wood.' category=%equipment sell-price=2.800]
+++  redwood-crossbow-def
+  ^-  item-def
+  [id=%redwood-crossbow name='Redwood Crossbow' description='A crossbow made with redwood.' category=%equipment sell-price=5.500]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Fletching — arrows                                      │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  bronze-arrows-def
+  ^-  item-def
+  [id=%bronze-arrows name='Bronze Arrows' description='A bundle of bronze-tipped arrows.' category=%misc sell-price=15]
+++  iron-arrows-def
+  ^-  item-def
+  [id=%iron-arrows name='Iron Arrows' description='A bundle of iron-tipped arrows.' category=%misc sell-price=45]
+++  steel-arrows-def
+  ^-  item-def
+  [id=%steel-arrows name='Steel Arrows' description='A bundle of steel-tipped arrows.' category=%misc sell-price=120]
+++  mithril-arrows-def
+  ^-  item-def
+  [id=%mithril-arrows name='Mithril Arrows' description='A bundle of mithril-tipped arrows.' category=%misc sell-price=225]
+++  adamantite-arrows-def
+  ^-  item-def
+  [id=%adamantite-arrows name='Adamantite Arrows' description='A bundle of adamantite-tipped arrows.' category=%misc sell-price=450]
+++  runite-arrows-def
+  ^-  item-def
+  [id=%runite-arrows name='Runite Arrows' description='A bundle of runite-tipped arrows.' category=%misc sell-price=900]
+++  dragonite-arrows-def
+  ^-  item-def
+  [id=%dragonite-arrows name='Dragonite Arrows' description='A bundle of dragonite-tipped arrows.' category=%misc sell-price=1.800]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Crafting — leather armor                                │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  leather-cowl-def
+  ^-  item-def
+  [id=%leather-cowl name='Leather Cowl' description='A cowl made of leather.' category=%equipment sell-price=25]
+++  leather-body-def
+  ^-  item-def
+  [id=%leather-body name='Leather Body' description='A body armour made of leather.' category=%equipment sell-price=40]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Crafting — dragonhide armor                             │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  green-dhide-coif-def
+  ^-  item-def
+  [id=%green-dhide-coif name='Green Dhide Coif' description='A coif made of green dragonhide.' category=%equipment sell-price=250]
+++  green-dhide-body-def
+  ^-  item-def
+  [id=%green-dhide-body name='Green Dhide Body' description='A body made of green dragonhide.' category=%equipment sell-price=400]
+++  blue-dhide-coif-def
+  ^-  item-def
+  [id=%blue-dhide-coif name='Blue Dhide Coif' description='A coif made of blue dragonhide.' category=%equipment sell-price=600]
+++  blue-dhide-body-def
+  ^-  item-def
+  [id=%blue-dhide-body name='Blue Dhide Body' description='A body made of blue dragonhide.' category=%equipment sell-price=950]
+++  red-dhide-coif-def
+  ^-  item-def
+  [id=%red-dhide-coif name='Red Dhide Coif' description='A coif made of red dragonhide.' category=%equipment sell-price=1.200]
+++  red-dhide-body-def
+  ^-  item-def
+  [id=%red-dhide-body name='Red Dhide Body' description='A body made of red dragonhide.' category=%equipment sell-price=1.900]
+++  black-dhide-coif-def
+  ^-  item-def
+  [id=%black-dhide-coif name='Black Dhide Coif' description='A coif made of black dragonhide.' category=%equipment sell-price=2.400]
+++  black-dhide-body-def
+  ^-  item-def
+  [id=%black-dhide-body name='Black Dhide Body' description='A body made of black dragonhide.' category=%equipment sell-price=3.800]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Crafting — jewelry                                      │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  topaz-ring-def
+  ^-  item-def
+  [id=%topaz-ring name='Topaz Ring' description='A ring set with a topaz.' category=%gem sell-price=200]
+++  topaz-necklace-def
+  ^-  item-def
+  [id=%topaz-necklace name='Topaz Necklace' description='A necklace set with a topaz.' category=%gem sell-price=300]
+++  sapphire-ring-def
+  ^-  item-def
+  [id=%sapphire-ring name='Sapphire Ring' description='A ring set with a sapphire.' category=%gem sell-price=400]
+++  sapphire-necklace-def
+  ^-  item-def
+  [id=%sapphire-necklace name='Sapphire Necklace' description='A necklace set with a sapphire.' category=%gem sell-price=550]
+++  ruby-ring-def
+  ^-  item-def
+  [id=%ruby-ring name='Ruby Ring' description='A ring set with a ruby.' category=%gem sell-price=750]
+++  ruby-necklace-def
+  ^-  item-def
+  [id=%ruby-necklace name='Ruby Necklace' description='A necklace set with a ruby.' category=%gem sell-price=1.000]
+++  emerald-ring-def
+  ^-  item-def
+  [id=%emerald-ring name='Emerald Ring' description='A ring set with an emerald.' category=%gem sell-price=1.500]
+++  emerald-necklace-def
+  ^-  item-def
+  [id=%emerald-necklace name='Emerald Necklace' description='A necklace set with an emerald.' category=%gem sell-price=2.000]
+++  diamond-ring-def
+  ^-  item-def
+  [id=%diamond-ring name='Diamond Ring' description='A ring set with a diamond.' category=%gem sell-price=3.500]
+++  diamond-necklace-def
+  ^-  item-def
+  [id=%diamond-necklace name='Diamond Necklace' description='A necklace set with a diamond.' category=%gem sell-price=5.000]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Skill capes                                             │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  woodcutting-cape-def
+  ^-  item-def
+  [id=%woodcutting-cape name='Woodcutting Cape' description='A cape awarded for mastery of woodcutting.' category=%equipment sell-price=500.000]
+++  fishing-cape-def
+  ^-  item-def
+  [id=%fishing-cape name='Fishing Cape' description='A cape awarded for mastery of fishing.' category=%equipment sell-price=500.000]
+++  mining-cape-def
+  ^-  item-def
+  [id=%mining-cape name='Mining Cape' description='A cape awarded for mastery of mining.' category=%equipment sell-price=500.000]
+++  thieving-cape-def
+  ^-  item-def
+  [id=%thieving-cape name='Thieving Cape' description='A cape awarded for mastery of thieving.' category=%equipment sell-price=500.000]
+++  firemaking-cape-def
+  ^-  item-def
+  [id=%firemaking-cape name='Firemaking Cape' description='A cape awarded for mastery of firemaking.' category=%equipment sell-price=500.000]
+++  cooking-cape-def
+  ^-  item-def
+  [id=%cooking-cape name='Cooking Cape' description='A cape awarded for mastery of cooking.' category=%equipment sell-price=500.000]
+++  smithing-cape-def
+  ^-  item-def
+  [id=%smithing-cape name='Smithing Cape' description='A cape awarded for mastery of smithing.' category=%equipment sell-price=500.000]
+++  fletching-cape-def
+  ^-  item-def
+  [id=%fletching-cape name='Fletching Cape' description='A cape awarded for mastery of fletching.' category=%equipment sell-price=500.000]
+++  crafting-cape-def
+  ^-  item-def
+  [id=%crafting-cape name='Crafting Cape' description='A cape awarded for mastery of crafting.' category=%equipment sell-price=500.000]
+++  runecrafting-cape-def
+  ^-  item-def
+  [id=%runecrafting-cape name='Runecrafting Cape' description='A cape awarded for mastery of runecrafting.' category=%equipment sell-price=500.000]
+++  herblore-cape-def
+  ^-  item-def
+  [id=%herblore-cape name='Herblore Cape' description='A cape awarded for mastery of herblore.' category=%equipment sell-price=500.000]
+++  farming-cape-def
+  ^-  item-def
+  [id=%farming-cape name='Farming Cape' description='A cape awarded for mastery of farming.' category=%equipment sell-price=500.000]
+++  agility-cape-def
+  ^-  item-def
+  [id=%agility-cape name='Agility Cape' description='A cape awarded for mastery of agility.' category=%equipment sell-price=500.000]
+++  astrology-cape-def
+  ^-  item-def
+  [id=%astrology-cape name='Astrology Cape' description='A cape awarded for mastery of astrology.' category=%equipment sell-price=500.000]
+++  summoning-cape-def
+  ^-  item-def
+  [id=%summoning-cape name='Summoning Cape' description='A cape awarded for mastery of summoning.' category=%equipment sell-price=500.000]
+++  attack-cape-def
+  ^-  item-def
+  [id=%attack-cape name='Attack Cape' description='A cape awarded for mastery of attack.' category=%equipment sell-price=500.000]
+++  strength-cape-def
+  ^-  item-def
+  [id=%strength-cape name='Strength Cape' description='A cape awarded for mastery of strength.' category=%equipment sell-price=500.000]
+++  defence-cape-def
+  ^-  item-def
+  [id=%defence-cape name='Defence Cape' description='A cape awarded for mastery of defence.' category=%equipment sell-price=500.000]
+++  hitpoints-cape-def
+  ^-  item-def
+  [id=%hitpoints-cape name='Hitpoints Cape' description='A cape awarded for mastery of hitpoints.' category=%equipment sell-price=500.000]
+++  ranged-cape-def
+  ^-  item-def
+  [id=%ranged-cape name='Ranged Cape' description='A cape awarded for mastery of ranged.' category=%equipment sell-price=500.000]
+++  magic-cape-def
+  ^-  item-def
+  [id=%magic-cape name='Magic Cape' description='A cape awarded for mastery of magic.' category=%equipment sell-price=500.000]
+++  prayer-cape-def
+  ^-  item-def
+  [id=%prayer-cape name='Prayer Cape' description='A cape awarded for mastery of prayer.' category=%equipment sell-price=500.000]
+++  slayer-cape-def
+  ^-  item-def
+  [id=%slayer-cape name='Slayer Cape' description='A cape awarded for mastery of slayer.' category=%equipment sell-price=500.000]
 --

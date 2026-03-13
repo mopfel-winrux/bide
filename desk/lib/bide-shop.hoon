@@ -43,6 +43,10 @@
       [%irit-seed 350]
       [%kwuarm-seed 600]
       [%torstol-seed 1.000]
+      [%avantoe-seed 250]
+      [%lantadyme-seed 400]
+      [%cadantine-seed 800]
+      [%snapdragon-seed 1.500]
       ::  food (2x sell)
       [%cooked-shrimp 6]
       [%cooked-sardine 20]
@@ -52,8 +56,29 @@
       ::  misc
       [%vial-of-water 3]
       [%charcoal 15]
-      ::  starter gear
-      [%bronze-sword 50]
-      [%wooden-shield 40]
+      ::  skill capes (1,000,000 GP each, level 99 required)
+      [%woodcutting-cape 1.000.000]
+      [%fishing-cape 1.000.000]
+      [%mining-cape 1.000.000]
+      [%thieving-cape 1.000.000]
+      [%firemaking-cape 1.000.000]
+      [%cooking-cape 1.000.000]
+      [%smithing-cape 1.000.000]
+      [%fletching-cape 1.000.000]
+      [%crafting-cape 1.000.000]
+      [%runecrafting-cape 1.000.000]
+      [%herblore-cape 1.000.000]
+      [%farming-cape 1.000.000]
+      [%agility-cape 1.000.000]
+      [%astrology-cape 1.000.000]
+      [%summoning-cape 1.000.000]
+      [%attack-cape 1.000.000]
+      [%strength-cape 1.000.000]
+      [%defence-cape 1.000.000]
+      [%hitpoints-cape 1.000.000]
+      [%ranged-cape 1.000.000]
+      [%magic-cape 1.000.000]
+      [%prayer-cape 1.000.000]
+      [%slayer-cape 1.000.000]
   ==
 --

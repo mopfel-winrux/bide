@@ -8,7 +8,7 @@
 /+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 /+  bide-potions, bide-prayers, bide-slayer, bide-specials, bide-dungeons
 /+  bide-farming, bide-agility, bide-astrology, bide-summoning
-/+  bide-modifiers, bide-shop, bide-pets, bide-spells
+/+  bide-modifiers, bide-shop, bide-pets, bide-spells, bide-capes
 /+  bide-state
 ::
 |%
@@ -112,7 +112,11 @@
     ?:  =(q.vase %test-setup)
       =.  skills.gs
         %-  ~(gas by skills.gs)
-        :~  [%farming [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+        :~  [%attack [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%strength [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%defence [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%hitpoints [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
+            [%farming [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%agility [xp=5.000.000 level=70 mastery=[pool-xp=0 actions=~]]]
             [%astrology [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%summoning [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
@@ -146,7 +150,12 @@
             [%mithril-bar 20]
             [%adamantite-bar 10]
             [%runite-bar 5]
+            [%bronze-sword 1]
         ==
+      =.  slots.equipment.gs
+        (~(gas by *(map equipment-slot item-id)) ~[[%weapon %bronze-sword]])
+      =.  hitpoints-max.player.gs  600
+      =.  hitpoints-current.player.gs  600
       `this
     =.  gs  (game-state q.vase)
     `this
@@ -764,6 +773,34 @@
               ['qty' (numb:enjs:format qty)]
           ==
       ==
+      ::  cape registry
+      :-  'capes'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by cape-registry:bide-capes)
+      |=  [iid=item-id cd=cape-def]
+      ^-  [@t json]
+      :-  iid
+      %-  pairs:enjs:format
+      :~  ['skill' [%s skill.cd]]
+          :-  'bonuses'
+          :-  %a
+          %+  turn  bonuses.cd
+          |=  cb=cape-bonus
+          ?-  -.cb
+            %xp-skill       (pairs:enjs:format ~[['type' [%s 'xp-skill']] ['skill' [%s skill.cb]] ['pct' (numb:enjs:format pct.cb)]])
+            %xp-global      (pairs:enjs:format ~[['type' [%s 'xp-global']] ['pct' (numb:enjs:format pct.cb)]])
+            %speed-bonus    (pairs:enjs:format ~[['type' [%s 'speed-bonus']] ['pct' (numb:enjs:format pct.cb)]])
+            %atk-boost      (pairs:enjs:format ~[['type' [%s 'atk-boost']] ['pct' (numb:enjs:format pct.cb)]])
+            %str-boost      (pairs:enjs:format ~[['type' [%s 'str-boost']] ['pct' (numb:enjs:format pct.cb)]])
+            %def-boost      (pairs:enjs:format ~[['type' [%s 'def-boost']] ['pct' (numb:enjs:format pct.cb)]])
+            %ranged-boost   (pairs:enjs:format ~[['type' [%s 'ranged-boost']] ['pct' (numb:enjs:format pct.cb)]])
+            %magic-boost    (pairs:enjs:format ~[['type' [%s 'magic-boost']] ['pct' (numb:enjs:format pct.cb)]])
+            %farming-yield  (pairs:enjs:format ~[['type' [%s 'farming-yield']] ['pct' (numb:enjs:format pct.cb)]])
+            %gp-bonus       (pairs:enjs:format ~[['type' [%s 'gp-bonus']] ['pct' (numb:enjs:format pct.cb)]])
+            %protect-all    (pairs:enjs:format ~[['type' [%s 'protect-all']] ['pct' (numb:enjs:format pct.cb)]])
+          ==
+      ==
   ==
 ::
 ++  handle-post
@@ -794,7 +831,7 @@
   ::
       [%unequip @ ~]
     =/  slot=@tas  i.t.site
-    ?>  ?=  $?(%helmet %platebody %weapon %shield)  slot
+    ?>  ?=  $?(%helmet %platebody %weapon %shield %cape)  slot
     (handle-action [%unequip slot] bowl)
   ::
       [%start-combat @ @ @ @ ~]
@@ -949,6 +986,19 @@
     ?~  buy-price  ~&([%bide %not-in-shop item.act] `gs)
     =/  total-cost=@ud  (mul u.buy-price qty.act)
     ?.  (gte gp.player.gs total-cost)  ~&([%bide %not-enough-gp] `gs)
+    ::  cape level gating: require level 99 in the cape's skill
+    =/  cdef=(unit cape-def)  (~(get by cape-registry:bide-capes) item.act)
+    ?:  ?=(^ cdef)
+      =/  skill-level=@ud
+        =/  ss  (~(get by skills.gs) skill.u.cdef)
+        ?~(ss 1 level.u.ss)
+      ?.  (gte skill-level 99)
+        ~&([%bide %cape-requires-99 skill.u.cdef] `gs)
+      =.  gp.player.gs  (sub gp.player.gs total-cost)
+      =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs total-cost)
+      =/  cur=@ud  (fall (~(get by items.bank.gs) item.act) 0)
+      =.  items.bank.gs  (~(put by items.bank.gs) item.act (add cur qty.act))
+      `gs
     =.  gp.player.gs  (sub gp.player.gs total-cost)
     =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs total-cost)
     =/  cur=@ud  (fall (~(get by items.bank.gs) item.act) 0)
@@ -1165,7 +1215,7 @@
         (min prayer-max.player.gs (add prayer-points.player.gs magnitude.u.pdef))
       `gs
     ::
-        ?(%attack-boost %strength-boost %defence-boost)
+        ?(%attack-boost %strength-boost %defence-boost %ranged-boost %magic-boost)
       ::  shouldn't reach here (duration > 0), but just in case
       `gs
     ==
@@ -1349,7 +1399,7 @@
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
     ::  apply yield bonuses via modifier engine
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
     =/  final-yield=@ud  (add base-yield (div (mul base-yield farming-yield.mods) 100))
     ::  award farming XP
     =/  fss=skill-state
@@ -1518,7 +1568,7 @@
   ?~  adef  `gs
   ::  compute unified modifiers
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
   =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods base-time.u.adef)
   =/  base-dr=@dr  (div (mul ~s1 (max adjusted-time 500)) 1.000)
   ?:  =(base-dr *@dr)  `gs
@@ -1683,8 +1733,8 @@
       `gs
     ::  compute unified modifiers
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
-    =/  cboosts  (get-combat-boosts:bide-modifiers mods)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
         (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
@@ -1818,8 +1868,8 @@
   ::  enemy attacks next
   ::
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
-  =/  cboosts  (get-combat-boosts:bide-modifiers mods)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+  =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
   ::  apply protection prayer damage reduction
@@ -1926,8 +1976,8 @@
       =.  hitpoints-current.player.gs  p-hp
       `gs
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
-    =/  cboosts  (get-combat-boosts:bide-modifiers mods)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
         (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
@@ -2057,8 +2107,8 @@
     $(iterations (add iterations 1), mdef `u.nmdef)
   ::  enemy attacks
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
-  =/  cboosts  (get-combat-boosts:bide-modifiers mods)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+  =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
   =/  protect-pct=@ud  (get-protection:bide-modifiers mods attack-style.u.mdef)

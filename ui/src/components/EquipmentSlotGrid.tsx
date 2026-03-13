@@ -5,6 +5,7 @@ const SLOTS: { slot: EquipmentSlot; label: string }[] = [
   { slot: 'platebody', label: 'Platebody' },
   { slot: 'weapon', label: 'Weapon' },
   { slot: 'shield', label: 'Shield' },
+  { slot: 'cape', label: 'Cape' },
 ];
 
 interface EquipmentSlotGridProps {

@@ -10,6 +10,8 @@
   $?  %attack-boost
       %strength-boost
       %defence-boost
+      %ranged-boost
+      %magic-boost
       %heal
       %prayer-restore
   ==
@@ -31,24 +33,32 @@
       [%super-attack-potion [%attack-boost 15 50]]
       [%super-strength-potion [%strength-boost 15 50]]
       [%super-defence-potion [%defence-boost 15 50]]
+      [%ranged-potion [%ranged-boost 10 50]]
+      [%magic-potion [%magic-boost 10 50]]
+      [%super-ranged-potion [%ranged-boost 15 50]]
+      [%super-magic-potion [%magic-boost 15 50]]
   ==
 ::
 ::  Compute max boost percentages from active potion list
 ::
 ++  compute-boosts
   |=  potions=(list potion-effect)
-  ^-  [atk-boost=@ud str-boost=@ud def-boost=@ud]
+  ^-  [atk-boost=@ud str-boost=@ud def-boost=@ud ranged-boost=@ud magic-boost=@ud]
   =/  atk=@ud  0
   =/  str=@ud  0
   =/  def=@ud  0
+  =/  rng=@ud  0
+  =/  mag=@ud  0
   |-
-  ?~  potions  [atk str def]
+  ?~  potions  [atk str def rng mag]
   =/  pdef=(unit potion-def)  (~(get by potion-registry) item.i.potions)
   ?~  pdef  $(potions t.potions)
   ?-  effect-type.u.pdef
     %attack-boost    $(potions t.potions, atk (max atk magnitude.u.pdef))
     %strength-boost  $(potions t.potions, str (max str magnitude.u.pdef))
     %defence-boost   $(potions t.potions, def (max def magnitude.u.pdef))
+    %ranged-boost    $(potions t.potions, rng (max rng magnitude.u.pdef))
+    %magic-boost     $(potions t.potions, mag (max mag magnitude.u.pdef))
     %heal            $(potions t.potions)
     %prayer-restore  $(potions t.potions)
   ==

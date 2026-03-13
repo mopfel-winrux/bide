@@ -32,6 +32,11 @@
       [%irit-seed [level=44 growth-time=3.600.000 xp=1.500 crop=%grimy-irit min-yield=1 max-yield=3]]
       [%kwuarm-seed [level=56 growth-time=5.400.000 xp=2.200 crop=%grimy-kwuarm min-yield=1 max-yield=3]]
       [%torstol-seed [level=73 growth-time=7.200.000 xp=3.500 crop=%grimy-torstol min-yield=1 max-yield=3]]
+      ::  new herb seeds (phase 10)
+      [%avantoe-seed [level=35 growth-time=2.700.000 xp=850 crop=%grimy-avantoe min-yield=1 max-yield=3]]
+      [%lantadyme-seed [level=45 growth-time=3.600.000 xp=1.200 crop=%grimy-lantadyme min-yield=1 max-yield=3]]
+      [%cadantine-seed [level=65 growth-time=5.400.000 xp=2.000 crop=%grimy-cadantine min-yield=1 max-yield=3]]
+      [%snapdragon-seed [level=80 growth-time=7.200.000 xp=3.200 crop=%grimy-snapdragon min-yield=1 max-yield=3]]
   ==
 ::
 ++  max-plots

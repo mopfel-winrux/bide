@@ -19,6 +19,7 @@ export const CATEGORY_LABELS: Record<ItemCategory, string> = {
   potion: 'Potions',
   seed: 'Seeds',
   tablet: 'Tablets',
+  bones: 'Bones',
   misc: 'Misc',
 };
 
@@ -39,5 +40,6 @@ export const CATEGORY_COLORS: Record<ItemCategory, string> = {
   potion: '#14b8a6',
   seed: '#84cc16',
   tablet: '#f59e0b',
+  bones: '#d4d4d4',
   misc: '#6b7280',
 };

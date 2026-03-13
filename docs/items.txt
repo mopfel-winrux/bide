@@ -1,0 +1,426 @@
+Bide Item Catalog — AI Image Generation Reference
+===================================================
+
+Style baseline: pixel art RPG item icon, 32x32 or 64x64, centered on transparent background,
+clean outlines, slight shading for depth, no text overlays.
+
+Metal tier color key:
+  bronze     = warm copper-brown, slight orange tint
+  iron       = dark grey, matte finish
+  steel      = bright silver, polished sheen
+  mithril    = cool blue-silver, faint blue glow
+  adamantite = dark green, forest-green metallic
+  runite     = teal-cyan, vibrant aqua sheen
+  dragonite  = deep red/crimson, fiery highlights
+
+Wood tier color key:
+  normal     = pale brown, simple grain
+  oak        = medium brown, visible grain
+  willow     = light green-grey, supple look
+  teak       = warm golden-brown, fine grain
+  maple      = golden amber, smooth finish
+  mahogany   = rich reddish-brown, heavy grain
+  yew        = dark brown, dense and knotted
+  magic      = pale wood with purple glow, arcane shimmer
+  redwood    = deep red-brown, massive grain
+
+
+## Woodcutting Logs
+
+normal-logs | Normal Logs | Logs cut from a normal tree. | Pale brown log bundle, simple bark texture, tied with twine, no distinguishing features
+oak-logs | Oak Logs | Logs cut from an oak tree. | Medium brown log bundle, thicker bark, visible wood grain rings, slightly larger than normal
+willow-logs | Willow Logs | Logs cut from a willow tree. | Light green-grey log bundle, thin flexible branches, wispy bark texture
+teak-logs | Teak Logs | Logs cut from a teak tree. | Warm golden-brown log bundle, fine straight grain, tropical hardwood look
+maple-logs | Maple Logs | Logs cut from a maple tree. | Golden amber log bundle, smooth bark, hint of autumn leaf motif
+mahogany-logs | Mahogany Logs | Logs cut from a mahogany tree. | Rich reddish-brown log bundle, heavy dense grain, polished appearance
+yew-logs | Yew Logs | Logs cut from a yew tree. | Dark brown log bundle, knotted dense wood, slightly gnarled bark
+magic-logs | Magic Logs | Logs cut from a magic tree. | Pale wood log bundle with purple arcane glow, faint sparkle particles, mystical aura
+redwood-logs | Redwood Logs | Logs cut from a redwood tree. | Deep red-brown log bundle, massive thick bark, towering ancient tree feel
+
+
+## Raw Fish
+
+raw-shrimp | Raw Shrimp | A small shrimp. | Tiny pink-orange shrimp, curved body, translucent shell, small and humble
+raw-sardine | Raw Sardine | A fresh sardine. | Small silver fish, streamlined body, blue-green iridescent back, simple
+raw-herring | Raw Herring | A fresh herring. | Medium silver fish, slightly larger than sardine, silvery-blue scales
+raw-trout | Raw Trout | A fresh trout. | Medium freshwater fish, speckled brown-green body, pink stripe along side
+raw-salmon | Raw Salmon | A fresh salmon. | Larger pink-orange fish, silvery scales, distinct salmon shape with hooked jaw
+raw-lobster | Raw Lobster | A fresh lobster. | Dark blue-green lobster, large claws, segmented shell, crustacean details
+raw-swordfish | Raw Swordfish | A raw swordfish. | Large blue-grey fish, long pointed bill/sword, tall dorsal fin, powerful build
+raw-crab | Raw Crab | A large raw crab. | Wide reddish-brown crab, large pincers, armored carapace, spiny legs
+raw-shark | Raw Shark | A raw shark. | Large grey shark, streamlined predator shape, visible teeth, dorsal fin prominent
+raw-whale | Raw Whale | A massive chunk of raw whale. | Huge dark blue-grey meat slab, marbled texture, massive portion, deep ocean feel
+raw-anglerfish | Raw Anglerfish | A rare anglerfish. | Bizarre deep-sea fish, bioluminescent lure on head, large mouth with teeth, dark body with spots
+
+
+## Ores & Gems
+
+copper-ore | Copper Ore | Unrefined copper. | Rough rocky chunk with copper-orange veins, earthy brown stone matrix
+tin-ore | Tin Ore | Unrefined tin. | Rough rocky chunk with light silvery-grey veins, pale stone matrix
+iron-ore | Iron Ore | Unrefined iron. | Dark grey rocky chunk, rusty-brown ore veins, heavy dense appearance
+coal-ore | Coal | A lump of coal. | Glossy black chunk, faceted surface, dark and sooty, slight sheen
+silver-ore | Silver Ore | Unrefined silver. | Rocky chunk with bright silver veins, pale grey stone, reflective streaks
+gold-ore | Gold Ore | Unrefined gold. | Rocky chunk with brilliant gold veins, warm yellow metallic flecks in brown stone
+mithril-ore | Mithril Ore | Unrefined mithril. | Rocky chunk with blue-silver veins, faint cyan glow, cool-toned stone
+adamantite-ore | Adamantite Ore | Unrefined adamantite. | Rocky chunk with dark green metallic veins, deep forest-green crystal formations
+runite-ore | Runite Ore | Unrefined runite. | Rocky chunk with teal-cyan veins, vibrant aqua crystalline deposits, glowing edges
+dragonite-ore | Dragonite Ore | Rare dragonite ore. | Rocky chunk with deep crimson veins, fiery red crystal formations, faint heat shimmer
+onyx | Onyx | A precious onyx gem. | Polished jet-black gemstone, glossy surface, deep and opaque, elegant cut facets
+topaz | Topaz | A yellow topaz gem. | Faceted warm yellow gemstone, amber-gold sparkle, brilliant cut, transparent
+sapphire | Sapphire | A blue sapphire gem. | Faceted deep blue gemstone, royal blue sparkle, brilliant cut, transparent
+ruby | Ruby | A red ruby gem. | Faceted rich red gemstone, crimson sparkle, brilliant cut, transparent
+emerald | Emerald | A green emerald gem. | Faceted vivid green gemstone, deep emerald sparkle, brilliant cut, transparent
+diamond | Diamond | A brilliant diamond. | Faceted clear-white gemstone, rainbow prismatic sparkle, brilliant cut, most luminous of all gems
+
+
+## Cooked Fish
+
+cooked-shrimp | Cooked Shrimp | A cooked shrimp. | Small bright orange-pink shrimp, curled, cooked appearance, slightly charred edges
+cooked-sardine | Cooked Sardine | A cooked sardine. | Golden-brown cooked fish, small, grill marks visible, appetizing
+cooked-herring | Cooked Herring | A cooked herring. | Golden-brown cooked fish, medium-small, crispy skin texture
+cooked-trout | Cooked Trout | A cooked trout. | Golden-brown cooked fish, pink flesh visible, medium size, appetizing
+cooked-salmon | Cooked Salmon | A cooked salmon. | Rich pink-orange cooked fillet, golden crispy skin, larger portion
+cooked-lobster | Cooked Lobster | A cooked lobster. | Bright red cooked lobster, split open showing white meat, luxurious
+cooked-swordfish | Cooked Swordfish | A cooked swordfish. | Large golden-white cooked steak, grill marks, meaty thick cut
+cooked-crab | Cooked Crab | A cooked crab. | Bright red-orange cooked crab, cracked shell showing white meat
+cooked-shark | Cooked Shark | A cooked shark. | Large golden-brown cooked steak, thick and hearty, premium quality
+cooked-whale | Cooked Whale | A massive cooked whale steak. | Enormous dark-seared meat steak, rich marbling, deeply caramelized crust
+cooked-anglerfish | Cooked Anglerfish | A cooked anglerfish. | Golden-brown cooked exotic fish, unusual shape still visible, premium rare delicacy
+
+
+## Smithing Bars
+
+bronze-bar | Bronze Bar | A bar of bronze. | Rectangular ingot, warm copper-brown color, slight orange sheen, simple trapezoidal shape
+iron-bar | Iron Bar | A bar of iron. | Rectangular ingot, dark grey matte finish, heavy industrial look
+silver-bar | Silver Bar | A bar of silver. | Rectangular ingot, bright polished silver, highly reflective surface
+gold-bar | Gold Bar | A bar of gold. | Rectangular ingot, rich golden-yellow, warm lustrous sheen, prestigious
+steel-bar | Steel Bar | A bar of steel. | Rectangular ingot, bright polished silver with slight blue tint, sharper edges than iron
+mithril-bar | Mithril Bar | A bar of mithril. | Rectangular ingot, cool blue-silver color, faint blue glow emanating from surface
+adamantite-bar | Adamantite Bar | A bar of adamantite. | Rectangular ingot, dark forest-green metallic color, dense and imposing
+runite-bar | Runite Bar | A bar of runite. | Rectangular ingot, vibrant teal-cyan color, glowing aqua edges, magical feel
+dragonite-bar | Dragonite Bar | A bar of dragonite. | Rectangular ingot, deep crimson-red color, fiery highlights, faint heat distortion
+
+
+## Enchanted Bars
+
+enchanted-steel-bar | Enchanted Steel Bar | A magically enhanced steel bar. | Steel ingot wrapped in arcane purple runes, faint magical aura, glowing sigils etched on surface
+enchanted-mithril-bar | Enchanted Mithril Bar | A magically enhanced mithril bar. | Blue-silver ingot with intensified glow, swirling arcane energy, purple rune markings
+enchanted-adamantite-bar | Enchanted Adamantite Bar | A magically enhanced adamantite bar. | Dark green ingot pulsing with magical energy, purple arcane veins, enchanted shimmer
+enchanted-runite-bar | Enchanted Runite Bar | A magically enhanced runite bar. | Teal-cyan ingot blazing with arcane power, strongest enchantment glow, purple-white energy crackling
+
+
+## Forged Weapons — Daggers
+
+bronze-dagger | Bronze Dagger | A dagger forged from bronze. | Short blade, warm copper-brown metal, simple crossguard, leather-wrapped handle, compact and quick
+iron-dagger | Iron Dagger | A dagger forged from iron. | Short blade, dark grey metal, slightly sturdier crossguard, utilitarian design
+steel-dagger | Steel Dagger | A dagger forged from steel. | Short blade, bright silver metal, refined crossguard, sharper edge visible
+mithril-dagger | Mithril Dagger | A dagger forged from mithril. | Short blade, blue-silver metal with faint glow, elegant crossguard, lighter build
+adamantite-dagger | Adamantite Dagger | A dagger forged from adamantite. | Short blade, dark green metal, angular crossguard, dense and deadly
+runite-dagger | Runite Dagger | A dagger forged from runite. | Short blade, teal-cyan metal with glow, ornate crossguard, magical aura
+dragonite-dagger | Dragonite Dagger | A dagger forged from dragonite. | Short blade, deep crimson metal, fiery highlights, dragon-motif crossguard, most deadly dagger
+
+
+## Forged Weapons — Swords
+
+bronze-sword | Bronze Sword | A simple bronze sword. | Straight medium blade, warm copper-brown metal, simple crossguard, leather grip, starter weapon
+iron-sword | Iron Sword | A sword forged from iron. | Straight medium blade, dark grey metal, functional crossguard, sturdy build
+steel-sword | Steel Sword | A sword forged from steel. | Straight medium blade, bright silver metal, refined crossguard, keen edge
+mithril-sword | Mithril Sword | A sword forged from mithril. | Straight medium blade, blue-silver metal with faint glow, elegant guard, lighter than steel
+adamantite-sword | Adamantite Sword | A sword forged from adamantite. | Straight medium blade, dark green metal, angular crossguard, formidable and heavy
+runite-sword | Runite Sword | A sword forged from runite. | Straight medium blade, teal-cyan metal with glow, ornate crossguard, arcane runes on blade
+dragonite-sword | Dragonite Sword | A sword forged from dragonite. | Straight medium blade, deep crimson metal, fiery edge glow, dragon-scale crossguard, elite weapon
+
+
+## Forged Weapons — Battleaxes
+
+bronze-battleaxe | Bronze Battleaxe | A battleaxe forged from bronze. | Large double-headed axe, warm copper-brown metal, thick wooden haft, brutal and heavy
+iron-battleaxe | Iron Battleaxe | A battleaxe forged from iron. | Large double-headed axe, dark grey metal, sturdy haft, utilitarian
+steel-battleaxe | Steel Battleaxe | A battleaxe forged from steel. | Large double-headed axe, bright silver metal, reinforced haft, polished edge
+mithril-battleaxe | Mithril Battleaxe | A battleaxe forged from mithril. | Large double-headed axe, blue-silver metal with glow, lighter elegant design
+adamantite-battleaxe | Adamantite Battleaxe | A battleaxe forged from adamantite. | Large double-headed axe, dark green metal, massive and imposing, angular blade shape
+runite-battleaxe | Runite Battleaxe | A battleaxe forged from runite. | Large double-headed axe, teal-cyan metal with glow, rune-etched blades, magical sheen
+dragonite-battleaxe | Dragonite Battleaxe | A battleaxe forged from dragonite. | Large double-headed axe, deep crimson metal, fiery edge glow, dragon motifs on blades
+
+
+## Forged Weapons — 2H Swords
+
+bronze-2h-sword | Bronze 2H Sword | A two-handed sword forged from bronze. | Massive long blade, warm copper-brown metal, large crossguard, two-handed grip, imposing
+iron-2h-sword | Iron 2H Sword | A two-handed sword forged from iron. | Massive long blade, dark grey metal, heavy crossguard, two-handed leather grip
+steel-2h-sword | Steel 2H Sword | A two-handed sword forged from steel. | Massive long blade, bright silver metal, refined crossguard, keen double edge
+mithril-2h-sword | Mithril 2H Sword | A two-handed sword forged from mithril. | Massive long blade, blue-silver metal with glow, elegant despite size, lighter build
+adamantite-2h-sword | Adamantite 2H Sword | A two-handed sword forged from adamantite. | Massive long blade, dark green metal, angular heavy crossguard, devastating reach
+runite-2h-sword | Runite 2H Sword | A two-handed sword forged from runite. | Massive long blade, teal-cyan metal with glow, rune-inscribed fuller, magical aura
+dragonite-2h-sword | Dragonite 2H Sword | A two-handed sword forged from dragonite. | Massive long blade, deep crimson metal, fiery edge, dragon-wing crossguard, ultimate melee weapon
+
+
+## Forged Shields
+
+bronze-shield | Bronze Shield | A shield forged from bronze. | Rounded kite shield, warm copper-brown metal, simple rivets, leather arm strap visible
+iron-shield | Iron Shield | A shield forged from iron. | Rounded kite shield, dark grey metal, reinforced boss in center, sturdy
+steel-shield | Steel Shield | A shield forged from steel. | Rounded kite shield, bright silver metal, polished face, reinforced rim
+mithril-shield | Mithril Shield | A shield forged from mithril. | Rounded kite shield, blue-silver metal with faint glow, lighter and elegant
+adamantite-shield | Adamantite Shield | A shield forged from adamantite. | Rounded kite shield, dark green metal, thick and imposing, angular design
+runite-shield | Runite Shield | A shield forged from runite. | Rounded kite shield, teal-cyan metal with glow, rune symbols on face, magical barrier
+dragonite-shield | Dragonite Shield | A shield forged from dragonite. | Rounded kite shield, deep crimson metal, fiery glow, dragon-scale texture, ultimate defense
+
+
+## Bows — Shortbows
+
+normal-shortbow | Normal Shortbow | A simple shortbow. | Small curved bow, pale brown wood, simple string, compact and lightweight
+oak-shortbow | Oak Shortbow | A shortbow made of oak. | Small curved bow, medium brown oak wood, visible grain, slightly sturdier
+willow-shortbow | Willow Shortbow | A shortbow made of willow. | Small curved bow, light green-grey willow wood, flexible limbs, supple design
+maple-shortbow | Maple Shortbow | A shortbow made of maple. | Small curved bow, golden amber maple wood, smooth finish, elegant curve
+yew-shortbow | Yew Shortbow | A shortbow made of yew. | Small curved bow, dark brown yew wood, dense and precise, expert craftsmanship
+magic-shortbow | Magic Shortbow | A shortbow made of magic wood. | Small curved bow, pale wood with purple arcane glow, faint sparkle along limbs
+redwood-shortbow | Redwood Shortbow | A shortbow made of redwood. | Small curved bow, deep red-brown redwood, thick powerful limbs, premium craftsmanship
+
+
+## Bows — Longbows
+
+normal-longbow | Normal Longbow | A simple longbow. | Tall curved bow, pale brown wood, simple string, long elegant limbs
+oak-longbow | Oak Longbow | A longbow made of oak. | Tall curved bow, medium brown oak wood, visible grain, sturdy limbs
+willow-longbow | Willow Longbow | A longbow made of willow. | Tall curved bow, light green-grey willow wood, graceful flexible limbs
+maple-longbow | Maple Longbow | A longbow made of maple. | Tall curved bow, golden amber maple wood, smooth polished limbs
+yew-longbow | Yew Longbow | A longbow made of yew. | Tall curved bow, dark brown yew wood, legendary precision, masterwork
+magic-longbow | Magic Longbow | A longbow made of magic wood. | Tall curved bow, pale wood with purple arcane glow, magical energy along string
+redwood-longbow | Redwood Longbow | A longbow made of redwood. | Tall curved bow, deep red-brown redwood, massive powerful limbs, ultimate longbow
+
+
+## Crossbows
+
+normal-crossbow | Normal Crossbow | A simple crossbow. | Mechanical bow on pale brown wood stock, simple trigger mechanism, compact
+oak-crossbow | Oak Crossbow | A crossbow made with oak. | Mechanical bow on medium brown oak stock, reinforced trigger, sturdier build
+willow-crossbow | Willow Crossbow | A crossbow made with willow. | Mechanical bow on light green-grey willow stock, flexible limbs, smooth action
+maple-crossbow | Maple Crossbow | A crossbow made with maple. | Mechanical bow on golden amber maple stock, refined mechanism, polished
+yew-crossbow | Yew Crossbow | A crossbow made with yew. | Mechanical bow on dark brown yew stock, powerful draw, precision engineering
+magic-crossbow | Magic Crossbow | A crossbow made with magic wood. | Mechanical bow on pale wood stock with purple glow, arcane trigger mechanism, magical bolts
+redwood-crossbow | Redwood Crossbow | A crossbow made with redwood. | Mechanical bow on deep red-brown redwood stock, massive power, ultimate crossbow design
+
+
+## Arrows
+
+bronze-arrows | Bronze Arrows | A bundle of bronze-tipped arrows. | Bundle of arrows with warm copper-brown arrowheads, wooden shafts, feather fletching, tied together
+iron-arrows | Iron Arrows | A bundle of iron-tipped arrows. | Bundle of arrows with dark grey arrowheads, wooden shafts, grey fletching
+steel-arrows | Steel Arrows | A bundle of steel-tipped arrows. | Bundle of arrows with bright silver arrowheads, refined shafts, white fletching
+mithril-arrows | Mithril Arrows | A bundle of mithril-tipped arrows. | Bundle of arrows with blue-silver glowing arrowheads, blue fletching
+adamantite-arrows | Adamantite Arrows | A bundle of adamantite-tipped arrows. | Bundle of arrows with dark green arrowheads, green fletching, heavy tips
+runite-arrows | Runite Arrows | A bundle of runite-tipped arrows. | Bundle of arrows with teal-cyan glowing arrowheads, cyan fletching, magical glow
+dragonite-arrows | Dragonite Arrows | A bundle of dragonite-tipped arrows. | Bundle of arrows with deep crimson arrowheads, red fletching, fiery glow on tips
+
+
+## Metal Armor — Helmets
+
+bronze-helmet | Bronze Helmet | A helmet made of bronze. | Full-face medieval helm, warm copper-brown metal, simple nose guard, riveted construction
+iron-helmet | Iron Helmet | A helmet made of iron. | Full-face medieval helm, dark grey metal, reinforced nose guard, sturdier build
+steel-helmet | Steel Helmet | A helmet made of steel. | Full-face medieval helm, bright silver polished metal, refined visor, keen craftsmanship
+mithril-helmet | Mithril Helmet | A helmet made of mithril. | Full-face medieval helm, blue-silver metal with faint glow, elegant lightweight design
+adamantite-helmet | Adamantite Helmet | A helmet made of adamantite. | Full-face medieval helm, dark green metal, angular imposing design, heavy protection
+runite-helmet | Runite Helmet | A helmet made of runite. | Full-face medieval helm, teal-cyan metal with glow, rune markings, magical sheen
+dragonite-helmet | Dragonite Helmet | A helmet made of dragonite. | Full-face medieval helm, deep crimson metal, dragon horn accents, fiery glow, ultimate headgear
+
+
+## Metal Armor — Platebodies
+
+bronze-platebody | Bronze Platebody | A platebody made of bronze. | Full torso plate armor, warm copper-brown metal, riveted plates, simple design
+iron-platebody | Iron Platebody | A platebody made of iron. | Full torso plate armor, dark grey metal, reinforced chest plate, functional
+steel-platebody | Steel Platebody | A platebody made of steel. | Full torso plate armor, bright silver metal, polished surface, articulated plates
+mithril-platebody | Mithril Platebody | A platebody made of mithril. | Full torso plate armor, blue-silver metal with glow, lightweight elegant plates
+adamantite-platebody | Adamantite Platebody | A platebody made of adamantite. | Full torso plate armor, dark green metal, massive angular plates, heavy and imposing
+runite-platebody | Runite Platebody | A platebody made of runite. | Full torso plate armor, teal-cyan metal with glow, rune-etched plates, arcane protection
+dragonite-platebody | Dragonite Platebody | A platebody made of dragonite. | Full torso plate armor, deep crimson metal, dragon-scale texture, fiery trim, ultimate armor
+
+
+## Leather Armor
+
+leather-cowl | Leather Cowl | A cowl made of leather. | Soft brown leather hood/cowl, stitched seams, covers head and neck, ranger aesthetic
+leather-body | Leather Body | A body armour made of leather. | Brown leather torso armor, stitched panels, light and flexible, buckled straps, ranger look
+
+
+## Dragonhide Armor
+
+green-dhide-coif | Green Dhide Coif | A coif made of green dragonhide. | Green-scaled dragonhide hood, reptilian texture, emerald green hue, fitted snug design
+green-dhide-body | Green Dhide Body | A body made of green dragonhide. | Green-scaled dragonhide torso armor, reptilian texture, emerald green, flexible plates
+blue-dhide-coif | Blue Dhide Coif | A coif made of blue dragonhide. | Blue-scaled dragonhide hood, reptilian texture, sapphire blue hue, fitted snug design
+blue-dhide-body | Blue Dhide Body | A body made of blue dragonhide. | Blue-scaled dragonhide torso armor, reptilian texture, sapphire blue, flexible plates
+red-dhide-coif | Red Dhide Coif | A coif made of red dragonhide. | Red-scaled dragonhide hood, reptilian texture, crimson red hue, fierce look
+red-dhide-body | Red Dhide Body | A body made of red dragonhide. | Red-scaled dragonhide torso armor, reptilian texture, crimson red, flexible plates
+black-dhide-coif | Black Dhide Coif | A coif made of black dragonhide. | Black-scaled dragonhide hood, reptilian texture, jet black with dark sheen, elite
+black-dhide-body | Black Dhide Body | A body made of black dragonhide. | Black-scaled dragonhide torso armor, reptilian texture, jet black, dark sheen, ultimate ranged armor
+
+
+## Jewelry
+
+topaz-ring | Topaz Ring | A ring set with a topaz. | Gold band ring with warm yellow topaz gemstone, simple prong setting, subtle glow
+topaz-necklace | Topaz Necklace | A necklace set with a topaz. | Gold chain necklace with yellow topaz pendant, delicate chain, amber sparkle
+sapphire-ring | Sapphire Ring | A ring set with a sapphire. | Gold band ring with deep blue sapphire gemstone, refined prong setting, royal blue sparkle
+sapphire-necklace | Sapphire Necklace | A necklace set with a sapphire. | Gold chain necklace with blue sapphire pendant, elegant chain, deep blue glow
+ruby-ring | Ruby Ring | A ring set with a ruby. | Gold band ring with rich red ruby gemstone, ornate prong setting, crimson sparkle
+ruby-necklace | Ruby Necklace | A necklace set with a ruby. | Gold chain necklace with red ruby pendant, fine chain, warm crimson glow
+emerald-ring | Emerald Ring | A ring set with an emerald. | Gold band ring with vivid green emerald gemstone, elegant prong setting, green sparkle
+emerald-necklace | Emerald Necklace | A necklace set with an emerald. | Gold chain necklace with green emerald pendant, ornate chain, vivid green glow
+diamond-ring | Diamond Ring | A ring set with a diamond. | Gold band ring with brilliant clear diamond, exquisite prong setting, prismatic rainbow sparkle
+diamond-necklace | Diamond Necklace | A necklace set with a diamond. | Gold chain necklace with brilliant diamond pendant, finest chain, prismatic rainbow glow, ultimate jewelry
+
+
+## Runes
+
+rune-essence | Rune Essence | A blank rune essence. | Small pale grey-white stone tablet, smooth oval shape, no markings, blank and inert, faint potential glow
+air-rune | Air Rune | A rune of air. | Small stone tablet with white/sky-blue air symbol, wispy wind swirl glyph, lightest and most airy
+water-rune | Water Rune | A rune of water. | Small stone tablet with blue water symbol, water droplet glyph, cool blue tones
+earth-rune | Earth Rune | A rune of earth. | Small stone tablet with brown/green earth symbol, mountain or ground glyph, earthy tones
+fire-rune | Fire Rune | A rune of fire. | Small stone tablet with red/orange fire symbol, flame glyph, warm fiery tones
+mind-rune | Mind Rune | A rune of mind. | Small stone tablet with orange-gold mind symbol, eye or brain glyph, warm golden tone
+chaos-rune | Chaos Rune | A rune of chaos. | Small stone tablet with swirling multi-color chaos symbol, chaotic spiral glyph, unstable energy
+death-rune | Death Rune | A rune of death. | Small stone tablet with white skull/death symbol on dark background, ominous glow, stark contrast
+blood-rune | Blood Rune | A rune of blood. | Small stone tablet with deep crimson blood symbol, blood droplet glyph, dark red sinister glow
+soul-rune | Soul Rune | A rune of the soul. | Small stone tablet with ethereal blue-white soul symbol, ghostly face glyph, spectral glow
+ancient-rune | Ancient Rune | An ancient rune of great power. | Small stone tablet with golden ancient symbol, complex interlocking glyph, radiating power, most prestigious rune
+
+
+## Herbs
+
+grimy-guam | Grimy Guam | A grimy guam herb. | Small wilted green herb leaf, dirt-covered, light green color, basic and common
+grimy-marrentill | Grimy Marrentill | A grimy marrentill herb. | Grimy herb with slightly darker green leaf, pointed tips, dirt specks
+grimy-tarromin | Grimy Tarromin | A grimy tarromin herb. | Grimy herb with medium green serrated leaf, earthy residue
+grimy-harralander | Grimy Harralander | A grimy harralander herb. | Grimy herb with broad dark green leaf, waxy texture, more substantial
+grimy-ranarr | Grimy Ranarr | A grimy ranarr herb. | Grimy herb with distinctive blue-green leaf, valuable appearance, faint glow
+grimy-irit | Grimy Irit | A grimy irit herb. | Grimy herb with narrow yellow-green leaf, delicate and potent look
+grimy-kwuarm | Grimy Kwuarm | A grimy kwuarm herb. | Grimy herb with deep green spiky leaf, pungent look, thorny edges
+grimy-torstol | Grimy Torstol | A grimy torstol herb. | Grimy herb with rich purple-green leaf, rare and powerful aura, most valuable herb
+grimy-avantoe | Grimy Avantoe | A grimy avantoe herb. | Grimy herb with bright green feathery leaf, lively appearance, fine fronds
+grimy-lantadyme | Grimy Lantadyme | A grimy lantadyme herb. | Grimy herb with silvery-green leaf, metallic sheen, elegant form
+grimy-cadantine | Grimy Cadantine | A grimy cadantine herb. | Grimy herb with dark teal-green leaf, thick and waxy, potent appearance
+grimy-snapdragon | Grimy Snapdragon | A grimy snapdragon herb. | Grimy herb with vivid red-green leaf, dragon-like shape, rare and powerful
+
+
+## Potions
+
+vial-of-water | Vial of Water | A vial filled with water. | Small glass vial with clear blue water, cork stopper, simple alchemical vessel
+attack-potion | Attack Potion | A potion that boosts attack. | Glass vial with bright red liquid, cork stopper, single sword icon label
+strength-potion | Strength Potion | A potion that boosts strength. | Glass vial with deep red-orange liquid, cork stopper, flexed arm icon label
+defence-potion | Defence Potion | A potion that boosts defence. | Glass vial with blue liquid, cork stopper, shield icon label
+hitpoints-potion | Hitpoints Potion | A potion that restores hitpoints. | Glass vial with warm pink-red liquid, cork stopper, heart icon label
+prayer-potion | Prayer Potion | A potion that restores prayer. | Glass vial with glowing white-gold liquid, cork stopper, holy star icon label
+ranged-potion | Ranged Potion | A potion that boosts ranged attack. | Glass vial with light green liquid, cork stopper, bow/arrow icon label
+magic-potion | Magic Potion | A potion that boosts magic attack. | Glass vial with purple-blue liquid, cork stopper, arcane star icon label
+super-attack-potion | Super Attack Potion | A potent potion that boosts attack. | Glass vial with intense bright red liquid, glowing, cork stopper, double sword icon, more powerful aura
+super-strength-potion | Super Strength Potion | A potent potion that boosts strength. | Glass vial with intense dark red-orange liquid, glowing, cork stopper, powerful aura
+super-defence-potion | Super Defence Potion | A potent potion that boosts defence. | Glass vial with intense deep blue liquid, glowing, cork stopper, reinforced shield icon
+super-ranged-potion | Super Ranged Potion | A potent potion that boosts ranged attack. | Glass vial with intense bright green liquid, glowing, cork stopper, powerful bow icon
+super-magic-potion | Super Magic Potion | A potent potion that boosts magic attack. | Glass vial with intense vivid purple liquid, glowing, cork stopper, powerful arcane icon
+
+
+## Seeds
+
+potato-seed | Potato Seed | A seed for growing potatoes. | Tiny brown seed, earthy and round, simple seed pouch icon, basic farming
+onion-seed | Onion Seed | A seed for growing onions. | Tiny black seed, small and round, simple seed form
+tomato-seed | Tomato Seed | A seed for growing tomatoes. | Tiny yellow-tan seed, flat and oval, slightly fuzzy surface
+sweetcorn-seed | Sweetcorn Seed | A seed for growing sweetcorn. | Golden-yellow kernel seed, slightly larger, warm corn color
+strawberry-seed | Strawberry Seed | A seed for growing strawberries. | Tiny red-brown seed, very small speck, delicate
+watermelon-seed | Watermelon Seed | A seed for growing watermelons. | Flat black seed with white edge, teardrop shape, distinctive
+snape-grass-seed | Snape Grass Seed | A seed for growing snape grass. | Unusual blue-green seed, elongated, faintly glowing, rare
+guam-seed | Guam Seed | A seed for growing guam herbs. | Small green herb seed, basic, simple round shape, common herb seed
+marrentill-seed | Marrentill Seed | A seed for growing marrentill herbs. | Small dark green herb seed, slightly pointed
+tarromin-seed | Tarromin Seed | A seed for growing tarromin herbs. | Small medium green herb seed, textured surface
+harralander-seed | Harralander Seed | A seed for growing harralander herbs. | Small broad green herb seed, waxy coating
+ranarr-seed | Ranarr Seed | A seed for growing ranarr herbs. | Small blue-green herb seed, faint glow, valuable
+irit-seed | Irit Seed | A seed for growing irit herbs. | Small yellow-green herb seed, delicate appearance
+kwuarm-seed | Kwuarm Seed | A seed for growing kwuarm herbs. | Small spiky green herb seed, thorny shell
+torstol-seed | Torstol Seed | A seed for growing torstol herbs. | Small purple-green herb seed, faint glow, rare and precious
+avantoe-seed | Avantoe Seed | A seed for growing avantoe herbs. | Small bright green feathery herb seed, fine texture
+lantadyme-seed | Lantadyme Seed | A seed for growing lantadyme herbs. | Small silvery-green herb seed, metallic sheen
+cadantine-seed | Cadantine Seed | A seed for growing cadantine herbs. | Small dark teal herb seed, thick and waxy
+snapdragon-seed | Snapdragon Seed | A seed for growing snapdragon herbs. | Small vivid red-green herb seed, dragon-shaped, rare
+
+
+## Farming Crops
+
+potato | Potato | A freshly harvested potato. | Brown-tan potato, earthy, oval shape, dirt flecks, humble root vegetable
+onion | Onion | A freshly harvested onion. | White-yellow onion, papery skin, round bulb shape, green stem stub
+tomato | Tomato | A ripe tomato. | Bright red ripe tomato, round and plump, green stem cap, glossy skin
+sweetcorn | Sweetcorn | A golden ear of sweetcorn. | Golden yellow corn cob, husk partially peeled, bright kernels visible
+strawberry | Strawberry | A juicy strawberry. | Bright red strawberry, green leaf cap, small seeds on surface, juicy and fresh
+watermelon | Watermelon | A large watermelon. | Large green-striped watermelon, dark and light green bands, oval shape, impressive size
+snape-grass | Snape Grass | A tall blade of snape grass. | Tall blue-green grass blade, unusual exotic plant, faintly glowing tips, rare herb ingredient
+
+
+## Bones
+
+bones | Bones | A pile of bones. | Small pile of off-white bones, femur and ribcage fragments, simple and unadorned
+big-bones | Big Bones | A pile of large bones. | Larger pile of thick yellowish bones, heavy femur and skull fragment, slightly oversized
+dragon-bones | Dragon Bones | Bones from a mighty dragon. | Dark crimson-tinged bones with jagged ridges, faint fiery glow, dragon skull fragment on top
+
+
+## Summoning Tablets
+
+wolf-tablet | Wolf Tablet | A tablet to summon a wolf familiar. | Stone tablet with carved wolf head symbol, grey-brown stone, faint amber glow, primal energy
+hawk-tablet | Hawk Tablet | A tablet to summon a hawk familiar. | Stone tablet with carved hawk symbol, lighter stone, faint white glow, keen and swift energy
+bear-tablet | Bear Tablet | A tablet to summon a bear familiar. | Stone tablet with carved bear symbol, brown stone, faint brown-gold glow, powerful energy
+serpent-tablet | Serpent Tablet | A tablet to summon a serpent familiar. | Stone tablet with carved serpent symbol, green-tinged stone, faint green glow, cunning energy
+phoenix-tablet | Phoenix Tablet | A tablet to summon a phoenix familiar. | Stone tablet with carved phoenix symbol, warm-toned stone, bright orange-red glow, rebirth energy
+dragon-tablet | Dragon Tablet | A tablet to summon a dragon familiar. | Stone tablet with carved dragon symbol, dark stone, intense red glow, fearsome draconic energy
+hydra-tablet | Hydra Tablet | A tablet to summon a hydra familiar. | Stone tablet with carved multi-headed hydra symbol, dark green stone, toxic green glow, monstrous energy
+titan-tablet | Titan Tablet | A tablet to summon a titan familiar. | Stone tablet with carved titan symbol, golden stone, radiant white-gold glow, ultimate divine energy
+
+
+## Starter Equipment
+
+bronze-sword | Bronze Sword | A simple bronze sword. | Straight medium blade, warm copper-brown metal, simple crossguard, leather grip, every adventurer's first weapon
+wooden-shield | Wooden Shield | A basic wooden shield. | Round wooden shield, pale brown planks, iron rim band, simple leather arm strap, basic protection
+
+
+## Thieving Loot
+
+gp-pouch-small | Small GP Pouch | A small pouch of coins. | Tiny brown leather drawstring pouch, few coins peeking out, modest and light
+gp-pouch-medium | Medium GP Pouch | A pouch of coins. | Medium brown leather drawstring pouch, several coins visible, heavier than small
+gp-pouch-large | Large GP Pouch | A large pouch of coins. | Large brown leather drawstring pouch, coins bulging, tied tight, substantial weight
+gp-pouch-huge | Huge GP Pouch | A huge pouch of coins. | Oversized leather pouch, overflowing gold coins, barely cinched shut, very heavy
+gp-pouch-royal | Royal GP Pouch | A royal pouch of coins. | Ornate purple velvet pouch with gold trim, royal crest, overflowing with gold coins, luxurious
+gp-pouch-dragon | Dragon GP Pouch | A dragon-hide pouch overflowing with coins. | Red dragon-scale leather pouch, gold coins spilling out, dragon clasp, most valuable pouch
+
+
+## Firemaking
+
+charcoal | Charcoal | A lump of charcoal. | Irregular black chunk, matte sooty surface, crumbly texture, faint red ember glow at edges
+
+
+## Miscellaneous
+
+vial-of-water | Vial of Water | A vial filled with water. | Small glass vial with clear blue water, cork stopper, basic alchemical supply
+rune-essence | Rune Essence | A blank rune essence. | Small pale grey-white stone, smooth oval, no markings, blank potential, basic runecrafting material
+
+
+## Skill Capes
+
+woodcutting-cape | Woodcutting Cape | A cape awarded for mastery of woodcutting. | Flowing cape, rich brown color with tree/axe emblem, golden trim, prestigious mastery symbol
+fishing-cape | Fishing Cape | A cape awarded for mastery of fishing. | Flowing cape, deep blue color with fish/hook emblem, golden trim, prestigious mastery symbol
+mining-cape | Mining Cape | A cape awarded for mastery of mining. | Flowing cape, dark grey-brown color with pickaxe emblem, golden trim, prestigious mastery symbol
+thieving-cape | Thieving Cape | A cape awarded for mastery of thieving. | Flowing cape, deep purple color with mask emblem, golden trim, prestigious mastery symbol
+firemaking-cape | Firemaking Cape | A cape awarded for mastery of firemaking. | Flowing cape, bright orange-red color with flame emblem, golden trim, prestigious mastery symbol
+cooking-cape | Cooking Cape | A cape awarded for mastery of cooking. | Flowing cape, warm red color with cooking pot emblem, golden trim, prestigious mastery symbol
+smithing-cape | Smithing Cape | A cape awarded for mastery of smithing. | Flowing cape, dark grey color with anvil/hammer emblem, golden trim, prestigious mastery symbol
+fletching-cape | Fletching Cape | A cape awarded for mastery of fletching. | Flowing cape, green color with bow/arrow emblem, golden trim, prestigious mastery symbol
+crafting-cape | Crafting Cape | A cape awarded for mastery of crafting. | Flowing cape, brown-tan color with needle/thread emblem, golden trim, prestigious mastery symbol
+runecrafting-cape | Runecrafting Cape | A cape awarded for mastery of runecrafting. | Flowing cape, deep yellow color with rune emblem, golden trim, prestigious mastery symbol
+herblore-cape | Herblore Cape | A cape awarded for mastery of herblore. | Flowing cape, dark green color with herb/vial emblem, golden trim, prestigious mastery symbol
+farming-cape | Farming Cape | A cape awarded for mastery of farming. | Flowing cape, earthy green-brown color with plant/seed emblem, golden trim, prestigious mastery symbol
+agility-cape | Agility Cape | A cape awarded for mastery of agility. | Flowing cape, dark blue color with running figure emblem, golden trim, prestigious mastery symbol
+astrology-cape | Astrology Cape | A cape awarded for mastery of astrology. | Flowing cape, midnight blue color with star/constellation emblem, golden trim, prestigious mastery symbol
+summoning-cape | Summoning Cape | A cape awarded for mastery of summoning. | Flowing cape, teal color with summoning circle emblem, golden trim, prestigious mastery symbol
+attack-cape | Attack Cape | A cape awarded for mastery of attack. | Flowing cape, crimson red color with crossed swords emblem, golden trim, prestigious mastery symbol
+strength-cape | Strength Cape | A cape awarded for mastery of strength. | Flowing cape, dark red color with fist emblem, golden trim, prestigious mastery symbol
+defence-cape | Defence Cape | A cape awarded for mastery of defence. | Flowing cape, steel blue color with shield emblem, golden trim, prestigious mastery symbol
+hitpoints-cape | Hitpoints Cape | A cape awarded for mastery of hitpoints. | Flowing cape, deep red color with heart emblem, golden trim, prestigious mastery symbol
+ranged-cape | Ranged Cape | A cape awarded for mastery of ranged. | Flowing cape, olive green color with target/bow emblem, golden trim, prestigious mastery symbol
+magic-cape | Magic Cape | A cape awarded for mastery of magic. | Flowing cape, deep purple color with arcane star emblem, golden trim, prestigious mastery symbol
+prayer-cape | Prayer Cape | A cape awarded for mastery of prayer. | Flowing cape, white-gold color with holy symbol emblem, golden trim, prestigious mastery symbol
+slayer-cape | Slayer Cape | A cape awarded for mastery of slayer. | Flowing cape, dark black-red color with skull emblem, golden trim, prestigious mastery symbol
+
+
+## Raw Materials (leather, dragonhides)
+
+leather | Leather | A piece of tanned leather. | Flat piece of brown tanned leather, smooth surface, folded edges, basic crafting material
+green-dhide | Green Dragonhide | Hide from a green dragon. | Flat piece of green dragon skin, visible scales/texture, emerald green, tough and flexible
+blue-dhide | Blue Dragonhide | Hide from a blue dragon. | Flat piece of blue dragon skin, visible scales/texture, sapphire blue, tough and flexible
+red-dhide | Red Dragonhide | Hide from a red dragon. | Flat piece of red dragon skin, visible scales/texture, crimson red, tough and flexible
+black-dhide | Black Dragonhide | Hide from a black dragon. | Flat piece of black dragon skin, visible scales/texture, jet black with dark sheen, toughest dragonhide

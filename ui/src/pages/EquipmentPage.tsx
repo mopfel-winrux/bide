@@ -3,12 +3,13 @@ import { EquipmentSlotGrid } from '../components/EquipmentSlotGrid';
 import { AutoEatConfig } from '../components/AutoEatConfig';
 import type { EquipmentSlot, ItemId } from '../shared/types';
 
-const EQUIPPABLE_SLOTS: EquipmentSlot[] = ['helmet', 'platebody', 'weapon', 'shield'];
+const EQUIPPABLE_SLOTS: EquipmentSlot[] = ['helmet', 'platebody', 'weapon', 'shield', 'cape'];
 const SLOT_LABELS: Record<EquipmentSlot, string> = {
   helmet: 'Helmet',
   platebody: 'Platebody',
   weapon: 'Weapon',
   shield: 'Shield',
+  cape: 'Cape',
 };
 
 export function EquipmentPage() {

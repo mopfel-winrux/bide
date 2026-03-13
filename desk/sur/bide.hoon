@@ -90,7 +90,7 @@
 ::  │  Equipment & combat style                                │
 ::  └──────────────────────────────────────────────────────────┘
 ::
-+$  equipment-slot  $?(%helmet %platebody %weapon %shield)
++$  equipment-slot  $?(%helmet %platebody %weapon %shield %cape)
 ::
 +$  combat-style
   $?  %melee-attack
@@ -287,6 +287,7 @@
       %potion                                  ::  brewed potions
       %seed                                    ::  farming seeds
       %tablet                                  ::  summoning tablets
+      %bones                                   ::  bones for prayer
       %misc                                    ::  quest items, junk
   ==
 ::
@@ -396,6 +397,8 @@
       atk-boost=@ud                            ::  +% melee attack
       str-boost=@ud                            ::  +% melee strength
       def-boost=@ud                            ::  +% defence
+      ranged-boost=@ud                         ::  +% ranged attack
+      magic-boost=@ud                          ::  +% magic attack
       protect-melee=@ud                        ::  -% melee damage taken
       protect-ranged=@ud                       ::  -% ranged damage taken
       protect-magic=@ud                        ::  -% magic damage taken
@@ -432,5 +435,28 @@
       level-req=@ud                           ::  magic level required
       max-hit=@ud                             ::  fixed max damage per cast
       runes=(list [item=item-id qty=@ud])     ::  runes consumed per attack
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Skill cape definitions (Phase 10)                       │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  cape-bonus
+  $%  [%xp-skill skill=skill-id pct=@ud]
+      [%xp-global pct=@ud]
+      [%speed-bonus pct=@ud]
+      [%atk-boost pct=@ud]
+      [%str-boost pct=@ud]
+      [%def-boost pct=@ud]
+      [%ranged-boost pct=@ud]
+      [%magic-boost pct=@ud]
+      [%farming-yield pct=@ud]
+      [%gp-bonus pct=@ud]
+      [%protect-all pct=@ud]
+  ==
+::
++$  cape-def
+  $:  skill=skill-id
+      bonuses=(list cape-bonus)
   ==
 --

@@ -20,11 +20,12 @@ export type ItemCategory =
   | 'potion'
   | 'seed'
   | 'tablet'
+  | 'bones'
   | 'misc';
 
 export type SkillType = 'gathering' | 'artisan' | 'combat' | 'passive';
 
-export type EquipmentSlot = 'helmet' | 'platebody' | 'weapon' | 'shield';
+export type EquipmentSlot = 'helmet' | 'platebody' | 'weapon' | 'shield' | 'cape';
 
 export type CombatStyle =
   | 'melee-attack'
@@ -178,7 +179,7 @@ export interface PotionEffect {
   turnsLeft: number;
 }
 
-export type PotionEffectType = 'attack-boost' | 'strength-boost' | 'defence-boost' | 'heal' | 'prayer-restore';
+export type PotionEffectType = 'attack-boost' | 'strength-boost' | 'defence-boost' | 'ranged-boost' | 'magic-boost' | 'heal' | 'prayer-restore';
 
 export interface PotionDef {
   effectType: PotionEffectType;
@@ -310,6 +311,17 @@ export interface GameStats {
   maxHitDealt: number;
 }
 
+export interface CapeBonus {
+  type: 'xp-skill' | 'xp-global' | 'speed-bonus' | 'atk-boost' | 'str-boost' | 'def-boost' | 'ranged-boost' | 'magic-boost' | 'farming-yield' | 'gp-bonus' | 'protect-all';
+  skill?: SkillId;
+  pct: number;
+}
+
+export interface CapeDef {
+  skill: SkillId;
+  bonuses: CapeBonus[];
+}
+
 export interface GameDefs {
   skills: Record<SkillId, SkillDef>;
   items: Record<ItemId, ItemDef>;
@@ -327,6 +339,7 @@ export interface GameDefs {
   shop: Record<ItemId, number>;
   pets: Record<PetId, PetDef>;
   spells: Record<SpellId, SpellDef>;
+  capes: Record<ItemId, CapeDef>;
 }
 
 export interface DisplaySkill {

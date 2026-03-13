@@ -1,0 +1,289 @@
+Bide Asset Generation Reference
+================================
+
+This lists ALL visual assets needed for the game beyond item icons (which are in items.txt).
+
+Style baseline: pixel art RPG, 32x32 or 64x64 icons unless noted, centered on transparent background,
+clean outlines, slight shading for depth, no text overlays.
+
+
+## Skill Icons (22 icons, 32x32)
+
+Gathering skills (green tint):
+  1. %woodcutting    — "Woodcutting"    — Bronze hatchet embedded in a tree stump, wood chips flying, earthy brown and forest green
+  2. %fishing        — "Fishing"        — Silver fishing hook dangling over blue water ripples, a small fish silhouette below
+  3. %mining         — "Mining"         — Steel pickaxe striking a grey rock face, sparks and ore fragments scattering
+  4. %thieving       — "Thieving"       — Black gloved hand reaching into a coin purse, shadowy purple background, gold coins spilling
+  5. %agility        — "Agility"        — Running boots in mid-stride with motion lines, light blue and white speed streaks
+  6. %astrology      — "Astrology"      — A brass telescope pointing at a night sky with three bright stars forming a triangle, deep navy and gold
+
+Artisan skills (blue tint):
+  7. %firemaking     — "Firemaking"     — Crackling campfire with orange and yellow flames, a single log beneath, warm red glow
+  8. %cooking        — "Cooking"        — Steaming cooking pot on a stone hearth, a wooden spoon resting across the rim, warm amber tones
+  9. %smithing       — "Smithing"       — Glowing orange-hot metal bar on an anvil with a hammer mid-swing, sparks flying
+ 10. %fletching      — "Fletching"      — A wooden arrow shaft with a feather being attached, a small knife beside it, tan and green
+ 11. %crafting       — "Crafting"       — Needle and thread weaving through leather, a cut gemstone nearby, brown and teal
+ 12. %runecrafting   — "Runecrafting"   — Glowing blue rune stone floating above an altar, arcane circles radiating outward, deep blue and violet
+ 13. %herblore       — "Herblore"       — Glass vial with swirling green potion, herbs and leaves scattered around the base
+ 14. %farming        — "Farming"        — Golden wheat sheaf in front of a tilled brown earth row, a green seedling sprouting
+ 15. %summoning      — "Summoning"      — Swirling indigo portal with a ghostly spirit hand reaching through, mystical purple glow
+
+Combat skills (red tint):
+ 16. %attack         — "Attack"         — Crossed steel swords with a sharp gleam on the blades, red background accent
+ 17. %strength       — "Strength"       — Clenched iron gauntlet fist, flexed upward, strong red and dark grey tones
+ 18. %defence        — "Defence"        — Round wooden shield with iron boss and rivets, solid blue-grey background
+ 19. %hitpoints      — "Hitpoints"      — Bright red heart with a subtle pulse glow, a small green cross in the center
+ 20. %ranged         — "Ranged"         — A green-fletched arrow in flight with a bow silhouette behind, motion blur trail
+ 21. %magic          — "Magic"          — Glowing orb of swirling blue and white energy cradled between two open hands
+ 22. %prayer         — "Prayer"         — Pair of golden clasped hands in prayer, soft holy light radiating upward, white and gold
+ 23. %slayer         — "Slayer"         — Dark skull with red glowing eyes and a dagger through the top, ominous black and crimson
+
+
+## Monster Portraits (13 portraits, 64x64)
+
+Each portrait: front-facing RPG bestiary style, dramatic lighting, dark vignette border.
+
+  1. %chicken       — "Chicken"        — Plump white chicken with red comb, standing on grass, comically defiant expression, bright and cheerful
+  2. %goblin        — "Goblin"         — Small green-skinned goblin with pointed ears, beady yellow eyes, ragged leather armor, holding a crude wooden club
+  3. %rat           — "Giant Rat"      — Oversized brown rat with matted fur and red beady eyes, hunched posture, long pink tail, sewer grime
+  4. %zombie        — "Zombie"         — Shambling humanoid with grey-green rotting flesh, torn clothing, hollow glowing green eyes, arms outstretched
+  5. %skeleton      — "Skeleton"       — Bleached white skeleton warrior holding a rusty sword, empty eye sockets with faint blue pinprick lights
+  6. %giant-spider  — "Giant Spider"   — Massive black and brown spider with eight legs spread wide, multiple red eyes glinting, fangs dripping venom
+  7. %bandit        — "Bandit"         — Hooded human rogue in dark leather armor, a scar across one cheek, wielding a curved dagger, forest shadows
+  8. %dark-knight   — "Dark Knight"    — Imposing figure in full black plate armor with a crimson plume, visor down, wielding a dark longsword, purple aura
+  9. %cave-troll    — "Cave Troll"     — Massive grey-skinned troll with a jutting underbite and tusks, hunched in a cave, holding a stone club, moss on shoulders
+ 10. %ogre          — "Ogre"           — Hulking green-brown ogre with a potbelly, tiny horns, massive spiked club resting on one shoulder, dull angry expression
+ 11. %demon         — "Demon"          — Red-skinned winged demon with curling horns, glowing yellow eyes, clawed hands wreathed in dark fire, hellish backdrop
+ 12. %fire-giant    — "Fire Giant"     — Towering humanoid engulfed in flames, molten rock skin with glowing orange cracks, a flaming greatsword
+ 13. %dragon        — "Dragon"         — Fearsome red-scaled dragon with spread wings, golden eyes, smoke curling from nostrils, treasure hoard glinting behind
+
+
+## Combat Area Backgrounds (6 scenes, 800x200 wide landscape)
+
+Each background: atmospheric pixel art landscape, wide panoramic, muted edges for UI overlay.
+
+  1. %farmlands        — "Farmlands"        — Rolling green fields with a wooden fence, a barn in the distance, golden wheat, bright daylight, scattered chickens
+  2. %forest           — "Forest"           — Dense dark-green forest with towering oaks, shafts of pale light through canopy, moss-covered rocks, misty ground
+  3. %caves            — "Caves"            — Dim underground cavern with stalactites, glowing blue-green phosphorescent mushrooms, rough stone walls, spider webs
+  4. %fortress         — "Fortress"         — Crumbling stone fortress walls at dusk, torchlight flickering in sconces, a broken portcullis, dark clouds overhead
+  5. %deep-caverns     — "Deep Caverns"     — Vast underground chasm with a stone bridge, rivers of lava below casting red glow upward, jagged crystal formations
+  6. %volcanic-wastes  — "Volcanic Wastes"  — Scorched red-black volcanic landscape, rivers of lava, ash clouds, jagged obsidian spires, ominous orange sky
+
+
+## Dungeon Backgrounds (3 scenes, 800x200 wide landscape)
+
+  1. %goblin-lair    — "Goblin Lair"    — Cramped earthen tunnel system with crude torches, goblin totems, scattered bones and stolen loot, dirty greenish light
+  2. %dark-fortress  — "Dark Fortress"  — Grand dark stone keep interior, iron chandeliers with dying candles, tattered banners, heavy shadows, oppressive atmosphere
+  3. %dragons-den    — "Dragon's Den"   — Massive volcanic cavern with a mountain of gold and gems, dragon claw marks on walls, smoke and embers drifting, molten pools
+
+
+## Prayer Icons (8 icons, 32x32)
+
+Each prayer icon: holy symbol on a soft glowing background, sacred geometry feel.
+
+  1. %thick-skin           — "Thick Skin"           — Pale golden shield outline with layered stone texture, soft white glow, sturdy and solid
+  2. %burst-of-strength    — "Burst of Strength"    — Clenched fist radiating golden light rays, upward energy burst, warm yellow
+  3. %clarity-of-thought   — "Clarity of Thought"   — Glowing golden eye with concentric circles, sharp clarity lines, bright white center
+  4. %superhuman-strength  — "Superhuman Strength"  — Muscular arm flexing with golden holy flames around it, intense bright yellow aura
+  5. %improved-reflexes    — "Improved Reflexes"    — Lightning bolt through a golden circle, quick and sharp, electric white-gold
+  6. %protect-from-melee   — "Protect from Melee"   — Sword being deflected by a radiant holy barrier, angled away, white shield glow
+  7. %protect-from-ranged  — "Protect from Ranged"  — Arrow shattering against a radiant holy dome, fragments scattering, white protective aura
+  8. %protect-from-magic   — "Protect from Magic"   — Magical orb dissolving against a golden ward circle, arcane sparks dissipating, warm gold
+
+
+## Pet Icons (12 icons, 32x32)
+
+Each pet icon: cute companion creature, friendly expression, chibi proportions.
+
+  1. %rocky         — "Rocky"         — Small grey stone golem with gem eyes, stubby arms, cheerful crack-smile, mining dust particles (Mining pet)
+  2. %beaver        — "Beaver"        — Fluffy brown beaver with oversized front teeth, holding a small log, bright friendly eyes (Woodcutting pet)
+  3. %heron         — "Heron"         — Elegant blue-grey heron standing on one leg, a small fish in beak, calm water reflection (Fishing pet)
+  4. %ember         — "Ember"         — Tiny fire sprite made of living flame, cute round body, flickering orange-yellow, warm glow (Firemaking pet)
+  5. %nibbles       — "Nibbles"       — Sneaky little black cat with a coin in its mouth, crouched low, mischievous green eyes (Thieving pet)
+  6. %golem         — "Golem"         — Mini iron golem with riveted plates, glowing furnace core visible in chest, sturdy pose (Smithing pet)
+  7. %chompy        — "Chompy"        — Chubby red dragon hatchling wearing a tiny chef hat, licking its lips, holding a drumstick (Cooking pet)
+  8. %sprout        — "Sprout"        — Small green plant creature with a flower bud head, leaf arms, rooted feet, cheerful bloom (Farming pet)
+  9. %rune-sprite   — "Rune Sprite"   — Tiny floating ethereal sprite with rune symbols orbiting it, translucent blue-violet glow (Runecrafting pet)
+ 10. %phoenix-chick — "Phoenix Chick" — Baby phoenix with fluffy golden-red plumage, tiny wings spread, warm ember trail (Combat drop from Fire Giant)
+ 11. %dragon-whelp  — "Dragon Whelp"  — Baby dragon with oversized head, stubby wings, green scales, puffing a tiny smoke ring (Combat drop from Dragon)
+ 12. %goblin-runt   — "Goblin Runt"   — Tiny goblin with an oversized helmet falling over its eyes, holding a coin pouch, goofy grin (Combat drop from Goblin)
+
+
+## Spell Icons (12 icons, 32x32)
+
+Each spell icon: elemental magic burst, centered energy effect, dark background to let colors pop.
+
+Strike spells (beginner, small effect):
+  1. %wind-strike   — "Wind Strike"   — Small swirl of white-green wind, a few leaves caught in the gust, light and airy
+  2. %water-strike  — "Water Strike"  — Splash of blue water droplets forming a small wave, cool cyan tones
+  3. %earth-strike  — "Earth Strike"  — Brown rock shard launching forward, crumbling earth particles, dusty tan
+  4. %fire-strike   — "Fire Strike"   — Small fireball with orange-red flame, trailing sparks, warm glow
+
+Bolt spells (intermediate, medium effect):
+  5. %air-bolt      — "Air Bolt"      — Concentrated white-silver wind lance, sharp and fast, streaking motion lines
+  6. %water-bolt    — "Water Bolt"    — Surging blue water jet shaped like a bolt, icy blue highlights, splashing edges
+  7. %earth-bolt    — "Earth Bolt"    — Jagged brown-grey stone spike launching forward, sharp crystalline edges
+  8. %fire-bolt     — "Fire Bolt"     — Intense orange fireball with a bright yellow core, trailing flame ribbons
+
+Blast spells (advanced, large effect):
+  9. %air-blast     — "Air Blast"     — Explosive burst of white wind energy radiating outward, powerful shockwave rings
+ 10. %fire-blast    — "Fire Blast"    — Massive orange-red explosion with a white-hot center, billowing fire clouds
+
+Surge spells (expert, maximum effect):
+ 11. %air-surge     — "Air Surge"     — Towering silver-white tornado column, crackling with electric energy, devastating force
+ 12. %fire-surge    — "Fire Surge"    — Cataclysmic inferno eruption, deep red and blinding white core, molten meteors raining
+
+
+## Agility Obstacles (10 icons, 32x32)
+
+Each obstacle icon: the obstacle itself from a side view, action-oriented, dynamic feel.
+
+  1. %jog-trail       — "Jog Trail"       — Winding dirt path through grass with footprint marks, trees on either side, energetic motion lines
+  2. %balance-beam    — "Balance Beam"    — Narrow wooden beam over a gap, a figure silhouette mid-balance with outstretched arms
+  3. %rope-swing      — "Rope Swing"      — Thick knotted rope hanging from a wooden crossbar, arc motion lines showing the swing path
+  4. %wall-climb      — "Wall Climb"      — Rough stone wall with handholds, a figure pulling themselves upward, determined effort
+  5. %pipe-balance    — "Pipe Balance"    — Narrow iron pipe stretching across a chasm, a figure carefully walking across, precarious height
+  6. %rooftop-run     — "Rooftop Run"     — Tiled rooftops at different heights with a figure leaping between them, city skyline, twilight
+  7. %cliff-scramble  — "Cliff Scramble"  — Jagged rocky cliff face with sparse handholds, a figure scrambling upward, dust falling
+  8. %tower-climb     — "Tower Climb"     — Tall stone tower exterior with a spiral of handholds, a figure ascending, dizzying height, clouds
+  9. %canyon-leap     — "Canyon Leap"     — Wide canyon gap with a figure mid-jump, arms forward, vast drop below, dramatic perspective
+ 10. %dragon-gauntlet — "Dragon Gauntlet" — Fiery obstacle course with flame jets, swinging axes, and lava below, intense red-orange, ultimate challenge
+
+
+## Constellation Icons (12 icons, 32x32)
+
+Each constellation: star pattern on a deep navy night sky, connected by faint golden lines, named constellation shape.
+
+  1. Deedree   (%study-deedree)   — Tree-shaped star pattern (linked to Woodcutting), 5-7 stars forming a trunk and canopy, soft green tint on stars
+  2. Iridan    (%study-iridan)    — Pickaxe-shaped star pattern (linked to Mining), angular constellation, warm amber-tinted stars
+  3. Ameria    (%study-ameria)    — Fish-shaped star pattern (linked to Fishing), graceful curved constellation, cool blue-tinted stars
+  4. Ko        (%study-ko)        — Flame-shaped star pattern (linked to Firemaking), rising triangular shape, warm orange-tinted stars
+  5. Vale      (%study-vale)      — Cauldron-shaped star pattern (linked to Cooking), round bowl shape with steam wisps, warm yellow stars
+  6. Arach     (%study-arach)     — Spider-shaped star pattern (linked to Thieving), eight radiating points, shadowy purple-tinted stars
+  7. Hyden     (%study-hyden)     — Anvil-shaped star pattern (linked to Smithing), solid rectangular base with a horn, iron-grey tinted stars
+  8. Qimican   (%study-qimican)   — Vial-shaped star pattern (linked to Herblore), narrow top widening to a round base, green-tinted stars
+  9. Terra     (%study-terra)     — Wheat sheaf star pattern (linked to Farming), vertical stalks fanning outward, golden-tinted stars
+ 10. Sylvan    (%study-sylvan)    — Arrow-shaped star pattern (linked to Fletching), sleek pointed constellation, forest-green tinted stars
+ 11. Murtia    (%study-murtia)    — Sword-shaped star pattern (linked to Attack), long blade with crossguard, crimson-tinted stars
+ 12. Cerberus  (%study-cerberus)  — Shield-shaped star pattern (linked to Defence), broad protective shape, steel-blue tinted stars
+
+
+## Cape Icons (23 icons, 32x32)
+
+Each cape: flowing shoulder cape seen from behind, color-coded to skill, trim detail at edges.
+
+  1. %woodcutting-cape   — Forest green cape with brown tree emblem, leaf-pattern gold trim
+  2. %fishing-cape       — Ocean blue cape with silver fish emblem, wave-pattern trim
+  3. %mining-cape        — Dark grey cape with amber pickaxe emblem, rock-chip trim
+  4. %thieving-cape      — Deep purple cape with gold coin emblem, shadow-fade edges
+  5. %firemaking-cape    — Bright orange cape with flame emblem, flickering ember trim
+  6. %cooking-cape       — Warm red cape with cauldron emblem, steam-wisp trim
+  7. %smithing-cape      — Steel grey cape with anvil emblem, hammered-metal trim
+  8. %fletching-cape     — Olive green cape with arrow emblem, feather-pattern trim
+  9. %crafting-cape      — Teal cape with needle-and-thread emblem, stitched trim
+ 10. %runecrafting-cape  — Deep indigo cape with glowing rune emblem, arcane-circle trim
+ 11. %herblore-cape      — Verdant green cape with potion vial emblem, vine trim
+ 12. %farming-cape       — Golden wheat cape with seedling emblem, soil-brown trim
+ 13. %agility-cape       — Sky blue cape with winged boot emblem, speed-line trim
+ 14. %astrology-cape     — Midnight navy cape with star cluster emblem, constellation-line trim
+ 15. %summoning-cape     — Mystic purple cape with spirit portal emblem, ethereal glow trim
+ 16. %attack-cape        — Crimson cape with crossed swords emblem, sharp angular trim
+ 17. %strength-cape      — Dark red cape with gauntlet fist emblem, iron-chain trim
+ 18. %defence-cape       — Blue-grey cape with shield emblem, riveted-plate trim
+ 19. %hitpoints-cape     — Red-white cape with heart emblem, pulsing glow trim
+ 20. %ranged-cape        — Hunter green cape with bow-and-arrow emblem, feather trim
+ 21. %magic-cape         — Royal blue cape with orb emblem, arcane-spark trim
+ 22. %prayer-cape        — White-gold cape with clasped hands emblem, holy-light trim
+ 23. %slayer-cape        — Black-crimson cape with skull-and-dagger emblem, blood-drip trim
+
+
+## UI Assets
+
+Logo and Branding:
+  - Game logo: "BIDE" in bold pixel-art block letters, stone texture with moss, warm torchlight glow behind, 400x100
+  - Favicon: Single "B" rune in pixel art, 16x16 and 32x32 variants
+
+Background and Patterns:
+  - Page background: Dark parchment texture, subtle grid pattern, warm sepia undertones, tileable 256x256
+  - Panel background: Slightly lighter parchment with aged edges, used for content cards, tileable 128x128
+  - Sidebar background: Dark wood plank texture, vertical grain, tileable 64x256
+
+Combat HUD Elements:
+  - Health bar frame: Stone-bordered horizontal bar frame, red fill gradient (bright red to dark red), 200x20
+  - Health bar fill: Red gradient segment, tileable horizontally, pulsing effect at low HP
+  - Prayer bar frame: Same stone border, cyan-blue fill gradient, 200x20
+  - Prayer bar fill: Cyan-blue gradient segment, tileable horizontally
+  - Special attack bar frame: Same stone border, golden-yellow fill gradient, 200x20
+  - Special attack bar fill: Golden-yellow gradient segment, tileable horizontally
+  - Enemy nameplate: Dark banner shape with pointed ends, space for text, 250x30
+  - Combat splash: "Hit!" text effect in red, "Miss!" in grey, "Heal!" in green, 64x32 each
+
+Equipment Slot Placeholders (32x32 each, faded grey silhouettes):
+  - Helmet slot: Grey outline of a basic helmet/helm shape
+  - Platebody slot: Grey outline of a chest armor piece
+  - Platelegs slot: Grey outline of leg armor
+  - Boots slot: Grey outline of armored boots
+  - Gloves slot: Grey outline of gauntlets
+  - Weapon slot: Grey outline of a sword
+  - Shield slot: Grey outline of a round shield
+  - Cape slot: Grey outline of a flowing cape
+  - Amulet slot: Grey outline of a necklace/pendant
+  - Ring slot: Grey outline of a ring
+  - Ammo slot: Grey outline of an arrow quiver
+  - Quiver slot: Grey outline of arrows
+
+Skill Type Badges (24x24 each, rounded pill shape with icon):
+  - Gathering badge: Green pill with a small leaf icon
+  - Artisan badge: Blue pill with a small gear/hammer icon
+  - Combat badge: Red pill with a small crossed-swords icon
+  - Passive badge: Purple pill with a small star icon
+
+Bank Tab Icons (24x24 each):
+  - All items tab: Grid of four small colored squares
+  - Equipment tab: Small sword and shield
+  - Materials tab: Small stack of logs and ore
+  - Food tab: Small drumstick icon
+  - Potions tab: Small potion vial
+  - Runes tab: Small glowing rune
+  - Misc tab: Small question mark in a circle
+
+Navigation Sidebar Icons (24x24 each):
+  - Home/Dashboard: Small house silhouette
+  - Skills: Open book with a star
+  - Combat: Crossed swords
+  - Shop: Gold coin stack
+  - Bank: Treasure chest
+  - Equipment: Armor stand
+  - Settings: Gear/cog
+  - Quests: Scroll with wax seal
+  - Pets: Paw print
+  - Achievements: Trophy cup
+
+Miscellaneous UI:
+  - Gold coin: Single shiny gold coin for currency displays, 16x16
+  - XP orb: Small glowing blue experience orb, 16x16
+  - Mastery star: Small golden star for mastery indicators, 16x16
+  - Lock icon: Small padlock for locked content, 16x16
+  - Checkmark: Green checkmark for completed content, 16x16
+  - Level-up burst: Radial golden light explosion effect for level-up animation, 128x128
+  - Loot sparkle: Small white-yellow sparkle particles for item drops, 16x16 sprite sheet (4 frames)
+  - Tooltip frame: Dark semi-transparent panel with thin golden border, 9-slice scalable
+
+
+## Summary
+
+Total unique assets needed (excluding items):
+
+  Skill icons:          23
+  Monster portraits:    13
+  Area backgrounds:      6
+  Dungeon backgrounds:   3
+  Prayer icons:          8
+  Pet icons:            12
+  Spell icons:          12
+  Agility obstacles:    10
+  Constellation icons:  12
+  Cape icons:           23
+  UI assets:           ~40
+  ─────────────────────────
+  Total:              ~162 assets

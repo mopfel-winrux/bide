@@ -5,9 +5,11 @@ import { ActiveAction } from '../components/ActiveAction';
 import { ActionCard } from '../components/ActionCard';
 import { SkillBonuses } from '../components/SkillBonuses';
 import { EmptyState } from '../components/ui/EmptyState';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { fmt } from '../shared/format';
 import { levelFromXp } from '../shared/xp';
+import { SKILL_GROUPS } from '../shared/skill-groups';
+import type { ActionDef } from '../shared/types';
 
 type Filter = 'all' | 'unlocked' | 'locked';
 
@@ -15,6 +17,7 @@ export function SkillPage() {
   const { skillId } = useParams<{ skillId: string }>();
   const { defs, state, getDisplaySkill } = useGame();
   const [filter, setFilter] = useState<Filter>('all');
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
   if (skillId === 'farming') return <Navigate to="/farming" replace />;
 
@@ -25,11 +28,38 @@ export function SkillPage() {
   const sd = defs.skills[skillId];
   const ds = getDisplaySkill(skillId);
 
-  const filteredActions = sd.actions.filter((act) => {
+  const filterAction = (act: ActionDef) => {
     if (filter === 'unlocked') return act.levelReq <= ds.level;
     if (filter === 'locked') return act.levelReq > ds.level;
     return true;
-  });
+  };
+
+  const groups = SKILL_GROUPS[skillId];
+  const actionMap = useMemo(() => {
+    const m = new Map<string, ActionDef>();
+    for (const a of sd.actions) m.set(a.id, a);
+    return m;
+  }, [sd.actions]);
+
+  // Build grouped sections or flat list
+  const groupedSections = useMemo(() => {
+    if (!groups) return null;
+    const usedIds = new Set<string>();
+    const sections: { label: string; actions: ActionDef[] }[] = [];
+    for (const g of groups) {
+      const acts = g.actionIds
+        .map(id => actionMap.get(id))
+        .filter((a): a is ActionDef => !!a && filterAction(a));
+      for (const id of g.actionIds) usedIds.add(id);
+      if (acts.length > 0) sections.push({ label: g.label, actions: acts });
+    }
+    // "Other" section for ungrouped actions
+    const other = sd.actions.filter(a => !usedIds.has(a.id) && filterAction(a));
+    if (other.length > 0) sections.push({ label: 'Other', actions: other });
+    return sections;
+  }, [groups, actionMap, sd.actions, filter, ds.level]);
+
+  const flatFiltered = groups ? null : sd.actions.filter(filterAction);
 
   return (
     <div>
@@ -86,14 +116,48 @@ export function SkillPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredActions.map((act) => (
-          <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} />
-        ))}
-      </div>
-
-      {filteredActions.length === 0 && (
-        <EmptyState>No actions match this filter.</EmptyState>
+      {groupedSections ? (() => {
+        const currentTab = activeTab ?? groupedSections[0]?.label ?? null;
+        const currentSection = groupedSections.find(s => s.label === currentTab);
+        return groupedSections.length === 0 ? (
+          <EmptyState>No actions match this filter.</EmptyState>
+        ) : (
+          <div>
+            <div className="flex flex-wrap gap-1 mb-5">
+              {groupedSections.map(({ label }) => (
+                <button
+                  key={label}
+                  onClick={() => setActiveTab(label)}
+                  className={`px-3 py-1.5 text-xs rounded-md border transition-all duration-150 cursor-pointer ${
+                    currentTab === label
+                      ? 'border-amber-600 bg-amber-600/10 text-amber-500'
+                      : 'border-[#1e293b] bg-transparent text-gray-500 hover:text-gray-300'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {currentSection && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {currentSection.actions.map((act) => (
+                  <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })() : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {flatFiltered!.map((act) => (
+              <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} />
+            ))}
+          </div>
+          {flatFiltered!.length === 0 && (
+            <EmptyState>No actions match this filter.</EmptyState>
+          )}
+        </>
       )}
     </div>
   );
