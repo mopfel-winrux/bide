@@ -98,6 +98,7 @@ inputs=~[[item=%gold-bar qty=1] [item=%onyx qty=1]]
 | `inputs` | `(list [item=item-id qty=@ud])` | Items consumed per action (empty for gathering) |
 | `outputs` | `(list output-def)` | Items produced per action |
 | `mastery-xp` | `@ud` | Mastery XP per action |
+| `gp-per-action` | `@ud` | GP produced per action (0 for most; used by alchemy spells) |
 
 ## Output Definition Fields
 
@@ -240,3 +241,50 @@ If the crop is edible, add a healing value in `lib/bide-food.hoon`.
 ```
 
 Fields are percentage bonuses. `charges` is the number of actions/attacks before the familiar auto-dismisses.
+
+## Adding a Pet
+
+1. Add the pet definition in `lib/bide-pets.hoon` to `++pet-registry`:
+
+```hoon
+:-  %my-pet
+:*  name='My Pet'
+    source-type=%skilling       ::  or %combat
+    source-id=%mining           ::  skill-id or monster-id
+    chance=2.000                ::  1 in 2000
+    effects=~[[%xp-skill %mining 2]]  ::  +2% mining XP
+==
+```
+
+Effect types: `%xp-skill` (skill-specific XP %), `%xp-global` (all XP %), `%gp-bonus` (GP from monsters %), `%speed-bonus` (action speed %), `%farming-yield` (farming yield %).
+
+Pet drops are rolled automatically in `process-skill-tick` (for skilling pets) and `process-combat-events` (for combat pets). The `source-type` and `source-id` must match the action context for the pet to be eligible.
+
+## Adding a Shop Item
+
+Add to `++shop-registry` in `lib/bide-shop.hoon`:
+
+```hoon
+[%my-item 150]  ::  buy price in GP
+```
+
+The item must already exist in `lib/bide-items.hoon`. Pricing convention: 2-3x the item's sell price.
+
+## Adding an Alt Magic Spell
+
+Add to `++magic-actions` in `lib/bide-skills.hoon`:
+
+```hoon
+:*  id=%my-spell
+    name='My Spell'
+    level-req=45
+    xp=200
+    base-time=4.000
+    inputs=~[[item=%fire-rune qty=5] [item=%death-rune qty=1] [item=%some-bar qty=1]]
+    outputs=~[[item=%enchanted-bar min-qty=1 max-qty=1 chance=100]]
+    mastery-xp=20
+    gp-per-action=0             ::  set >0 for alchemy spells that produce GP
+==
+```
+
+For alchemy spells, set `outputs=~` and `gp-per-action` to the GP amount. The engine handles GP production in `process-skill-tick`.

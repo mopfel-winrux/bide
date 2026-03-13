@@ -30,14 +30,12 @@ Four new skills providing passive bonuses computed on-the-fly from levels/master
 
 ---
 
-## Planned
-
 ### Phase 8 — Economy & Polish
-- Shop: buy items with GP, stock limits
-- Alt Magic: crafting spells that consume runes for utility effects
-- Pets: rare drops that give small bonuses
-- Modifier engine: equipment/prayer/potion/mastery bonuses applied uniformly
-- Completion log: track total progress percentage
+Unified modifier engine (`lib/bide-modifiers.hoon`) replacing scattered bonus calls in `process-skill-tick` and `process-combat-events` with a single `compute-modifiers` gate collecting all sources (agility, astrology, summoning, potions, prayers, pets) into a `modifier-set`. GP Shop (`lib/bide-shop.hoon`) with ~43 buyable items across raw materials, runes, seeds, food, and starter gear. Pet system (`lib/bide-pets.hoon`) with 12 pets as rare drops from skilling and combat (1/1000-1/5000 chance), each providing passive bonuses (+2-3% skill XP, +1-2% global XP, +3% GP, +5% farming yield); pets managed on Equipment page. Completion Log tracking overall progress across skills (99 count), mastery levels, monsters killed, dungeons cleared, and pets found with per-category progress bars and aggregate statistics (total XP/GP/kills/actions/max hit). Alt Magic adding 11 utility spells to the Magic skill — 3 alchemy (convert items to GP via `gp-per-action` field), 4 superheat (smelt without furnace), 4 enchant (upgrade bars to enchanted versions); 4 new enchanted bar items. Mastery tracking visible on SkillPage (pool XP + total levels) and ActionCard (per-action mastery bar). New frontend pages: ShopPage, CompletionPage. New routes: `/shop`, `/completion`, `/skill/magic` (Alt Magic in artisan sidebar section).
+
+---
+
+## Planned
 
 ### Phase 9 — Content Population
 - Full item/monster/action data to match content depth

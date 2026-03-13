@@ -1,6 +1,6 @@
 ::  sur/bide.hoon — core type definitions for Bide (Melvor Idle on Urbit)
 ::
-::  Phase 1-7: Skills, Bank, Equipment, Combat, Passive Skills
+::  Phase 1-8: Skills, Bank, Equipment, Combat, Passive Skills, Economy
 ::
 |%
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -14,6 +14,7 @@
 +$  area-id      @tas
 +$  prayer-id    @tas
 +$  dungeon-id   @tas
++$  pet-id       @tas
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Top-level game state                                    │
@@ -33,6 +34,8 @@
       slayer-task=(unit slayer-task)            ::  current slayer assignment
       farm-plots=(list (unit farm-plot))       ::  farming plots
       active-familiar=(unit familiar-state)    ::  summoned familiar
+      pets-found=(set pet-id)                  ::  discovered pets
+      active-pet=(unit pet-id)                 ::  equipped pet
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -174,6 +177,13 @@
 ::
 +$  game-stats
   $:  actions-completed=(map action-id @ud)    ::  lifetime action counts
+      monsters-killed=(map monster-id @ud)     ::  lifetime kill counts
+      items-produced=(map item-id @ud)         ::  lifetime items crafted
+      dungeons-completed=(map dungeon-id @ud)  ::  lifetime dungeon clears
+      total-xp-earned=@ud                      ::  lifetime xp
+      total-gp-earned=@ud                      ::  lifetime gp earned
+      total-gp-spent=@ud                       ::  lifetime gp spent
+      max-hit-dealt=@ud                        ::  highest single hit
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -201,6 +211,7 @@
       [%summon-familiar tablet=item-id]
       [%dismiss-familiar ~]
       [%eat-food item=item-id]
+      [%set-pet pet=(unit pet-id)]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -248,6 +259,7 @@
       inputs=(list [item=item-id qty=@ud])     ::  consumed per action
       outputs=(list output-def)                ::  produced per action
       mastery-xp=@ud                           ::  mastery xp per action
+      gp-per-action=@ud                        ::  GP produced per action (0 = none)
   ==
 ::
 +$  output-def
@@ -364,5 +376,46 @@
       energy-cost=@ud                          ::  percent of 100
       damage-mult=@ud                          ::  percentage (150 = 1.5x)
       accuracy-mult=@ud                        ::  percentage (100 = normal)
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Modifier engine (Phase 8)                               │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  modifier-set
+  $:  xp-global=@ud                            ::  +% to all skills
+      xp-gathering=@ud                         ::  +% gathering skills
+      xp-artisan=@ud                           ::  +% artisan skills
+      xp-combat=@ud                            ::  +% combat skills
+      xp-per-skill=(map skill-id @ud)          ::  specific skill overrides
+      speed-bonus=@ud                          ::  -% action time
+      atk-boost=@ud                            ::  +% melee attack
+      str-boost=@ud                            ::  +% melee strength
+      def-boost=@ud                            ::  +% defence
+      protect-melee=@ud                        ::  -% melee damage taken
+      protect-ranged=@ud                       ::  -% ranged damage taken
+      protect-magic=@ud                        ::  -% magic damage taken
+      farming-yield=@ud                        ::  +% farming yield
+      gp-bonus=@ud                             ::  +% GP from monsters
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Pet definitions (Phase 8)                               │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  pet-def
+  $:  name=@t
+      source-type=?(%skilling %combat)
+      source-id=@tas                           ::  skill-id or monster-id
+      chance=@ud                               ::  1 in N
+      effects=(list pet-bonus)
+  ==
+::
++$  pet-bonus
+  $%  [%xp-skill skill=skill-id pct=@ud]
+      [%xp-global pct=@ud]
+      [%gp-bonus pct=@ud]
+      [%speed-bonus pct=@ud]
+      [%farming-yield pct=@ud]
   ==
 --

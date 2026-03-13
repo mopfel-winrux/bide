@@ -54,6 +54,7 @@
           inputs=~
           outputs=~[[item=%normal-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%cut-oak-tree
           name='Oak Tree'
@@ -63,6 +64,7 @@
           inputs=~
           outputs=~[[item=%oak-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=35
+          gp-per-action=0
       ==
       :*  id=%cut-willow-tree
           name='Willow Tree'
@@ -72,6 +74,7 @@
           inputs=~
           outputs=~[[item=%willow-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=63
+          gp-per-action=0
       ==
       :*  id=%cut-teak-tree
           name='Teak Tree'
@@ -81,6 +84,7 @@
           inputs=~
           outputs=~[[item=%teak-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=85
+          gp-per-action=0
       ==
       :*  id=%cut-maple-tree
           name='Maple Tree'
@@ -90,6 +94,7 @@
           inputs=~
           outputs=~[[item=%maple-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=100
+          gp-per-action=0
       ==
       :*  id=%cut-mahogany-tree
           name='Mahogany Tree'
@@ -99,6 +104,7 @@
           inputs=~
           outputs=~[[item=%mahogany-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=125
+          gp-per-action=0
       ==
       :*  id=%cut-yew-tree
           name='Yew Tree'
@@ -108,6 +114,7 @@
           inputs=~
           outputs=~[[item=%yew-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%cut-magic-tree
           name='Magic Tree'
@@ -117,6 +124,7 @@
           inputs=~
           outputs=~[[item=%magic-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=250
+          gp-per-action=0
       ==
       :*  id=%cut-redwood-tree
           name='Redwood Tree'
@@ -126,6 +134,7 @@
           inputs=~
           outputs=~[[item=%redwood-logs min-qty=1 max-qty=1 chance=100]]
           mastery-xp=350
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -151,6 +160,7 @@
           inputs=~
           outputs=~[[item=%vial-of-water min-qty=1 max-qty=1 chance=100]]
           mastery-xp=1
+          gp-per-action=0
       ==
       :*  id=%catch-shrimp
           name='Shrimp'
@@ -160,6 +170,7 @@
           inputs=~
           outputs=~[[item=%raw-shrimp min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%catch-sardine
           name='Sardine'
@@ -169,6 +180,7 @@
           inputs=~
           outputs=~[[item=%raw-sardine min-qty=1 max-qty=1 chance=100]]
           mastery-xp=20
+          gp-per-action=0
       ==
       :*  id=%catch-herring
           name='Herring'
@@ -178,6 +190,7 @@
           inputs=~
           outputs=~[[item=%raw-herring min-qty=1 max-qty=1 chance=100]]
           mastery-xp=30
+          gp-per-action=0
       ==
       :*  id=%catch-trout
           name='Trout'
@@ -187,6 +200,7 @@
           inputs=~
           outputs=~[[item=%raw-trout min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%catch-salmon
           name='Salmon'
@@ -196,6 +210,7 @@
           inputs=~
           outputs=~[[item=%raw-salmon min-qty=1 max-qty=1 chance=100]]
           mastery-xp=70
+          gp-per-action=0
       ==
       :*  id=%catch-lobster
           name='Lobster'
@@ -205,6 +220,7 @@
           inputs=~
           outputs=~[[item=%raw-lobster min-qty=1 max-qty=1 chance=100]]
           mastery-xp=90
+          gp-per-action=0
       ==
       :*  id=%catch-swordfish
           name='Swordfish'
@@ -214,6 +230,7 @@
           inputs=~
           outputs=~[[item=%raw-swordfish min-qty=1 max-qty=1 chance=100]]
           mastery-xp=110
+          gp-per-action=0
       ==
       :*  id=%catch-crab
           name='Crab'
@@ -223,6 +240,7 @@
           inputs=~
           outputs=~[[item=%raw-crab min-qty=1 max-qty=1 chance=100]]
           mastery-xp=125
+          gp-per-action=0
       ==
       :*  id=%catch-shark
           name='Shark'
@@ -232,6 +250,7 @@
           inputs=~
           outputs=~[[item=%raw-shark min-qty=1 max-qty=1 chance=100]]
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%catch-whale
           name='Whale'
@@ -241,6 +260,7 @@
           inputs=~
           outputs=~[[item=%raw-whale min-qty=1 max-qty=1 chance=100]]
           mastery-xp=250
+          gp-per-action=0
       ==
       :*  id=%catch-anglerfish
           name='Anglerfish'
@@ -250,6 +270,7 @@
           inputs=~
           outputs=~[[item=%raw-anglerfish min-qty=1 max-qty=1 chance=100]]
           mastery-xp=350
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -275,6 +296,7 @@
           inputs=~
           outputs=~[[item=%rune-essence min-qty=1 max-qty=1 chance=100]]
           mastery-xp=5
+          gp-per-action=0
       ==
       :*  id=%mine-copper
           name='Copper Ore'
@@ -284,6 +306,7 @@
           inputs=~
           outputs=~[[item=%copper-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%mine-tin
           name='Tin Ore'
@@ -293,6 +316,7 @@
           inputs=~
           outputs=~[[item=%tin-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%mine-iron
           name='Iron Ore'
@@ -302,6 +326,7 @@
           inputs=~
           outputs=~[[item=%iron-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=35
+          gp-per-action=0
       ==
       :*  id=%mine-coal
           name='Coal'
@@ -311,6 +336,7 @@
           inputs=~
           outputs=~[[item=%coal-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%mine-silver
           name='Silver Ore'
@@ -320,6 +346,7 @@
           inputs=~
           outputs=~[[item=%silver-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%mine-gold
           name='Gold Ore'
@@ -329,6 +356,7 @@
           inputs=~
           outputs=~[[item=%gold-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=65
+          gp-per-action=0
       ==
       :*  id=%mine-mithril
           name='Mithril Ore'
@@ -338,6 +366,7 @@
           inputs=~
           outputs=~[[item=%mithril-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=85
+          gp-per-action=0
       ==
       :*  id=%mine-adamantite
           name='Adamantite Ore'
@@ -347,6 +376,7 @@
           inputs=~
           outputs=~[[item=%adamantite-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=125
+          gp-per-action=0
       ==
       :*  id=%mine-runite
           name='Runite Ore'
@@ -356,6 +386,7 @@
           inputs=~
           outputs=~[[item=%runite-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=175
+          gp-per-action=0
       ==
       :*  id=%mine-dragonite
           name='Dragonite Ore'
@@ -365,6 +396,7 @@
           inputs=~
           outputs=~[[item=%dragonite-ore min-qty=1 max-qty=1 chance=100]]
           mastery-xp=275
+          gp-per-action=0
       ==
       :*  id=%mine-onyx
           name='Onyx'
@@ -374,6 +406,7 @@
           inputs=~
           outputs=~[[item=%onyx min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -399,6 +432,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-small min-qty=1 max-qty=1 chance=100] [item=%potato-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=8
+          gp-per-action=0
       ==
       :*  id=%pickpocket-farmer
           name='Farmer'
@@ -408,6 +442,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-medium min-qty=1 max-qty=1 chance=100] [item=%grimy-guam min-qty=1 max-qty=1 chance=100] [item=%onion-seed min-qty=1 max-qty=1 chance=15] [item=%guam-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=15
+          gp-per-action=0
       ==
       :*  id=%pickpocket-warrior
           name='Warrior'
@@ -417,6 +452,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-marrentill min-qty=1 max-qty=1 chance=100] [item=%tomato-seed min-qty=1 max-qty=1 chance=12] [item=%marrentill-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=26
+          gp-per-action=0
       ==
       :*  id=%pickpocket-merchant
           name='Merchant'
@@ -426,6 +462,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-tarromin min-qty=1 max-qty=1 chance=100] [item=%sweetcorn-seed min-qty=1 max-qty=1 chance=12] [item=%tarromin-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%pickpocket-knight
           name='Knight'
@@ -435,6 +472,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-harralander min-qty=1 max-qty=1 chance=100] [item=%strawberry-seed min-qty=1 max-qty=1 chance=12] [item=%harralander-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=55
+          gp-per-action=0
       ==
       :*  id=%pickpocket-noble
           name='Noble'
@@ -444,6 +482,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-ranarr min-qty=1 max-qty=1 chance=100] [item=%watermelon-seed min-qty=1 max-qty=1 chance=12] [item=%ranarr-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=75
+          gp-per-action=0
       ==
       :*  id=%pickpocket-princess
           name='Princess'
@@ -453,6 +492,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-irit min-qty=1 max-qty=1 chance=100] [item=%snape-grass-seed min-qty=1 max-qty=1 chance=10] [item=%irit-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=105
+          gp-per-action=0
       ==
       :*  id=%pickpocket-king
           name='King'
@@ -462,6 +502,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-kwuarm min-qty=1 max-qty=1 chance=100] [item=%kwuarm-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%pickpocket-dragon
           name='Dragon'
@@ -471,6 +512,7 @@
           inputs=~
           outputs=~[[item=%gp-pouch-dragon min-qty=1 max-qty=1 chance=100] [item=%grimy-torstol min-qty=1 max-qty=1 chance=100] [item=%torstol-seed min-qty=1 max-qty=1 chance=15]]
           mastery-xp=300
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -496,6 +538,7 @@
           inputs=~[[item=%normal-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%burn-oak-logs
           name='Burn Oak Logs'
@@ -505,6 +548,7 @@
           inputs=~[[item=%oak-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=60
+          gp-per-action=0
       ==
       :*  id=%burn-willow-logs
           name='Burn Willow Logs'
@@ -514,6 +558,7 @@
           inputs=~[[item=%willow-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=90
+          gp-per-action=0
       ==
       :*  id=%burn-teak-logs
           name='Burn Teak Logs'
@@ -523,6 +568,7 @@
           inputs=~[[item=%teak-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=105
+          gp-per-action=0
       ==
       :*  id=%burn-maple-logs
           name='Burn Maple Logs'
@@ -532,6 +578,7 @@
           inputs=~[[item=%maple-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=135
+          gp-per-action=0
       ==
       :*  id=%burn-mahogany-logs
           name='Burn Mahogany Logs'
@@ -541,6 +588,7 @@
           inputs=~[[item=%mahogany-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=160
+          gp-per-action=0
       ==
       :*  id=%burn-yew-logs
           name='Burn Yew Logs'
@@ -550,6 +598,7 @@
           inputs=~[[item=%yew-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=203
+          gp-per-action=0
       ==
       :*  id=%burn-magic-logs
           name='Burn Magic Logs'
@@ -559,6 +608,7 @@
           inputs=~[[item=%magic-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=309
+          gp-per-action=0
       ==
       :*  id=%burn-redwood-logs
           name='Burn Redwood Logs'
@@ -568,6 +618,7 @@
           inputs=~[[item=%redwood-logs qty=1]]
           outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
           mastery-xp=405
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -593,6 +644,7 @@
           inputs=~[[item=%raw-shrimp qty=1]]
           outputs=~[[item=%cooked-shrimp min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%cook-sardine
           name='Cook Sardine'
@@ -602,6 +654,7 @@
           inputs=~[[item=%raw-sardine qty=1]]
           outputs=~[[item=%cooked-sardine min-qty=1 max-qty=1 chance=100]]
           mastery-xp=20
+          gp-per-action=0
       ==
       :*  id=%cook-herring
           name='Cook Herring'
@@ -611,6 +664,7 @@
           inputs=~[[item=%raw-herring qty=1]]
           outputs=~[[item=%cooked-herring min-qty=1 max-qty=1 chance=100]]
           mastery-xp=30
+          gp-per-action=0
       ==
       :*  id=%cook-trout
           name='Cook Trout'
@@ -620,6 +674,7 @@
           inputs=~[[item=%raw-trout qty=1]]
           outputs=~[[item=%cooked-trout min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%cook-salmon
           name='Cook Salmon'
@@ -629,6 +684,7 @@
           inputs=~[[item=%raw-salmon qty=1]]
           outputs=~[[item=%cooked-salmon min-qty=1 max-qty=1 chance=100]]
           mastery-xp=70
+          gp-per-action=0
       ==
       :*  id=%cook-lobster
           name='Cook Lobster'
@@ -638,6 +694,7 @@
           inputs=~[[item=%raw-lobster qty=1]]
           outputs=~[[item=%cooked-lobster min-qty=1 max-qty=1 chance=100]]
           mastery-xp=90
+          gp-per-action=0
       ==
       :*  id=%cook-swordfish
           name='Cook Swordfish'
@@ -647,6 +704,7 @@
           inputs=~[[item=%raw-swordfish qty=1]]
           outputs=~[[item=%cooked-swordfish min-qty=1 max-qty=1 chance=100]]
           mastery-xp=140
+          gp-per-action=0
       ==
       :*  id=%cook-crab
           name='Cook Crab'
@@ -656,6 +714,7 @@
           inputs=~[[item=%raw-crab qty=1]]
           outputs=~[[item=%cooked-crab min-qty=1 max-qty=1 chance=100]]
           mastery-xp=160
+          gp-per-action=0
       ==
       :*  id=%cook-shark
           name='Cook Shark'
@@ -665,6 +724,7 @@
           inputs=~[[item=%raw-shark qty=1]]
           outputs=~[[item=%cooked-shark min-qty=1 max-qty=1 chance=100]]
           mastery-xp=210
+          gp-per-action=0
       ==
       :*  id=%cook-whale
           name='Cook Whale'
@@ -674,6 +734,7 @@
           inputs=~[[item=%raw-whale qty=1]]
           outputs=~[[item=%cooked-whale min-qty=1 max-qty=1 chance=100]]
           mastery-xp=350
+          gp-per-action=0
       ==
       :*  id=%cook-anglerfish
           name='Cook Anglerfish'
@@ -683,6 +744,7 @@
           inputs=~[[item=%raw-anglerfish qty=1]]
           outputs=~[[item=%cooked-anglerfish min-qty=1 max-qty=1 chance=100]]
           mastery-xp=500
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -708,6 +770,7 @@
           inputs=~[[item=%copper-ore qty=1] [item=%tin-ore qty=1]]
           outputs=~[[item=%bronze-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=12
+          gp-per-action=0
       ==
       :*  id=%smelt-iron-bar
           name='Iron Bar'
@@ -717,6 +780,7 @@
           inputs=~[[item=%iron-ore qty=1] [item=%coal-ore qty=1]]
           outputs=~[[item=%iron-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=35
+          gp-per-action=0
       ==
       :*  id=%smelt-silver-bar
           name='Silver Bar'
@@ -726,6 +790,7 @@
           inputs=~[[item=%silver-ore qty=1]]
           outputs=~[[item=%silver-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%smelt-gold-bar
           name='Gold Bar'
@@ -735,6 +800,7 @@
           inputs=~[[item=%gold-ore qty=1]]
           outputs=~[[item=%gold-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=65
+          gp-per-action=0
       ==
       :*  id=%smelt-steel-bar
           name='Steel Bar'
@@ -744,6 +810,7 @@
           inputs=~[[item=%iron-ore qty=1] [item=%coal-ore qty=2]]
           outputs=~[[item=%steel-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=60
+          gp-per-action=0
       ==
       :*  id=%smelt-mithril-bar
           name='Mithril Bar'
@@ -753,6 +820,7 @@
           inputs=~[[item=%mithril-ore qty=1] [item=%coal-ore qty=2]]
           outputs=~[[item=%mithril-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=100
+          gp-per-action=0
       ==
       :*  id=%smelt-adamantite-bar
           name='Adamantite Bar'
@@ -762,6 +830,7 @@
           inputs=~[[item=%adamantite-ore qty=1] [item=%coal-ore qty=3]]
           outputs=~[[item=%adamantite-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%smelt-runite-bar
           name='Runite Bar'
@@ -771,6 +840,7 @@
           inputs=~[[item=%runite-ore qty=1] [item=%coal-ore qty=4]]
           outputs=~[[item=%runite-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=210
+          gp-per-action=0
       ==
       :*  id=%smelt-dragonite-bar
           name='Dragonite Bar'
@@ -780,6 +850,7 @@
           inputs=~[[item=%dragonite-ore qty=1] [item=%coal-ore qty=5]]
           outputs=~[[item=%dragonite-bar min-qty=1 max-qty=1 chance=100]]
           mastery-xp=325
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -805,6 +876,7 @@
           inputs=~[[item=%normal-logs qty=1]]
           outputs=~[[item=%normal-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%fletch-normal-longbow
           name='Normal Longbow'
@@ -814,6 +886,7 @@
           inputs=~[[item=%normal-logs qty=2]]
           outputs=~[[item=%normal-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=20
+          gp-per-action=0
       ==
       :*  id=%fletch-oak-shortbow
           name='Oak Shortbow'
@@ -823,6 +896,7 @@
           inputs=~[[item=%oak-logs qty=1]]
           outputs=~[[item=%oak-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=35
+          gp-per-action=0
       ==
       :*  id=%fletch-oak-longbow
           name='Oak Longbow'
@@ -832,6 +906,7 @@
           inputs=~[[item=%oak-logs qty=2]]
           outputs=~[[item=%oak-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%fletch-willow-shortbow
           name='Willow Shortbow'
@@ -841,6 +916,7 @@
           inputs=~[[item=%willow-logs qty=1]]
           outputs=~[[item=%willow-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=65
+          gp-per-action=0
       ==
       :*  id=%fletch-willow-longbow
           name='Willow Longbow'
@@ -850,6 +926,7 @@
           inputs=~[[item=%willow-logs qty=2]]
           outputs=~[[item=%willow-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=85
+          gp-per-action=0
       ==
       :*  id=%fletch-maple-shortbow
           name='Maple Shortbow'
@@ -859,6 +936,7 @@
           inputs=~[[item=%maple-logs qty=1]]
           outputs=~[[item=%maple-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=100
+          gp-per-action=0
       ==
       :*  id=%fletch-maple-longbow
           name='Maple Longbow'
@@ -868,6 +946,7 @@
           inputs=~[[item=%maple-logs qty=2]]
           outputs=~[[item=%maple-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=135
+          gp-per-action=0
       ==
       :*  id=%fletch-yew-shortbow
           name='Yew Shortbow'
@@ -877,6 +956,7 @@
           inputs=~[[item=%yew-logs qty=1]]
           outputs=~[[item=%yew-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=160
+          gp-per-action=0
       ==
       :*  id=%fletch-yew-longbow
           name='Yew Longbow'
@@ -886,6 +966,7 @@
           inputs=~[[item=%yew-logs qty=2]]
           outputs=~[[item=%yew-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=210
+          gp-per-action=0
       ==
       :*  id=%fletch-magic-shortbow
           name='Magic Shortbow'
@@ -895,6 +976,7 @@
           inputs=~[[item=%magic-logs qty=1]]
           outputs=~[[item=%magic-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=260
+          gp-per-action=0
       ==
       :*  id=%fletch-magic-longbow
           name='Magic Longbow'
@@ -904,6 +986,7 @@
           inputs=~[[item=%magic-logs qty=2]]
           outputs=~[[item=%magic-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=340
+          gp-per-action=0
       ==
       :*  id=%fletch-redwood-shortbow
           name='Redwood Shortbow'
@@ -913,6 +996,7 @@
           inputs=~[[item=%redwood-logs qty=1]]
           outputs=~[[item=%redwood-shortbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=375
+          gp-per-action=0
       ==
       :*  id=%fletch-redwood-longbow
           name='Redwood Longbow'
@@ -922,6 +1006,7 @@
           inputs=~[[item=%redwood-logs qty=2]]
           outputs=~[[item=%redwood-longbow min-qty=1 max-qty=1 chance=100]]
           mastery-xp=500
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -947,6 +1032,7 @@
           inputs=~[[item=%bronze-bar qty=2]]
           outputs=~[[item=%bronze-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=15
+          gp-per-action=0
       ==
       :*  id=%craft-bronze-platebody
           name='Bronze Platebody'
@@ -956,6 +1042,7 @@
           inputs=~[[item=%bronze-bar qty=5]]
           outputs=~[[item=%bronze-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=30
+          gp-per-action=0
       ==
       :*  id=%craft-iron-helmet
           name='Iron Helmet'
@@ -965,6 +1052,7 @@
           inputs=~[[item=%iron-bar qty=2]]
           outputs=~[[item=%iron-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%craft-iron-platebody
           name='Iron Platebody'
@@ -974,6 +1062,7 @@
           inputs=~[[item=%iron-bar qty=5]]
           outputs=~[[item=%iron-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=70
+          gp-per-action=0
       ==
       :*  id=%craft-steel-helmet
           name='Steel Helmet'
@@ -983,6 +1072,7 @@
           inputs=~[[item=%steel-bar qty=2]]
           outputs=~[[item=%steel-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=70
+          gp-per-action=0
       ==
       :*  id=%craft-steel-platebody
           name='Steel Platebody'
@@ -992,6 +1082,7 @@
           inputs=~[[item=%steel-bar qty=5]]
           outputs=~[[item=%steel-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=120
+          gp-per-action=0
       ==
       :*  id=%craft-mithril-helmet
           name='Mithril Helmet'
@@ -1001,6 +1092,7 @@
           inputs=~[[item=%mithril-bar qty=2]]
           outputs=~[[item=%mithril-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=110
+          gp-per-action=0
       ==
       :*  id=%craft-mithril-platebody
           name='Mithril Platebody'
@@ -1010,6 +1102,7 @@
           inputs=~[[item=%mithril-bar qty=5]]
           outputs=~[[item=%mithril-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=180
+          gp-per-action=0
       ==
       :*  id=%craft-adamantite-helmet
           name='Adamantite Helmet'
@@ -1019,6 +1112,7 @@
           inputs=~[[item=%adamantite-bar qty=2]]
           outputs=~[[item=%adamantite-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=170
+          gp-per-action=0
       ==
       :*  id=%craft-adamantite-platebody
           name='Adamantite Platebody'
@@ -1028,6 +1122,7 @@
           inputs=~[[item=%adamantite-bar qty=5]]
           outputs=~[[item=%adamantite-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=280
+          gp-per-action=0
       ==
       :*  id=%craft-runite-helmet
           name='Runite Helmet'
@@ -1037,6 +1132,7 @@
           inputs=~[[item=%runite-bar qty=2]]
           outputs=~[[item=%runite-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=250
+          gp-per-action=0
       ==
       :*  id=%craft-runite-platebody
           name='Runite Platebody'
@@ -1046,6 +1142,7 @@
           inputs=~[[item=%runite-bar qty=5]]
           outputs=~[[item=%runite-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
+          gp-per-action=0
       ==
       :*  id=%craft-dragonite-helmet
           name='Dragonite Helmet'
@@ -1055,6 +1152,7 @@
           inputs=~[[item=%dragonite-bar qty=2]]
           outputs=~[[item=%dragonite-helmet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=380
+          gp-per-action=0
       ==
       :*  id=%craft-dragonite-platebody
           name='Dragonite Platebody'
@@ -1064,6 +1162,7 @@
           inputs=~[[item=%dragonite-bar qty=5]]
           outputs=~[[item=%dragonite-platebody min-qty=1 max-qty=1 chance=100]]
           mastery-xp=600
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1089,6 +1188,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%air-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=5
+          gp-per-action=0
       ==
       :*  id=%craft-water-rune
           name='Water Rune'
@@ -1098,6 +1198,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%water-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=8
+          gp-per-action=0
       ==
       :*  id=%craft-earth-rune
           name='Earth Rune'
@@ -1107,6 +1208,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%earth-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=12
+          gp-per-action=0
       ==
       :*  id=%craft-fire-rune
           name='Fire Rune'
@@ -1116,6 +1218,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%fire-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=18
+          gp-per-action=0
       ==
       :*  id=%craft-mind-rune
           name='Mind Rune'
@@ -1125,6 +1228,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%mind-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=30
+          gp-per-action=0
       ==
       :*  id=%craft-chaos-rune
           name='Chaos Rune'
@@ -1134,6 +1238,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%chaos-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%craft-death-rune
           name='Death Rune'
@@ -1143,6 +1248,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%death-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=85
+          gp-per-action=0
       ==
       :*  id=%craft-blood-rune
           name='Blood Rune'
@@ -1152,6 +1258,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%blood-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=140
+          gp-per-action=0
       ==
       :*  id=%craft-soul-rune
           name='Soul Rune'
@@ -1161,6 +1268,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%soul-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=230
+          gp-per-action=0
       ==
       :*  id=%craft-ancient-rune
           name='Ancient Rune'
@@ -1170,6 +1278,7 @@
           inputs=~[[item=%rune-essence qty=1]]
           outputs=~[[item=%ancient-rune min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1195,6 +1304,7 @@
           inputs=~[[item=%grimy-guam qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%attack-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%brew-strength-potion
           name='Strength Potion'
@@ -1204,6 +1314,7 @@
           inputs=~[[item=%grimy-marrentill qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%strength-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=23
+          gp-per-action=0
       ==
       :*  id=%brew-defence-potion
           name='Defence Potion'
@@ -1213,6 +1324,7 @@
           inputs=~[[item=%grimy-tarromin qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%defence-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%brew-hitpoints-potion
           name='Hitpoints Potion'
@@ -1222,6 +1334,7 @@
           inputs=~[[item=%grimy-harralander qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%hitpoints-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=70
+          gp-per-action=0
       ==
       :*  id=%brew-prayer-potion
           name='Prayer Potion'
@@ -1231,6 +1344,7 @@
           inputs=~[[item=%grimy-ranarr qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%prayer-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=105
+          gp-per-action=0
       ==
       :*  id=%brew-super-attack-potion
           name='Super Attack Potion'
@@ -1240,6 +1354,7 @@
           inputs=~[[item=%grimy-irit qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%super-attack-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%brew-super-strength-potion
           name='Super Strength Potion'
@@ -1249,6 +1364,7 @@
           inputs=~[[item=%grimy-kwuarm qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%super-strength-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=225
+          gp-per-action=0
       ==
       :*  id=%brew-super-defence-potion
           name='Super Defence Potion'
@@ -1258,6 +1374,7 @@
           inputs=~[[item=%grimy-torstol qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%super-defence-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1295,6 +1412,7 @@
           inputs=~
           outputs=~
           mastery-xp=8
+          gp-per-action=0
       ==
       :*  id=%balance-beam
           name='Balance Beam'
@@ -1304,6 +1422,7 @@
           inputs=~
           outputs=~
           mastery-xp=20
+          gp-per-action=0
       ==
       :*  id=%rope-swing
           name='Rope Swing'
@@ -1313,6 +1432,7 @@
           inputs=~
           outputs=~
           mastery-xp=40
+          gp-per-action=0
       ==
       :*  id=%wall-climb
           name='Wall Climb'
@@ -1322,6 +1442,7 @@
           inputs=~
           outputs=~
           mastery-xp=65
+          gp-per-action=0
       ==
       :*  id=%pipe-balance
           name='Pipe Balance'
@@ -1331,6 +1452,7 @@
           inputs=~
           outputs=~
           mastery-xp=95
+          gp-per-action=0
       ==
       :*  id=%rooftop-run
           name='Rooftop Run'
@@ -1340,6 +1462,7 @@
           inputs=~
           outputs=~
           mastery-xp=130
+          gp-per-action=0
       ==
       :*  id=%cliff-scramble
           name='Cliff Scramble'
@@ -1349,6 +1472,7 @@
           inputs=~
           outputs=~
           mastery-xp=180
+          gp-per-action=0
       ==
       :*  id=%tower-climb
           name='Tower Climb'
@@ -1358,6 +1482,7 @@
           inputs=~
           outputs=~
           mastery-xp=240
+          gp-per-action=0
       ==
       :*  id=%canyon-leap
           name='Canyon Leap'
@@ -1367,6 +1492,7 @@
           inputs=~
           outputs=~
           mastery-xp=320
+          gp-per-action=0
       ==
       :*  id=%dragon-gauntlet
           name='Dragon Gauntlet'
@@ -1376,6 +1502,7 @@
           inputs=~
           outputs=~
           mastery-xp=450
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1401,6 +1528,7 @@
           inputs=~
           outputs=~
           mastery-xp=8
+          gp-per-action=0
       ==
       :*  id=%study-iridan
           name='Study Iridan'
@@ -1410,6 +1538,7 @@
           inputs=~
           outputs=~
           mastery-xp=15
+          gp-per-action=0
       ==
       :*  id=%study-ameria
           name='Study Ameria'
@@ -1419,6 +1548,7 @@
           inputs=~
           outputs=~
           mastery-xp=30
+          gp-per-action=0
       ==
       :*  id=%study-ko
           name='Study Ko'
@@ -1428,6 +1558,7 @@
           inputs=~
           outputs=~
           mastery-xp=45
+          gp-per-action=0
       ==
       :*  id=%study-vale
           name='Study Vale'
@@ -1437,6 +1568,7 @@
           inputs=~
           outputs=~
           mastery-xp=60
+          gp-per-action=0
       ==
       :*  id=%study-arach
           name='Study Arach'
@@ -1446,6 +1578,7 @@
           inputs=~
           outputs=~
           mastery-xp=80
+          gp-per-action=0
       ==
       :*  id=%study-hyden
           name='Study Hyden'
@@ -1455,6 +1588,7 @@
           inputs=~
           outputs=~
           mastery-xp=110
+          gp-per-action=0
       ==
       :*  id=%study-qimican
           name='Study Qimican'
@@ -1464,6 +1598,7 @@
           inputs=~
           outputs=~
           mastery-xp=150
+          gp-per-action=0
       ==
       :*  id=%study-terra
           name='Study Terra'
@@ -1473,6 +1608,7 @@
           inputs=~
           outputs=~
           mastery-xp=170
+          gp-per-action=0
       ==
       :*  id=%study-sylvan
           name='Study Sylvan'
@@ -1482,6 +1618,7 @@
           inputs=~
           outputs=~
           mastery-xp=200
+          gp-per-action=0
       ==
       :*  id=%study-murtia
           name='Study Murtia'
@@ -1491,6 +1628,7 @@
           inputs=~
           outputs=~
           mastery-xp=260
+          gp-per-action=0
       ==
       :*  id=%study-cerberus
           name='Study Cerberus'
@@ -1500,6 +1638,7 @@
           inputs=~
           outputs=~
           mastery-xp=340
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1525,6 +1664,7 @@
           inputs=~[[item=%charcoal qty=1] [item=%raw-shrimp qty=5]]
           outputs=~[[item=%wolf-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=10
+          gp-per-action=0
       ==
       :*  id=%make-hawk-tablet
           name='Hawk Tablet'
@@ -1534,6 +1674,7 @@
           inputs=~[[item=%charcoal qty=1] [item=%iron-ore qty=3]]
           outputs=~[[item=%hawk-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=25
+          gp-per-action=0
       ==
       :*  id=%make-bear-tablet
           name='Bear Tablet'
@@ -1543,6 +1684,7 @@
           inputs=~[[item=%charcoal qty=2] [item=%steel-bar qty=2]]
           outputs=~[[item=%bear-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=50
+          gp-per-action=0
       ==
       :*  id=%make-serpent-tablet
           name='Serpent Tablet'
@@ -1552,6 +1694,7 @@
           inputs=~[[item=%charcoal qty=2] [item=%grimy-ranarr qty=1]]
           outputs=~[[item=%serpent-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=80
+          gp-per-action=0
       ==
       :*  id=%make-phoenix-tablet
           name='Phoenix Tablet'
@@ -1561,6 +1704,7 @@
           inputs=~[[item=%charcoal qty=3] [item=%gold-bar qty=1] [item=%fire-rune qty=1]]
           outputs=~[[item=%phoenix-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=120
+          gp-per-action=0
       ==
       :*  id=%make-dragon-tablet
           name='Dragon Tablet'
@@ -1570,6 +1714,7 @@
           inputs=~[[item=%charcoal qty=4] [item=%adamantite-bar qty=1] [item=%death-rune qty=1]]
           outputs=~[[item=%dragon-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=180
+          gp-per-action=0
       ==
       :*  id=%make-hydra-tablet
           name='Hydra Tablet'
@@ -1579,6 +1724,7 @@
           inputs=~[[item=%charcoal qty=5] [item=%runite-bar qty=1] [item=%blood-rune qty=1]]
           outputs=~[[item=%hydra-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=280
+          gp-per-action=0
       ==
       :*  id=%make-titan-tablet
           name='Titan Tablet'
@@ -1588,6 +1734,7 @@
           inputs=~[[item=%charcoal qty=6] [item=%dragonite-bar qty=1] [item=%soul-rune qty=1]]
           outputs=~[[item=%titan-tablet min-qty=1 max-qty=1 chance=100]]
           mastery-xp=450
+          gp-per-action=0
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -1645,7 +1792,124 @@
       name='Magic'
       skill-type=%combat
       max-level=99
-      actions=~
+      actions=magic-actions
+  ==
+::
+++  magic-actions
+  ^-  (list action-def)
+  :~  ::  alchemy — convert items to GP
+      :*  id=%alch-gold-bar
+          name='Alchemise Gold Bar'
+          level-req=21
+          xp=80
+          base-time=3.000
+          inputs=~[[item=%fire-rune qty=5] [item=%mind-rune qty=1] [item=%gold-bar qty=1]]
+          outputs=~
+          mastery-xp=8
+          gp-per-action=225
+      ==
+      :*  id=%alch-onyx
+          name='Alchemise Onyx'
+          level-req=40
+          xp=150
+          base-time=3.000
+          inputs=~[[item=%fire-rune qty=5] [item=%death-rune qty=1] [item=%onyx qty=1]]
+          outputs=~
+          mastery-xp=15
+          gp-per-action=2.250
+      ==
+      :*  id=%alch-dragonite-bar
+          name='Alchemise Dragonite Bar'
+          level-req=55
+          xp=250
+          base-time=3.000
+          inputs=~[[item=%fire-rune qty=5] [item=%death-rune qty=2] [item=%dragonite-bar qty=1]]
+          outputs=~
+          mastery-xp=25
+          gp-per-action=5.000
+      ==
+      ::  superheat — smelt with fire runes
+      :*  id=%superheat-iron
+          name='Superheat Iron'
+          level-req=33
+          xp=100
+          base-time=3.000
+          inputs=~[[item=%fire-rune qty=4] [item=%mind-rune qty=1] [item=%iron-ore qty=1]]
+          outputs=~[[item=%iron-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=10
+          gp-per-action=0
+      ==
+      :*  id=%superheat-steel
+          name='Superheat Steel'
+          level-req=43
+          xp=180
+          base-time=4.000
+          inputs=~[[item=%fire-rune qty=6] [item=%chaos-rune qty=1] [item=%iron-ore qty=1]]
+          outputs=~[[item=%steel-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=18
+          gp-per-action=0
+      ==
+      :*  id=%superheat-mithril
+          name='Superheat Mithril'
+          level-req=53
+          xp=280
+          base-time=5.000
+          inputs=~[[item=%fire-rune qty=8] [item=%death-rune qty=1] [item=%mithril-ore qty=1]]
+          outputs=~[[item=%mithril-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=28
+          gp-per-action=0
+      ==
+      :*  id=%superheat-runite
+          name='Superheat Runite'
+          level-req=75
+          xp=500
+          base-time=6.000
+          inputs=~[[item=%fire-rune qty=12] [item=%death-rune qty=2] [item=%runite-ore qty=1]]
+          outputs=~[[item=%runite-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=50
+          gp-per-action=0
+      ==
+      ::  enchant — upgrade bars to enchanted versions
+      :*  id=%enchant-steel
+          name='Enchant Steel Bar'
+          level-req=35
+          xp=200
+          base-time=5.000
+          inputs=~[[item=%water-rune qty=5] [item=%earth-rune qty=5] [item=%steel-bar qty=1]]
+          outputs=~[[item=%enchanted-steel-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=20
+          gp-per-action=0
+      ==
+      :*  id=%enchant-mithril
+          name='Enchant Mithril Bar'
+          level-req=50
+          xp=300
+          base-time=5.000
+          inputs=~[[item=%water-rune qty=5] [item=%earth-rune qty=5] [item=%mind-rune qty=2] [item=%mithril-bar qty=1]]
+          outputs=~[[item=%enchanted-mithril-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=30
+          gp-per-action=0
+      ==
+      :*  id=%enchant-adamantite
+          name='Enchant Adamantite Bar'
+          level-req=65
+          xp=450
+          base-time=6.000
+          inputs=~[[item=%water-rune qty=5] [item=%earth-rune qty=5] [item=%chaos-rune qty=3] [item=%adamantite-bar qty=1]]
+          outputs=~[[item=%enchanted-adamantite-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=45
+          gp-per-action=0
+      ==
+      :*  id=%enchant-runite
+          name='Enchant Runite Bar'
+          level-req=80
+          xp=650
+          base-time=6.000
+          inputs=~[[item=%water-rune qty=10] [item=%earth-rune qty=10] [item=%death-rune qty=5] [item=%runite-bar qty=1]]
+          outputs=~[[item=%enchanted-runite-bar min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=65
+          gp-per-action=0
+      ==
   ==
 ::
 ++  prayer-skill-def

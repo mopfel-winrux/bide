@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId } from '../shared/types';
 type TabletId = ItemId;
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
@@ -37,6 +37,8 @@ interface GameContextValue {
   summonFamiliar: (tablet: TabletId) => void;
   dismissFamiliar: () => void;
   eatFood: (item: ItemId) => void;
+  buyItem: (item: ItemId, qty: number) => void;
+  setPet: (pet: PetId | null) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -77,7 +79,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const { toasts, addToast, removeToast } = useToast();
   const [xpDrops, setXpDrops] = useXpDrops();
 
-  const onCycle = useCallback((event: { skill: SkillId; xp: number; outputs: Record<string, number> }) => {
+  const onCycle = useCallback((event: { skill: SkillId; xp: number; outputs: Record<string, number>; gp: number }) => {
     addPendingXP(event.skill, event.xp);
     addPendingItems(event.outputs);
 
@@ -88,6 +90,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const name = defs.items[itemId]?.name ?? itemId;
         drops.push({ id: ++xpDropId, text: '+' + event.outputs[itemId] + ' ' + name, isItem: true });
       }
+    }
+    if (event.gp > 0) {
+      drops.push({ id: ++xpDropId, text: '+' + event.gp.toLocaleString() + ' GP', isItem: true });
     }
     setXpDrops(drops);
   }, [addPendingXP, addPendingItems, defs, setXpDrops]);
@@ -102,6 +107,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
       clearLevelUps();
     }
   }, [levelUps, addToast, clearLevelUps]);
+
+  const [prevPetCount, setPrevPetCount] = useState(0);
+  useEffect(() => {
+    if (!state || !defs) return;
+    const currentCount = state.petsFound?.length ?? 0;
+    if (prevPetCount > 0 && currentCount > prevPetCount) {
+      addToast('You found a new pet!', 'levelup');
+    }
+    setPrevPetCount(currentCount);
+  }, [state?.petsFound?.length, defs, addToast]);
 
   const startAction = useCallback((skill: SkillId, action: ActionId) => {
     api.startAction(skill, action);
@@ -179,6 +194,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.eatFood(item);
   }, []);
 
+  const buyItem = useCallback((item: ItemId, qty: number) => {
+    api.buy(item, qty);
+  }, []);
+
+  const setPet = useCallback((pet: PetId | null) => {
+    api.setPet(pet);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
@@ -188,6 +211,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, startDungeon,
       plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
+      buyItem, setPet,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

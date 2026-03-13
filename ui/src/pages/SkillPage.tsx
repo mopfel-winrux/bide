@@ -1,18 +1,19 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { XpBar } from '../components/ui/XpBar';
-import { XpDropContainer } from '../components/XpDrop';
 import { ActiveAction } from '../components/ActiveAction';
 import { ActionCard } from '../components/ActionCard';
 import { SkillBonuses } from '../components/SkillBonuses';
 import { EmptyState } from '../components/ui/EmptyState';
 import { useState } from 'react';
+import { fmt } from '../shared/format';
+import { levelFromXp } from '../shared/xp';
 
 type Filter = 'all' | 'unlocked' | 'locked';
 
 export function SkillPage() {
   const { skillId } = useParams<{ skillId: string }>();
-  const { defs, getDisplaySkill } = useGame();
+  const { defs, state, getDisplaySkill } = useGame();
   const [filter, setFilter] = useState<Filter>('all');
 
   if (skillId === 'farming') return <Navigate to="/farming" replace />;
@@ -39,8 +40,30 @@ export function SkillPage() {
         </div>
       </div>
 
-      <XpBar xp={ds.xp} level={ds.level} className="mb-8" />
-      <XpDropContainer />
+      <XpBar xp={ds.xp} level={ds.level} className="mb-4" />
+
+      {sd.actions.some(a => a.masteryXp > 0) && (() => {
+        const ss = state?.skills[skillId];
+        const poolXp = ss?.poolXp ?? 0;
+        const masteryActions = ss?.masteryActions ?? {};
+        const totalMasteryLevels = sd.actions.reduce((sum, a) => {
+          return sum + levelFromXp(masteryActions[a.id] ?? 0);
+        }, 0);
+        const maxMasteryLevels = sd.actions.length * 99;
+        return (
+          <div className="flex items-center gap-6 text-sm text-gray-400 mb-6 bg-[#111827] border border-[#374151] rounded-lg px-4 py-2.5">
+            <div>
+              <span className="text-gray-500">Mastery Pool: </span>
+              <span className="text-purple-400 font-medium">{fmt(poolXp)} XP</span>
+            </div>
+            <div>
+              <span className="text-gray-500">Total Mastery: </span>
+              <span className="text-purple-400 font-medium">{totalMasteryLevels} / {maxMasteryLevels}</span>
+            </div>
+          </div>
+        );
+      })()}
+
       <ActiveAction />
       <SkillBonuses skillId={skillId} />
 

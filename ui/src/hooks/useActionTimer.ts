@@ -11,6 +11,7 @@ interface CycleEvent {
   skill: SkillId;
   xp: number;
   outputs: Record<string, number>; // item -> qty
+  gp: number;
 }
 
 export function useActionTimer(
@@ -71,6 +72,7 @@ export function useActionTimer(
             skill: s.activeAction.skill,
             xp: ad.xp,
             outputs,
+            gp: ad.gpPerAction ?? 0,
           });
         }
       }

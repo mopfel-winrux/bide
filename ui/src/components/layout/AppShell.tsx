@@ -3,6 +3,7 @@ import { TopBar } from './TopBar';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { ToastContainer } from '../ui/ToastContainer';
+import { XpDropContainer } from '../XpDrop';
 
 export function AppShell() {
   return (
@@ -15,6 +16,7 @@ export function AppShell() {
         </main>
       </div>
       <MobileNav />
+      <XpDropContainer />
       <ToastContainer />
     </div>
   );

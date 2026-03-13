@@ -75,6 +75,25 @@ export function Sidebar() {
                   </NavLink>
                 );
               })}
+              {type === 'artisan' && (
+                <NavLink
+                  to="/skill/magic"
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
+                      isActive
+                        ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
+                        : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span className="flex-1">Alt Magic</span>
+                      <Badge active={isActive}>{getDisplaySkill('magic').level}</Badge>
+                    </>
+                  )}
+                </NavLink>
+              )}
             </div>
           );
         })}
@@ -106,6 +125,30 @@ export function Sidebar() {
             }
           >
             <span>Bank</span>
+          </NavLink>
+          <NavLink
+            to="/shop"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
+                isActive
+                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
+                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
+              }`
+            }
+          >
+            <span>Shop</span>
+          </NavLink>
+          <NavLink
+            to="/completion"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
+                isActive
+                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
+                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
+              }`
+            }
+          >
+            <span>Completion</span>
           </NavLink>
         </div>
       </div>

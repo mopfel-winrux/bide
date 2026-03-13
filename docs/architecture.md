@@ -32,6 +32,8 @@ POST endpoints:
 - `/summon-familiar/<tablet>` — summon a familiar from a tablet
 - `/dismiss-familiar` — dismiss active familiar
 - `/eat-food/<item>` — eat food from bank to heal HP
+- `/buy/<item>/<qty>` — buy items from the shop with GP
+- `/set-pet/<pet>` — set active pet (use `none` to clear)
 
 **Scry.** The same data is available via scry at `/x/state` and `/x/defs`.
 
@@ -54,17 +56,19 @@ The UI lives in `ui/` and is a single-page app using React Router.
 - `/skill/:skillId` — SkillPage (action list, XP bar, start/stop, skill-specific bonus panels)
 - `/bank` — BankPage (items, sell/eat/drink buttons)
 - `/combat` — CombatPage (areas, dungeons, prayers, fight controls)
-- `/equipment` — EquipmentPage (gear slots, equip/unequip, familiar management)
+- `/equipment` — EquipmentPage (gear slots, equip/unequip, familiar management, pets)
 - `/farming` — FarmingPage (farm plot grid, seed selection, timers)
+- `/shop` — ShopPage (buy items with GP, category grouping, quantity selector)
+- `/completion` — CompletionPage (progress tracking across all categories)
 - `*` — NotFoundPage
 
-`/skill/farming` redirects to `/farming`.
+`/skill/farming` redirects to `/farming`. `/skill/magic` shows Alt Magic spells (linked from artisan sidebar section).
 
 ## Data-Driven Engine
 
 Skills and items are pure data — no engine changes needed to add content.
 
-- `lib/bide-skills.hoon` — `++skill-registry` returns `(map skill-id skill-def)`. Each skill has a list of `action-def` with level requirements, XP, base time (ms), input items, output items, and mastery XP.
+- `lib/bide-skills.hoon` — `++skill-registry` returns `(map skill-id skill-def)`. Each skill has a list of `action-def` with level requirements, XP, base time (ms), input items, output items, mastery XP, and GP per action.
 - `lib/bide-items.hoon` — `++item-registry` returns `(map item-id item-def)`. Each item has a name, category, and sell price.
 - `sur/bide.hoon` — All type definitions: `game-state`, `skill-def`, `action-def`, `item-def`, `item-category`, `action`, `update`, combat types, prayer/potion/dungeon types.
 - `lib/bide-xp.hoon` — Hardcoded 99-level XP table and `++level-from-xp` / `++xp-for-level` / `++xp-to-next` gates.
@@ -82,6 +86,9 @@ Skills and items are pure data — no engine changes needed to add content.
 - `lib/bide-agility.hoon` — Agility milestone bonuses (XP, speed, farming yield, combat XP).
 - `lib/bide-astrology.hoon` — Constellation registry, mastery-based and global level XP bonuses.
 - `lib/bide-summoning.hoon` — Familiar registry, XP/combat/farming bonuses, charge management.
+- `lib/bide-modifiers.hoon` — Unified modifier engine. `++compute-modifiers` collects bonuses from agility, astrology, summoning, potions, prayers, and pets into a single `modifier-set`. Helper arms: `++apply-xp-bonus`, `++apply-speed-bonus`, `++get-combat-boosts`, `++get-protection`.
+- `lib/bide-shop.hoon` — `++shop-registry` returns `(map item-id @ud)` — item to buy price. ~43 items across raw materials, runes, seeds, food, and starter gear.
+- `lib/bide-pets.hoon` — `++pet-registry` returns 12 pet definitions. `++roll-pet-drop` handles RNG-based pet drops from skilling/combat. `++pet-modifiers` computes modifier contributions from active pet.
 - `lib/bide-state.hoon` — Agent state types (`state-0`, `versioned-state`).
 
 ## Key Files
@@ -91,8 +98,8 @@ Skills and items are pure data — no engine changes needed to add content.
 | `app/bide.hoon` | Gall agent — HTTP handler, timer loop, game tick engine, combat processing |
 | `sur/bide.hoon` | Type definitions (game state, combat, prayers, potions, dungeons, all actions) |
 | `lib/bide-state.hoon` | Agent state versioning (`state-0`, `versioned-state`) |
-| `lib/bide-skills.hoon` | Skill and action data definitions (15 skills) |
-| `lib/bide-items.hoon` | Item data definitions (~150 items) |
+| `lib/bide-skills.hoon` | Skill and action data definitions (15 skills + 11 alt magic spells) |
+| `lib/bide-items.hoon` | Item data definitions (~172 items including enchanted bars) |
 | `lib/bide-xp.hoon` | XP table and level calculation |
 | `lib/bide-monsters.hoon` | Monster definitions (13 monsters) |
 | `lib/bide-areas.hoon` | Combat area definitions (6 areas) |
@@ -108,14 +115,19 @@ Skills and items are pure data — no engine changes needed to add content.
 | `lib/bide-specials.hoon` | Special attack registry (4 weapon specials) |
 | `lib/bide-slayer.hoon` | Slayer task assignment tables |
 | `lib/bide-dungeons.hoon` | Dungeon definitions (3 dungeons) |
+| `lib/bide-modifiers.hoon` | Unified modifier engine — compute-modifiers, apply-xp-bonus, apply-speed-bonus |
+| `lib/bide-shop.hoon` | Shop item registry (~43 items with buy prices) |
+| `lib/bide-pets.hoon` | Pet registry (12 pets), drop rolling, pet modifier computation |
 | `ui/src/App.tsx` | React router and layout shell |
 | `ui/src/context/GameContext.tsx` | Game state provider, polling, API method wrappers |
 | `ui/src/pages/OverviewPage.tsx` | Skill summary grid |
 | `ui/src/pages/SkillPage.tsx` | Per-skill action list and controls |
 | `ui/src/pages/BankPage.tsx` | Inventory and sell interface |
 | `ui/src/pages/CombatPage.tsx` | Combat — area/dungeon selection, prayers, fight controls |
-| `ui/src/pages/EquipmentPage.tsx` | Equipment management, familiar summon/dismiss |
+| `ui/src/pages/EquipmentPage.tsx` | Equipment management, familiar summon/dismiss, pet selection |
 | `ui/src/pages/FarmingPage.tsx` | Farm plot grid, seed selection, growth timers |
+| `ui/src/pages/ShopPage.tsx` | Shop interface — buy items with GP, category tabs, quantity selector |
+| `ui/src/pages/CompletionPage.tsx` | Completion log — skills, mastery, monsters, dungeons, pets, statistics |
 | `ui/src/components/SkillBonuses.tsx` | Agility milestones, astrology bonuses, summoning familiar effects |
 | `ui/src/components/CombatPanel.tsx` | Active combat UI — HP bars, timers, potions, prayers, specials |
 | `ui/src/components/MonsterCard.tsx` | Monster stat display card |

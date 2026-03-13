@@ -212,13 +212,114 @@ An artisan-type skill with 8 tablet recipes. Each tablet requires charcoal plus 
 
 Charges decrement per completed skill action or per player attack in combat. When charges reach 0, the familiar auto-dismisses. Combat boosts are added to effective stats alongside potion and prayer boosts.
 
-## Passive Bonus Integration
+## Modifier Engine
 
-All passive bonuses are computed on-the-fly — no stored modifier state. The `process-skill-tick` arm aggregates:
-1. **Speed bonus** from agility (reduces action base time)
-2. **XP bonus** from agility milestones + astrology level/mastery + active familiar
+All passive bonuses flow through a unified modifier engine in `lib/bide-modifiers.hoon`. The `++compute-modifiers` gate collects bonuses from all sources into a single `modifier-set`:
 
-The `process-combat-events` arm adds:
-1. **Combat stat boosts** from active familiar (atk/str/def percentages)
-2. **Combat XP bonus** from agility + familiar on kill
-3. **Familiar charge decrement** per player attack
+**Sources:**
+- Agility milestones (XP bonuses, speed reduction, farming yield, combat XP)
+- Astrology constellations (per-skill and global XP bonuses from mastery/level)
+- Summoning familiars (XP bonuses, combat stat boosts, farming yield)
+- Potions (combat stat boosts)
+- Prayers (combat stat boosts, damage reduction)
+- Active pet (skill XP, global XP, GP bonus, speed bonus, farming yield)
+
+**`modifier-set` fields:** `xp-global`, `xp-gathering`, `xp-artisan`, `xp-combat`, `xp-per-skill` (map), `speed-bonus`, `atk-boost`, `str-boost`, `def-boost`, `protect-melee`, `protect-ranged`, `protect-magic`, `farming-yield`, `gp-bonus`.
+
+**Helper arms:**
+- `++apply-xp-bonus` — applies all relevant XP modifiers for a skill type
+- `++apply-speed-bonus` — reduces action base time by speed bonus percentage
+- `++get-combat-boosts` — extracts atk/str/def percentages for combat calculations
+- `++get-protection` — returns damage reduction percentage for an enemy attack style
+
+Both `process-skill-tick` and `process-combat-events` call `compute-modifiers` once per tick, then use the helper arms.
+
+## Shop
+
+Players can buy items with GP from a shop registry defined in `lib/bide-shop.hoon`. ~43 items available:
+
+| Category | Items | Pricing |
+|----------|-------|---------|
+| Raw materials | copper-ore, tin-ore, iron-ore, coal, normal-log, oak-log | 2-3x sell price |
+| Runes | all 11 rune types | 3x sell price |
+| Seeds | all farming seeds | 3-4x sell price |
+| Food | cooked-shrimp through cooked-salmon | 2x sell price |
+| Misc | vial-of-water, rune-essence, charcoal | fixed low prices |
+| Starter gear | bronze-sword, wooden-shield | 50-100 GP |
+
+POST `/buy/<item>/<qty>` deducts GP and adds items to the bank. GP spent is tracked in `total-gp-spent` stat.
+
+## Pets
+
+12 pets obtained as rare drops from skilling and combat. Each pet provides a small passive bonus when set as active.
+
+| Pet | Source | Chance | Effect |
+|-----|--------|--------|--------|
+| Rocky | Mining | 1/2000 | +2% Mining XP |
+| Beaver | Woodcutting | 1/2000 | +2% Woodcutting XP |
+| Heron | Fishing | 1/2000 | +2% Fishing XP |
+| Ember | Firemaking | 1/2000 | +2% Firemaking XP |
+| Nibbles | Thieving | 1/2500 | +3% Thieving XP |
+| Golem | Smithing | 1/2500 | +3% Smithing XP |
+| Chompy | Cooking | 1/2000 | +2% Cooking XP |
+| Sprout | Farming (harvest) | 1/1500 | +5% Farming Yield |
+| Rune Sprite | Runecrafting | 1/3000 | +3% Runecrafting XP |
+| Phoenix Chick | Fire Giant | 1/3000 | +1% all XP |
+| Dragon Whelp | Dragon | 1/5000 | +2% all XP |
+| Goblin Runt | Goblin | 1/1000 | +3% GP bonus |
+
+Pet drops are rolled per completed skill action or per monster kill using the PRNG. Only unfound pets are eligible. Found pets are stored in `pets-found` (set). One pet can be active at a time via `active-pet`. Pet bonuses feed into the modifier engine.
+
+Managed on the Equipment page alongside gear and familiars.
+
+## Alt Magic
+
+11 utility spells added as actions to the Magic skill, accessible via `/skill/magic` (linked from the artisan sidebar section). Uses the standard `process-skill-tick` engine with the `gp-per-action` field for alchemy spells.
+
+**Alchemy** (convert items to GP):
+
+| Spell | Level | Runes | Input | GP | XP | Time |
+|-------|-------|-------|-------|-----|-----|------|
+| Alch Gold Bar | 21 | 5 fire, 1 mind | gold-bar | 225 | 80 | 3s |
+| Alch Onyx | 40 | 5 fire, 1 death | onyx | 2,250 | 150 | 3s |
+| Alch Dragonite Bar | 55 | 5 fire, 2 death | dragonite-bar | 5,000 | 250 | 3s |
+
+**Superheat** (smelt without furnace):
+
+| Spell | Level | Runes | Input | Output | XP | Time |
+|-------|-------|-------|-------|--------|-----|------|
+| Superheat Iron | 33 | 4 fire, 1 mind | iron-ore | iron-bar | 100 | 3s |
+| Superheat Steel | 43 | 6 fire, 1 chaos | iron-ore | steel-bar | 180 | 4s |
+| Superheat Mithril | 53 | 8 fire, 1 death | mithril-ore | mithril-bar | 280 | 5s |
+| Superheat Runite | 75 | 12 fire, 2 death | runite-ore | runite-bar | 500 | 6s |
+
+**Enchant** (upgrade bars to enchanted versions):
+
+| Spell | Level | Runes | Input | Output | XP | Time |
+|-------|-------|-------|-------|--------|-----|------|
+| Enchant Steel | 35 | 5 water, 5 earth | steel-bar | enchanted-steel-bar | 200 | 5s |
+| Enchant Mithril | 50 | 5 water, 5 earth, 2 mind | mithril-bar | enchanted-mithril-bar | 300 | 5s |
+| Enchant Adamantite | 65 | 5 water, 5 earth, 3 chaos | adamantite-bar | enchanted-adamantite-bar | 450 | 6s |
+| Enchant Runite | 80 | 10 water, 10 earth, 5 death | runite-bar | enchanted-runite-bar | 650 | 6s |
+
+Enchanted bars are new items (`category=%processed`) with 3x the sell price of normal bars.
+
+## Completion Log
+
+Tracks overall game progress across 5 categories, each contributing equally to the overall completion percentage:
+
+1. **Skills** — count at level 99 / total skills
+2. **Mastery** — total mastery levels / max mastery levels (per-skill breakdown with pool XP)
+3. **Monsters** — unique monsters killed / total monsters
+4. **Dungeons** — unique dungeons cleared / total dungeons
+5. **Pets** — pets found / total pets
+
+**Statistics tracked** in `game-stats`:
+- `actions-completed` — per-action count
+- `monsters-killed` — per-monster count
+- `items-produced` — per-item count
+- `dungeons-completed` — per-dungeon count
+- `total-xp-earned` — cumulative XP
+- `total-gp-earned` — cumulative GP (from sells, combat drops, thieving, alchemy)
+- `total-gp-spent` — cumulative GP (from shop purchases)
+- `max-hit-dealt` — highest single hit

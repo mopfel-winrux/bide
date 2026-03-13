@@ -169,6 +169,11 @@
       [%dragon-tablet dragon-tablet-def]
       [%hydra-tablet hydra-tablet-def]
       [%titan-tablet titan-tablet-def]
+      ::  enchanted bars (alt magic)
+      [%enchanted-steel-bar enchanted-steel-bar-def]
+      [%enchanted-mithril-bar enchanted-mithril-bar-def]
+      [%enchanted-adamantite-bar enchanted-adamantite-bar-def]
+      [%enchanted-runite-bar enchanted-runite-bar-def]
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Woodcutting logs                                        │
@@ -745,4 +750,21 @@
 ++  titan-tablet-def
   ^-  item-def
   [id=%titan-tablet name='Titan Tablet' description='A tablet to summon a titan familiar.' category=%tablet sell-price=5.000]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Enchanted bars (Alt Magic)                              │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  enchanted-steel-bar-def
+  ^-  item-def
+  [id=%enchanted-steel-bar name='Enchanted Steel Bar' description='A magically enhanced steel bar.' category=%processed sell-price=330]
+++  enchanted-mithril-bar-def
+  ^-  item-def
+  [id=%enchanted-mithril-bar name='Enchanted Mithril Bar' description='A magically enhanced mithril bar.' category=%processed sell-price=750]
+++  enchanted-adamantite-bar-def
+  ^-  item-def
+  [id=%enchanted-adamantite-bar name='Enchanted Adamantite Bar' description='A magically enhanced adamantite bar.' category=%processed sell-price=1.575]
+++  enchanted-runite-bar-def
+  ^-  item-def
+  [id=%enchanted-runite-bar name='Enchanted Runite Bar' description='A magically enhanced runite bar.' category=%processed sell-price=3.300]
 --

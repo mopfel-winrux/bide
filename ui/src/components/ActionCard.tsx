@@ -2,6 +2,7 @@ import { useGame } from '../context/GameContext';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { fmt, fmtTime } from '../shared/format';
+import { levelFromXp, xpForLevel, xpProgress } from '../shared/xp';
 import type { ActionDef, SkillId } from '../shared/types';
 
 interface Props {
@@ -68,6 +69,12 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
             </span>
           </div>
         )}
+        {action.gpPerAction > 0 && (
+          <div className="flex justify-between">
+            <span className="text-gray-500">GP</span>
+            <span className="font-medium text-amber-500">+{fmt(action.gpPerAction)}</span>
+          </div>
+        )}
         {action.outputs.length > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">Output</span>
@@ -88,6 +95,27 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
           </div>
         )}
       </div>
+
+      {action.masteryXp > 0 && (() => {
+        const mxp = state?.skills[skillId]?.masteryActions?.[action.id] ?? 0;
+        const mlvl = levelFromXp(mxp);
+        const mpct = xpProgress(mxp, mlvl);
+        const mNext = xpForLevel(Math.min(mlvl + 1, 99));
+        return (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-[11px] mb-1">
+              <span className="text-purple-400 font-medium">Mastery Lv. {mlvl}</span>
+              <span className="text-gray-500">{fmt(mxp)} / {fmt(mNext)}</span>
+            </div>
+            <div className="h-1.5 bg-[#1f2937] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-purple-500 rounded-full transition-[width] duration-300"
+                style={{ width: `${mpct}%` }}
+              />
+            </div>
+          </div>
+        );
+      })()}
 
       <div className="flex gap-3">
         {locked ? (

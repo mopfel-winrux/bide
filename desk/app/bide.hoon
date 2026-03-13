@@ -8,6 +8,7 @@
 /+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 /+  bide-potions, bide-prayers, bide-slayer, bide-specials, bide-dungeons
 /+  bide-farming, bide-agility, bide-astrology, bide-summoning
+/+  bide-modifiers, bide-shop, bide-pets
 /+  bide-state
 ::
 |%
@@ -58,7 +59,15 @@
         [items=*(map item-id @ud) slots-max=12]
         [slots=*(map equipment-slot item-id) auto-eat-threshold=50 selected-food=~]
         ~
-        [actions-completed=*(map action-id @ud)]
+        :*  actions-completed=*(map action-id @ud)
+            monsters-killed=*(map monster-id @ud)
+            items-produced=*(map item-id @ud)
+            dungeons-completed=*(map dungeon-id @ud)
+            total-xp-earned=0
+            total-gp-earned=0
+            total-gp-spent=0
+            max-hit-dealt=0
+        ==
         now.bowl
         `@uvJ`(sham now.bowl)
         ~                                      ::  active-potions
@@ -66,6 +75,8 @@
         ~                                      ::  slayer-task
         ~[~ ~]                                 ::  farm-plots (2 empty)
         ~                                      ::  active-familiar
+        *(set pet-id)                          ::  pets-found
+        ~                                      ::  active-pet
     ==
   :_  this
   :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/bide/api] dap.bowl]
@@ -105,7 +116,9 @@
             [%agility [xp=5.000.000 level=70 mastery=[pool-xp=0 actions=~]]]
             [%astrology [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%summoning [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
+            [%magic [xp=10.000.000 level=80 mastery=[pool-xp=0 actions=~]]]
         ==
+      =.  gp.player.gs  50.000
       =.  items.bank.gs
         %-  ~(gas by items.bank.gs)
         :~  [%potato-seed 50]
@@ -121,6 +134,18 @@
             [%raw-shrimp 100]
             [%iron-ore 50]
             [%steel-bar 30]
+            [%fire-rune 500]
+            [%mind-rune 100]
+            [%death-rune 100]
+            [%water-rune 200]
+            [%earth-rune 200]
+            [%chaos-rune 100]
+            [%gold-bar 50]
+            [%onyx 10]
+            [%dragonite-bar 5]
+            [%mithril-bar 20]
+            [%adamantite-bar 10]
+            [%runite-bar 5]
         ==
       `this
     =.  gs  (game-state q.vase)
@@ -226,6 +251,7 @@
       ['masteryXp' (numb:enjs:format mastery-xp.ad)]
       ['inputs' [%a (turn inputs.ad input-to-json)]]
       ['outputs' [%a (turn outputs.ad output-to-json)]]
+      ['gpPerAction' (numb:enjs:format gp-per-action.ad)]
   ==
 ::
 ++  input-to-json
@@ -301,6 +327,13 @@
     :~  ['xp' (numb:enjs:format xp.ss)]
         ['level' (numb:enjs:format level.ss)]
         ['poolXp' (numb:enjs:format pool-xp.mastery.ss)]
+        :-  'masteryActions'
+        :-  %o
+        %-  ~(gas by *(map @t json))
+        %+  turn  ~(tap by actions.mastery.ss)
+        |=  [aid=action-id mxp=@ud]
+        ^-  [@t json]
+        [aid (numb:enjs:format mxp)]
     ==
   =/  skills-json=json  [%o (~(gas by *(map @t json)) skill-pairs)]
   =/  bank-pairs=(list [@t json])
@@ -452,6 +485,27 @@
     :~  ['tablet' [%s tablet.af]]
         ['charges' (numb:enjs:format charges.af)]
     ==
+  ::  pets
+  =/  pets-found-json=json
+    [%a (turn ~(tap in pets-found.gs) |=(p=pet-id [%s p]))]
+  =/  active-pet-json=json
+    ?~(active-pet.gs ~ [%s u.active-pet.gs])
+  ::  stats
+  =/  stats-json=json
+    %-  pairs:enjs:format
+    :~  :-  'actionsCompleted'
+        [%o (~(gas by *(map @t json)) (turn ~(tap by actions-completed.stats.gs) |=([a=action-id n=@ud] [a (numb:enjs:format n)])))]
+        :-  'monstersKilled'
+        [%o (~(gas by *(map @t json)) (turn ~(tap by monsters-killed.stats.gs) |=([m=monster-id n=@ud] [m (numb:enjs:format n)])))]
+        :-  'itemsProduced'
+        [%o (~(gas by *(map @t json)) (turn ~(tap by items-produced.stats.gs) |=([i=item-id n=@ud] [i (numb:enjs:format n)])))]
+        :-  'dungeonsCompleted'
+        [%o (~(gas by *(map @t json)) (turn ~(tap by dungeons-completed.stats.gs) |=([d=dungeon-id n=@ud] [d (numb:enjs:format n)])))]
+        ['totalXpEarned' (numb:enjs:format total-xp-earned.stats.gs)]
+        ['totalGpEarned' (numb:enjs:format total-gp-earned.stats.gs)]
+        ['totalGpSpent' (numb:enjs:format total-gp-spent.stats.gs)]
+        ['maxHitDealt' (numb:enjs:format max-hit-dealt.stats.gs)]
+    ==
   %-  pairs:enjs:format
   :~  ['gp' (numb:enjs:format gp.player.gs)]
       ['hp' (numb:enjs:format hitpoints-current.player.gs)]
@@ -468,6 +522,9 @@
       ['slayerTask' slayer-json]
       ['farmPlots' farm-json]
       ['activeFamiliar' familiar-json]
+      ['petsFound' pets-found-json]
+      ['activePet' active-pet-json]
+      ['stats' stats-json]
   ==
 ::
 ++  defs-to-json
@@ -651,6 +708,39 @@
           ['damageMult' (numb:enjs:format damage-mult.sd)]
           ['accuracyMult' (numb:enjs:format accuracy-mult.sd)]
       ==
+      ::  shop registry
+      :-  'shop'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by shop-registry:bide-shop)
+      |=  [iid=item-id price=@ud]
+      ^-  [@t json]
+      [iid (numb:enjs:format price)]
+      ::  pet registry
+      :-  'pets'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by pet-registry:bide-pets)
+      |=  [pid=pet-id pd=pet-def]
+      ^-  [@t json]
+      :-  pid
+      %-  pairs:enjs:format
+      :~  ['name' [%s name.pd]]
+          ['sourceType' [%s source-type.pd]]
+          ['sourceId' [%s source-id.pd]]
+          ['chance' (numb:enjs:format chance.pd)]
+          :-  'effects'
+          :-  %a
+          %+  turn  effects.pd
+          |=  pb=pet-bonus
+          ?-  -.pb
+            %xp-skill       (pairs:enjs:format ~[['type' [%s 'xp-skill']] ['skill' [%s skill.pb]] ['pct' (numb:enjs:format pct.pb)]])
+            %xp-global      (pairs:enjs:format ~[['type' [%s 'xp-global']] ['pct' (numb:enjs:format pct.pb)]])
+            %gp-bonus       (pairs:enjs:format ~[['type' [%s 'gp-bonus']] ['pct' (numb:enjs:format pct.pb)]])
+            %speed-bonus    (pairs:enjs:format ~[['type' [%s 'speed-bonus']] ['pct' (numb:enjs:format pct.pb)]])
+            %farming-yield  (pairs:enjs:format ~[['type' [%s 'farming-yield']] ['pct' (numb:enjs:format pct.pb)]])
+          ==
+      ==
   ==
 ::
 ++  handle-post
@@ -741,6 +831,16 @@
       [%eat-food @ ~]
     =/  item=@tas  i.t.site
     (handle-action [%eat-food item] bowl)
+  ::
+      [%buy @ @ ~]
+    =/  item=@tas  i.t.site
+    =/  qty=@ud  (slav %ud i.t.t.site)
+    (handle-action [%buy item qty] bowl)
+  ::
+      [%set-pet @ ~]
+    =/  pet-str=@tas  i.t.site
+    =/  pet=(unit pet-id)  ?:(=(pet-str 'none') ~ `pet-str)
+    (handle-action [%set-pet pet] bowl)
   ==
 ::
 ++  handle-action
@@ -793,6 +893,7 @@
     ?~  idef  `gs
     =/  revenue=@ud  (mul sell-qty sell-price.u.idef)
     =.  gp.player.gs  (add gp.player.gs revenue)
+    =.  total-gp-earned.stats.gs  (add total-gp-earned.stats.gs revenue)
     =/  remaining=@ud  (sub have sell-qty)
     =.  items.bank.gs
       ?:  =(remaining 0)
@@ -807,10 +908,19 @@
     ?~  idef  `gs
     =/  revenue=@ud  (mul have sell-price.u.idef)
     =.  gp.player.gs  (add gp.player.gs revenue)
+    =.  total-gp-earned.stats.gs  (add total-gp-earned.stats.gs revenue)
     =.  items.bank.gs  (~(del by items.bank.gs) item.act)
     `gs
   ::
       %buy
+    =/  buy-price=(unit @ud)  (~(get by shop-registry:bide-shop) item.act)
+    ?~  buy-price  ~&([%bide %not-in-shop item.act] `gs)
+    =/  total-cost=@ud  (mul u.buy-price qty.act)
+    ?.  (gte gp.player.gs total-cost)  ~&([%bide %not-enough-gp] `gs)
+    =.  gp.player.gs  (sub gp.player.gs total-cost)
+    =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs total-cost)
+    =/  cur=@ud  (fall (~(get by items.bank.gs) item.act) 0)
+    =.  items.bank.gs  (~(put by items.bank.gs) item.act (add cur qty.act))
     `gs
   ::
       %equip
@@ -1159,12 +1269,10 @@
     =/  range=@ud  (add (sub max-yield.u.sdef min-yield.u.sdef) 1)
     =^  rng-val  rng-seed.gs  [(mod (mug rng-seed.gs) range) `@uvJ`(mug rng-seed.gs)]
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
-    ::  apply yield bonuses (agility + familiar)
-    =/  agility-level=@ud
-      =/  ss  (~(get by skills.gs) %agility)
-      ?~(ss 1 level.u.ss)
-    =/  yield-bonus=@ud  (add (farming-yield-bonus:bide-agility agility-level) (familiar-farming-yield:bide-summoning active-familiar.gs))
-    =/  final-yield=@ud  (add base-yield (div (mul base-yield yield-bonus) 100))
+    ::  apply yield bonuses via modifier engine
+    =/  mods=modifier-set
+      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    =/  final-yield=@ud  (add base-yield (div (mul base-yield farming-yield.mods) 100))
     ::  award farming XP
     =/  fss=skill-state
       (fall (~(get by skills.gs) %farming) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
@@ -1175,6 +1283,11 @@
     ::  add crops to bank
     =/  cur-crop=@ud  (fall (~(get by items.bank.gs) crop.u.sdef) 0)
     =.  items.bank.gs  (~(put by items.bank.gs) crop.u.sdef (add cur-crop final-yield))
+    ::  pet drop roll (farming/harvest)
+    =^  found-pet  rng-seed.gs
+      (roll-pet-drop:bide-pets rng-seed.gs %skilling %farming pets-found.gs)
+    =?  pets-found.gs  ?=(^ found-pet)
+      (~(put in pets-found.gs) u.found-pet)
     ::  clear the plot
     =.  farm-plots.gs
       =/  idx=@ud  0
@@ -1237,6 +1350,18 @@
     ::  heal
     =.  hitpoints-current.player.gs
       (min hitpoints-max.player.gs (add hitpoints-current.player.gs u.heal))
+    `gs
+  ::
+      %set-pet
+    ?~  pet.act
+      ::  clear active pet
+      =.  active-pet.gs  ~
+      `gs
+    ::  validate pet is in pets-found
+    ?.  (~(has in pets-found.gs) u.pet.act)
+      ~&  [%bide %pet-not-found u.pet.act]
+      `gs
+    =.  active-pet.gs  pet.act
     `gs
   ::
       %start-dungeon
@@ -1312,12 +1437,10 @@
     ?:  =(id.i.acts target.act)  `i.acts
     $(acts t.acts)
   ?~  adef  `gs
-  ::  apply agility speed bonus
-  =/  agility-level=@ud
-    =/  ss  (~(get by skills.gs) %agility)
-    ?~(ss 1 level.u.ss)
-  =/  speed-pct=@ud  (speed-bonus:bide-agility agility-level)
-  =/  adjusted-time=@ud  (sub base-time.u.adef (div (mul base-time.u.adef speed-pct) 100))
+  ::  compute unified modifiers
+  =/  mods=modifier-set
+    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+  =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods base-time.u.adef)
   =/  base-dr=@dr  (div (mul ~s1 (max adjusted-time 500)) 1.000)
   ?:  =(base-dr *@dr)  `gs
   =/  elapsed=@dr  (sub now.bowl started.act)
@@ -1348,15 +1471,9 @@
     $(inputs t.inputs)
   =/  ss=skill-state
     (fall (~(get by skills.gs) skill.act) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-  =/  total-xp=@ud  (mul xp.u.adef num-actions)
-  ::  apply XP bonuses from agility, astrology, and familiar
-  =/  astrology-ss=skill-state
-    (fall (~(get by skills.gs) %astrology) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-  =/  agility-xp-pct=@ud  (xp-bonus:bide-agility agility-level skill.act)
-  =/  astrology-xp-pct=@ud  (xp-bonus:bide-astrology level.astrology-ss mastery.astrology-ss skill.act)
-  =/  familiar-xp-pct=@ud  (familiar-xp-bonus:bide-summoning active-familiar.gs skill.act skill-type.u.sdef)
-  =/  xp-bonus-pct=@ud  (add agility-xp-pct (add astrology-xp-pct familiar-xp-pct))
-  =.  total-xp  (add total-xp (div (mul total-xp xp-bonus-pct) 100))
+  =/  base-xp=@ud  (mul xp.u.adef num-actions)
+  ::  apply XP bonuses via modifier engine
+  =/  total-xp=@ud  (apply-xp-bonus:bide-modifiers mods skill.act skill-type.u.sdef base-xp)
   ::  decrement familiar charges per action
   =?  active-familiar.gs  ?=(^ active-familiar.gs)
     =/  af  u.active-familiar.gs
@@ -1382,10 +1499,32 @@
     =.  items.bank.gs
       (~(put by items.bank.gs) item.i.outputs (add cur-qty add-qty))
     $(outputs t.outputs)
+  ::  GP per action (alt magic alchemy)
+  =?  gp.player.gs  (gth gp-per-action.u.adef 0)
+    (add gp.player.gs (mul gp-per-action.u.adef num-actions))
+  =?  total-gp-earned.stats.gs  (gth gp-per-action.u.adef 0)
+    (add total-gp-earned.stats.gs (mul gp-per-action.u.adef num-actions))
+  ::  stats: actions completed
   =/  prev-count=@ud
     (fall (~(get by actions-completed.stats.gs) target.act) 0)
   =.  actions-completed.stats.gs
     (~(put by actions-completed.stats.gs) target.act (add prev-count num-actions))
+  ::  stats: items produced
+  =.  items-produced.stats.gs
+    =/  outs=(list output-def)  outputs.u.adef
+    |-
+    ?~  outs  items-produced.stats.gs
+    =/  prev=@ud  (fall (~(get by items-produced.stats.gs) item.i.outs) 0)
+    =.  items-produced.stats.gs
+      (~(put by items-produced.stats.gs) item.i.outs (add prev (mul num-actions max-qty.i.outs)))
+    $(outs t.outs)
+  ::  stats: total XP earned
+  =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs total-xp)
+  ::  pet drop roll
+  =^  found-pet  rng-seed.gs
+    (roll-pet-drop:bide-pets rng-seed.gs %skilling skill.act pets-found.gs)
+  =?  pets-found.gs  ?=(^ found-pet)
+    (~(put in pets-found.gs) u.found-pet)
   =/  leftover=@dr  (mod elapsed base-dr)
   =.  active-action.gs
     `[%skilling skill.act target.act (sub now.bowl leftover)]
@@ -1447,14 +1586,12 @@
   ::  player attacks next
   ::
   ?:  p-first
-    ::  compute potion + prayer + familiar boosts
-    =/  pot-boosts  (compute-boosts:bide-potions active-potions.gs)
-    =/  pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-    =/  fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
-    =/  total-atk-boost=@ud  (add atk-boost.pot-boosts (add atk.pra-boosts atk.fam-boosts))
-    =/  total-str-boost=@ud  (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts))
+    ::  compute unified modifiers
+    =/  mods=modifier-set
+      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    =/  cboosts  (get-combat-boosts:bide-modifiers mods)
     =^  dmg  seed
-      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef total-atk-boost total-str-boost)
+      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
     ::  special attack multiplier
     =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
     =/  sdef=(unit special-attack-def)
@@ -1486,18 +1623,18 @@
       `af(charges new-charges)
     =.  p-atk-count  (add p-atk-count 1)
     =.  p-last-dmg  dmg
+    ::  stats: max hit dealt
+    =?  max-hit-dealt.stats.gs  (gth dmg max-hit-dealt.stats.gs)
+      dmg
     =.  e-hp  ?:((gte e-hp dmg) (sub e-hp dmg) 0)
     =.  p-next  (add p-next weapon-dr)
     ::  enemy killed?
     ?.  =(e-hp 0)
       $(iterations (add iterations 1))
-    ::  award xp (with agility combat XP bonus)
-    =/  combat-agility-level=@ud
-      =/  ss  (~(get by skills.gs) %agility)
-      ?~(ss 1 level.u.ss)
-    =/  combat-xp-pct=@ud  (combat-xp-bonus:bide-agility combat-agility-level)
+    ::  award xp via modifier engine
     =/  xp-total=@ud  combat-xp.u.mdef
-    =.  xp-total  (add xp-total (div (mul xp-total combat-xp-pct) 100))
+    =/  xp-bonus-pct=@ud  (add xp-global.mods xp-combat.mods)
+    =.  xp-total  (add xp-total (div (mul xp-total xp-bonus-pct) 100))
     =/  style-xp=@ud  (div (mul xp-total 2) 3)
     =/  hp-xp=@ud  (div xp-total 3)
     =/  style-skill=skill-id
@@ -1530,9 +1667,22 @@
       =/  cur=@ud  (fall (~(get by items.bank.gs) iid.i.li) 0)
       =.  items.bank.gs  (~(put by items.bank.gs) iid.i.li (add cur qty.i.li))
       $(li t.li)
-    ::  roll gp
+    ::  roll gp (with gp bonus from pet)
     =^  gp-drop  seed  (roll-gp:bide-combat seed gp-min.u.mdef gp-max.u.mdef)
+    =?  gp-drop  (gth gp-bonus.mods 0)
+      (add gp-drop (div (mul gp-drop gp-bonus.mods) 100))
     =.  gp.player.gs  (add gp.player.gs gp-drop)
+    ::  stats: monsters killed, gp earned, xp earned
+    =/  prev-kills=@ud  (fall (~(get by monsters-killed.stats.gs) monster.act) 0)
+    =.  monsters-killed.stats.gs
+      (~(put by monsters-killed.stats.gs) monster.act (add prev-kills 1))
+    =.  total-gp-earned.stats.gs  (add total-gp-earned.stats.gs gp-drop)
+    =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs xp-total)
+    ::  pet drop roll (combat)
+    =^  found-pet  seed
+      (roll-pet-drop:bide-pets seed %combat monster.act pets-found.gs)
+    =?  pets-found.gs  ?=(^ found-pet)
+      (~(put in pets-found.gs) u.found-pet)
     ::  slayer task tracking
     =?  slayer-task.gs  ?=(^ slayer-task.gs)
       =/  st  u.slayer-task.gs
@@ -1556,19 +1706,13 @@
   ::
   ::  enemy attacks next
   ::
-  =/  def-pot-boosts  (compute-boosts:bide-potions active-potions.gs)
-  =/  def-pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-  =/  def-fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
-  =/  total-def-boost=@ud  (add def-boost.def-pot-boosts (add def.def-pra-boosts def.def-fam-boosts))
+  =/  mods=modifier-set
+    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+  =/  cboosts  (get-combat-boosts:bide-modifiers mods)
   =^  dmg  seed
-    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act total-def-boost)
+    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
   ::  apply protection prayer damage reduction
-  =/  protect-pct=@ud
-    ?-  attack-style.u.mdef
-      ?(%melee-attack %melee-strength %melee-defence)  pro-melee.def-pra-boosts
-      %ranged  pro-ranged.def-pra-boosts
-      %magic   pro-magic.def-pra-boosts
-    ==
+  =/  protect-pct=@ud  (get-protection:bide-modifiers mods attack-style.u.mdef)
   =?  dmg  (gth protect-pct 0)
     (sub dmg (div (mul dmg protect-pct) 100))
   =.  e-atk-count  (add e-atk-count 1)
@@ -1654,11 +1798,11 @@
     ==
   ::  player attacks
   ?:  p-first
-    =/  pot-boosts  (compute-boosts:bide-potions active-potions.gs)
-    =/  pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-    =/  fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
+    =/  mods=modifier-set
+      (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    =/  cboosts  (get-combat-boosts:bide-modifiers mods)
     =^  dmg  seed
-      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef (add atk-boost.pot-boosts (add atk.pra-boosts atk.fam-boosts)) (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts)))
+      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
     =.  active-potions.gs  (tick-potions:bide-potions active-potions.gs)
     =/  drain=@ud  (total-drain:bide-prayers active-prayers.gs)
     =.  prayer-points.player.gs
@@ -1683,13 +1827,18 @@
     =.  sp-energy  (min 100 (add sp-energy 10))
     =.  p-atk-count  (add p-atk-count 1)
     =.  p-last-dmg  dmg
+    ::  stats: max hit
+    =?  max-hit-dealt.stats.gs  (gth dmg max-hit-dealt.stats.gs)
+      dmg
     =.  e-hp  ?:((gte e-hp dmg) (sub e-hp dmg) 0)
     =.  p-next  (add p-next weapon-dr)
     ::  enemy killed?
     ?.  =(e-hp 0)
       $(iterations (add iterations 1))
-    ::  award combat XP
+    ::  award combat XP via modifier engine
     =/  xp-total=@ud  combat-xp.u.mdef
+    =/  xp-bonus-pct=@ud  (add xp-global.mods xp-combat.mods)
+    =.  xp-total  (add xp-total (div (mul xp-total xp-bonus-pct) 100))
     =/  style-skill=skill-id
       ?-  style.act
         %melee-attack    %attack
@@ -1711,6 +1860,11 @@
     =.  skills.gs  (~(put by skills.gs) %hitpoints hss)
     =.  p-hp-max  (mul new-hp-level 10)
     =.  hitpoints-max.player.gs  p-hp-max
+    ::  stats: monsters killed, xp earned
+    =/  prev-kills=@ud  (fall (~(get by monsters-killed.stats.gs) monster.act) 0)
+    =.  monsters-killed.stats.gs
+      (~(put by monsters-killed.stats.gs) monster.act (add prev-kills 1))
+    =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs xp-total)
     =.  k  (add k 1)
     =.  room-kills  (add room-kills 1)
     ::  check if room is cleared
@@ -1726,7 +1880,10 @@
     =/  next-room=@ud  (add room-idx 1)
     =/  total-rooms=@ud  (room-count:bide-dungeons u.ddef)
     ?:  (gte next-room total-rooms)
-      ::  dungeon complete — award rewards
+      ::  dungeon complete — award rewards + stats
+      =/  prev-dc=@ud  (fall (~(get by dungeons-completed.stats.gs) dungeon.act) 0)
+      =.  dungeons-completed.stats.gs
+        (~(put by dungeons-completed.stats.gs) dungeon.act (add prev-dc 1))
       =^  reward-items  seed  (roll-loot:bide-combat seed reward-table.u.ddef)
       =.  bank.gs
         =/  li=(list [iid=item-id qty=@ud])  reward-items
@@ -1756,17 +1913,12 @@
     =.  e-next  (add p-next enemy-dr)
     $(iterations (add iterations 1), mdef `u.nmdef)
   ::  enemy attacks
-  =/  def-pot-boosts  (compute-boosts:bide-potions active-potions.gs)
-  =/  def-pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-  =/  def-fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
+  =/  mods=modifier-set
+    (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+  =/  cboosts  (get-combat-boosts:bide-modifiers mods)
   =^  dmg  seed
-    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act (add def-boost.def-pot-boosts (add def.def-pra-boosts def.def-fam-boosts)))
-  =/  protect-pct=@ud
-    ?-  attack-style.u.mdef
-      ?(%melee-attack %melee-strength %melee-defence)  pro-melee.def-pra-boosts
-      %ranged  pro-ranged.def-pra-boosts
-      %magic   pro-magic.def-pra-boosts
-    ==
+    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
+  =/  protect-pct=@ud  (get-protection:bide-modifiers mods attack-style.u.mdef)
   =?  dmg  (gth protect-pct 0)
     (sub dmg (div (mul dmg protect-pct) 100))
   =.  e-atk-count  (add e-atk-count 1)

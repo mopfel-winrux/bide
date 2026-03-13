@@ -7,6 +7,7 @@ export type MonsterId = string;
 export type AreaId = string;
 export type PrayerId = string;
 export type DungeonId = string;
+export type PetId = string;
 
 export type ItemCategory =
   | 'raw-material'
@@ -52,6 +53,7 @@ export interface ActionDef {
   masteryXp: number;
   inputs: InputDef[];
   outputs: OutputDef[];
+  gpPerAction: number;
 }
 
 export interface SkillDef {
@@ -113,6 +115,7 @@ export interface SkillState {
   xp: number;
   level: number;
   poolXp: number;
+  masteryActions: Record<ActionId, number>;
 }
 
 export interface ActiveSkillingAction {
@@ -239,6 +242,9 @@ export interface GameState {
   slayerTask: SlayerTask | null;
   farmPlots: (FarmPlot | null)[];
   activeFamiliar: FamiliarState | null;
+  petsFound: PetId[];
+  activePet: PetId | null;
+  stats: GameStats;
 }
 
 export interface FarmSeedDef {
@@ -264,6 +270,31 @@ export interface FamiliarDef {
   farmingYield: number;
 }
 
+export interface PetBonus {
+  type: 'xp-skill' | 'xp-global' | 'gp-bonus' | 'speed-bonus' | 'farming-yield';
+  skill?: SkillId;
+  pct: number;
+}
+
+export interface PetDef {
+  name: string;
+  sourceType: 'skilling' | 'combat';
+  sourceId: string;
+  chance: number;
+  effects: PetBonus[];
+}
+
+export interface GameStats {
+  actionsCompleted: Record<ActionId, number>;
+  monstersKilled: Record<MonsterId, number>;
+  itemsProduced: Record<ItemId, number>;
+  dungeonsCompleted: Record<DungeonId, number>;
+  totalXpEarned: number;
+  totalGpEarned: number;
+  totalGpSpent: number;
+  maxHitDealt: number;
+}
+
 export interface GameDefs {
   skills: Record<SkillId, SkillDef>;
   items: Record<ItemId, ItemDef>;
@@ -278,6 +309,8 @@ export interface GameDefs {
   farmSeeds: Record<ItemId, FarmSeedDef>;
   familiars: Record<ItemId, FamiliarDef>;
   constellations: Record<ActionId, SkillId>;
+  shop: Record<ItemId, number>;
+  pets: Record<PetId, PetDef>;
 }
 
 export interface DisplaySkill {
