@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import { Badge } from '../ui/Badge';
-import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS } from '../../shared/constants';
+import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS, SKILL_TYPE_COLORS } from '../../shared/constants';
 import type { SkillType } from '../../shared/types';
 
-const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer', 'slayer']);
+const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']);
 const CUSTOM_ROUTES: Record<string, string> = { farming: '/farming' };
 
 export function Sidebar() {
@@ -12,7 +12,6 @@ export function Sidebar() {
 
   if (!defs) return null;
 
-  // Group skills by type
   const groups: Record<string, string[]> = {};
   for (const type of SKILL_TYPE_ORDER) {
     groups[type] = [];
@@ -23,49 +22,40 @@ export function Sidebar() {
     groups[type].push(sid);
   }
 
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center justify-between px-5 py-2 text-[13px] border-l-2 transition-all duration-150 cursor-pointer ${
+      isActive
+        ? 'bg-[#131b2e] text-gray-100 border-l-amber-500'
+        : 'text-gray-500 border-l-transparent hover:bg-[#0d1117] hover:text-gray-300'
+    }`;
+
   return (
-    <nav className="bg-[#111827] border-r border-[#374151] overflow-y-auto py-6 hidden md:block w-[240px] shrink-0">
+    <nav className="bg-[#0d1117] border-r border-[#1e293b] overflow-y-auto py-4 hidden md:block w-[220px] shrink-0">
       <div className="flex flex-col">
-        <NavLink
-          to="/"
-          end
-          className={({ isActive }) =>
-            `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-              isActive
-                ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-            }`
-          }
-        >
+        <NavLink to="/" end className={linkClass}>
           <span>Overview</span>
         </NavLink>
 
         {SKILL_TYPE_ORDER.map((type) => {
           const sids = groups[type];
           if (!sids || sids.length === 0) return null;
+          const typeColor = SKILL_TYPE_COLORS[type as SkillType];
+
           return (
-            <div key={type} className="mb-4">
-              <div className="px-6 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                {SKILL_TYPE_LABELS[type as SkillType]}
+            <div key={type} className="mt-4">
+              <div className="flex items-center gap-2 px-5 py-1.5 mb-0.5">
+                <div className="w-1 h-1 rounded-full" style={{ backgroundColor: typeColor }} />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-600">
+                  {SKILL_TYPE_LABELS[type as SkillType]}
+                </span>
               </div>
               {sids.map((sid) => {
                 const sd = defs.skills[sid];
                 const ds = getDisplaySkill(sid);
-                // Combat skills link to /combat instead of /skill/:id
                 const isCombatSkill = COMBAT_SKILLS.has(sid);
                 const linkTo = CUSTOM_ROUTES[sid] ?? (isCombatSkill ? '/combat' : `/skill/${sid}`);
                 return (
-                  <NavLink
-                    key={sid}
-                    to={linkTo}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                        isActive
-                          ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                          : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-                      }`
-                    }
-                  >
+                  <NavLink key={sid} to={linkTo} className={linkClass}>
                     {({ isActive }) => (
                       <>
                         <span className="flex-1">{sd.name}</span>
@@ -76,16 +66,7 @@ export function Sidebar() {
                 );
               })}
               {type === 'artisan' && (
-                <NavLink
-                  to="/skill/magic"
-                  className={({ isActive }) =>
-                    `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                      isActive
-                        ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                        : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-                    }`
-                  }
-                >
+                <NavLink to="/skill/magic" className={linkClass}>
                   {({ isActive }) => (
                     <>
                       <span className="flex-1">Alt Magic</span>
@@ -98,56 +79,23 @@ export function Sidebar() {
           );
         })}
 
-        <div className="mb-4">
-          <div className="px-6 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-            Other
+        <div className="mt-4">
+          <div className="flex items-center gap-2 px-5 py-1.5 mb-0.5">
+            <div className="w-1 h-1 rounded-full bg-gray-600" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-600">
+              Other
+            </span>
           </div>
-          <NavLink
-            to="/equipment"
-            className={({ isActive }) =>
-              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                isActive
-                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-              }`
-            }
-          >
+          <NavLink to="/equipment" className={linkClass}>
             <span>Equipment</span>
           </NavLink>
-          <NavLink
-            to="/bank"
-            className={({ isActive }) =>
-              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                isActive
-                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-              }`
-            }
-          >
+          <NavLink to="/bank" className={linkClass}>
             <span>Bank</span>
           </NavLink>
-          <NavLink
-            to="/shop"
-            className={({ isActive }) =>
-              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                isActive
-                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-              }`
-            }
-          >
+          <NavLink to="/shop" className={linkClass}>
             <span>Shop</span>
           </NavLink>
-          <NavLink
-            to="/completion"
-            className={({ isActive }) =>
-              `flex items-center justify-between px-6 py-2.5 text-sm border-l-[3px] transition-all duration-150 cursor-pointer ${
-                isActive
-                  ? 'bg-[#1f2937] text-gray-100 border-l-amber-600'
-                  : 'text-gray-400 border-l-transparent hover:bg-[#1f2937] hover:text-gray-100'
-              }`
-            }
-          >
+          <NavLink to="/completion" className={linkClass}>
             <span>Completion</span>
           </NavLink>
         </div>

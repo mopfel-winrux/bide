@@ -69,14 +69,14 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Player */}
-      <div className="bg-[#111827] border border-[#374151] rounded-lg p-5">
+      <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
         <div className="text-sm font-semibold text-gray-400 mb-1">You</div>
         <div className="relative">
           <div className="flex items-center justify-between text-sm mb-1">
             <span className="text-gray-400">HP</span>
             <span className="text-gray-200">{fmt(playerHp)} / {fmt(playerHpMax)}</span>
           </div>
-          <div className="h-4 bg-[#1f2937] rounded-full overflow-hidden">
+          <div className="h-4 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-300"
               style={{
@@ -93,7 +93,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Attack</span>
             <span className="text-gray-500 tabular-nums">{(weaponSpeed / 1000).toFixed(1)}s</span>
           </div>
-          <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-amber-500"
               style={{
@@ -112,7 +112,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Special</span>
             <span className="text-gray-500 tabular-nums">{combatAction.specialEnergy}%</span>
           </div>
-          <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-yellow-500 transition-all duration-300" style={{ width: combatAction.specialEnergy + '%' }} />
           </div>
           <button
@@ -130,7 +130,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
               <span className="text-gray-500">Prayer</span>
               <span className="text-gray-500 tabular-nums">{prayerPoints}/{prayerMax}</span>
             </div>
-            <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+            <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
               <div className="h-full rounded-full bg-cyan-500 transition-all duration-300" style={{ width: prayerMax > 0 ? (prayerPoints / prayerMax * 100) + '%' : '0%' }} />
             </div>
           </div>
@@ -161,14 +161,14 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
       </div>
 
       {/* Enemy */}
-      <div className="bg-[#111827] border border-[#374151] rounded-lg p-5">
+      <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
         <div className="text-sm font-semibold text-red-400 mb-1">{monsterDef?.name ?? combatAction.monster}</div>
         <div className="relative">
           <div className="flex items-center justify-between text-sm mb-1">
             <span className="text-gray-400">HP</span>
             <span className="text-gray-200">{fmt(combatAction.enemyHp)} / {fmt(combatAction.enemyMaxHp)}</span>
           </div>
-          <div className="h-4 bg-[#1f2937] rounded-full overflow-hidden">
+          <div className="h-4 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full bg-red-500 rounded-full transition-all duration-300"
               style={{ width: enemyHpPct + '%' }}
@@ -182,7 +182,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Attack</span>
             <span className="text-gray-500 tabular-nums">{(monsterDef.attackSpeed / 1000).toFixed(1)}s</span>
           </div>
-          <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-red-500"
               style={{
@@ -195,7 +195,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
       </div>
 
       {/* Kill count + dungeon progress */}
-      <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-3">
+      <div className="md:col-span-2 bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-400">Kills</span>
           <span className="text-lg font-semibold text-amber-500">{fmt(combatAction.kills)}</span>
@@ -214,14 +214,14 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
 
       {/* Potions */}
       {bankPotions.length > 0 && (
-        <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-4">
+        <div className="md:col-span-2 bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-4">
           <div className="text-sm font-semibold text-gray-400 mb-3">Potions</div>
           <div className="flex flex-wrap gap-2">
             {bankPotions.map(({ id, qty, def, name }) => (
               <button
                 key={id}
                 onClick={() => onDrinkPotion(id)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer bg-[#1f2937] border-[#374151] text-gray-300 hover:border-purple-500/50 hover:text-purple-300"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer bg-[#0d1117] border-[#1e293b] text-gray-300 hover:border-purple-500/50 hover:text-purple-300"
               >
                 {name}
                 <span className="text-gray-500">x{qty}</span>
@@ -236,7 +236,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
 
       {/* Prayers */}
       {defs.prayers && Object.keys(defs.prayers).length > 0 && (
-        <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-4">
+        <div className="md:col-span-2 bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-gray-400">Prayers</span>
             <span className="text-xs text-gray-500">
@@ -257,7 +257,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                       isActive
                         ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                        : 'bg-[#1f2937] border-[#374151] text-gray-300 hover:border-cyan-500/50 hover:text-cyan-300'
+                        : 'bg-[#0d1117] border-[#1e293b] text-gray-300 hover:border-cyan-500/50 hover:text-cyan-300'
                     }`}
                   >
                     {prayer.name}

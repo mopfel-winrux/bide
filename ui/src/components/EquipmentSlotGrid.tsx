@@ -27,7 +27,7 @@ export function EquipmentSlotGrid({ slots, defs, onUnequip }: EquipmentSlotGridP
             className={`border rounded-lg p-3 min-h-[80px] flex flex-col ${
               itemId
                 ? 'bg-[#1a2332] border-amber-600/30'
-                : 'bg-[#111827] border-[#374151] border-dashed'
+                : 'bg-[#111827] border-[#1e293b] border-dashed'
             }`}
           >
             <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">{label}</div>

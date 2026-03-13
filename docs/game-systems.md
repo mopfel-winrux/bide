@@ -83,7 +83,7 @@ Combat uses two independent Behn timers — one for the player attack and one fo
 
 **Hit calculation.** `lib/bide-combat.hoon` computes effective attack/strength/defence levels from base skill level + potion boosts + prayer boosts. Hit chance uses an attack roll vs defence roll comparison. Damage is rolled 0 to max hit (based on effective strength). PRNG uses a seed stored in `game-state` and advanced each roll.
 
-**Combat styles.** Three weapon types (melee, ranged, magic) with sub-styles. Melee has attack/strength/defence variants that direct XP to different skills. The frontend auto-selects a valid style when the equipped weapon type changes.
+**Combat styles.** Three weapon types (melee, ranged, magic) with sub-styles. Melee has attack/strength/defence variants that direct XP to different skills. The frontend auto-selects a valid style when the equipped weapon type changes. Magic is always available as a combat style — with a magic weapon it uses equipment stats; with a spell selected it uses spell-based combat (fixed max hit from spell, accuracy from magic level, runes consumed per attack).
 
 **Food & auto-eat.** Players configure a food item and HP threshold. Each combat tick checks if HP is below threshold and auto-consumes food from the bank. Food healing values are defined in `lib/bide-food.hoon`.
 
@@ -303,6 +303,44 @@ Managed on the Equipment page alongside gear and familiars.
 | Enchant Runite | 80 | 10 water, 10 earth, 5 death | runite-bar | enchanted-runite-bar | 650 | 6s |
 
 Enchanted bars are new items (`category=%processed`) with 3x the sell price of normal bars.
+
+## Combat Spells
+
+12 combat spells defined in `lib/bide-spells.hoon` allow magic-based combat without requiring a magic weapon. When magic style is selected on the combat page, the player chooses a spell. Each attack consumes runes from the bank; combat auto-stops when runes are insufficient.
+
+Spell-based attacks use a fixed 3000ms attack speed. Damage is rolled 0 to the spell's fixed max hit. Accuracy is computed from the player's magic level and magic attack bonus (from equipment, if any) vs the enemy's defence.
+
+**Strike Spells** (beginner):
+
+| Spell | Level | Max Hit | Runes |
+|-------|-------|---------|-------|
+| Wind Strike | 1 | 2 | 2 air, 1 mind |
+| Water Strike | 5 | 4 | 2 water, 2 air, 1 mind |
+| Earth Strike | 9 | 6 | 2 earth, 2 air, 1 mind |
+| Fire Strike | 13 | 8 | 3 fire, 2 air, 1 mind |
+
+**Bolt Spells** (intermediate):
+
+| Spell | Level | Max Hit | Runes |
+|-------|-------|---------|-------|
+| Air Bolt | 17 | 10 | 3 air, 1 chaos |
+| Water Bolt | 23 | 13 | 3 water, 2 air, 1 chaos |
+| Earth Bolt | 29 | 16 | 3 earth, 2 air, 1 chaos |
+| Fire Bolt | 35 | 19 | 4 fire, 3 air, 1 chaos |
+
+**Blast Spells** (advanced):
+
+| Spell | Level | Max Hit | Runes |
+|-------|-------|---------|-------|
+| Air Blast | 41 | 22 | 4 air, 1 death |
+| Fire Blast | 59 | 28 | 5 fire, 4 air, 1 death |
+
+**Surge Spells** (expert):
+
+| Spell | Level | Max Hit | Runes |
+|-------|-------|---------|-------|
+| Air Surge | 75 | 36 | 7 air, 1 blood |
+| Fire Surge | 90 | 46 | 10 fire, 7 air, 1 blood |
 
 ## Completion Log
 

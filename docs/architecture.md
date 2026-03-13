@@ -19,14 +19,14 @@ POST endpoints:
 - `/sell-all/<item>` — sell entire stack
 - `/equip/<item>` — equip an item
 - `/unequip/<slot>` — unequip a slot
-- `/fight/<area>/<monster>/<style>` — start combat
-- `/flee` — stop combat
+- `/start-combat/<area>/<monster>/<style>/<spell>` — start combat (spell = spell-id or `none`)
+- `/stop-combat` — stop combat
 - `/set-auto-eat/<threshold>/<food>` — configure auto-eat
 - `/drink-potion/<item>` — drink a potion (instant effects work outside combat; boost potions require combat)
 - `/toggle-prayer/<prayer>` — toggle a prayer on/off
 - `/special-attack` — queue a special attack
 - `/get-slayer-task` — request a slayer task
-- `/start-dungeon/<dungeon>/<style>` — enter a dungeon
+- `/start-dungeon/<dungeon>/<style>/<spell>` — enter a dungeon (spell = spell-id or `none`)
 - `/plant-seed/<plot>/<seed>` — plant a seed in a farm plot
 - `/harvest-plot/<plot>` — harvest a ready farm plot
 - `/summon-familiar/<tablet>` — summon a familiar from a tablet
@@ -75,7 +75,8 @@ Skills and items are pure data — no engine changes needed to add content.
 - `lib/bide-monsters.hoon` — `++monster-registry` returns `(map monster-id monster-def)`. 13 monsters with combat stats, attack speed, loot tables.
 - `lib/bide-areas.hoon` — `++area-registry` returns `(map area-id area-def)`. 6 areas with level requirements and monster lists.
 - `lib/bide-equipment.hoon` — `++equipment-stats-registry` returns equipment stat bonuses for all gear items.
-- `lib/bide-combat.hoon` — Combat engine: hit calculations, damage rolls, effective levels with boost/prayer integration.
+- `lib/bide-combat.hoon` — Combat engine: hit calculations, damage rolls, effective levels with boost/prayer integration. `player-spell-attack` for spell-based magic combat.
+- `lib/bide-spells.hoon` — `++spell-registry` returns `(map spell-id spell-def)`. 12 combat spells across 4 tiers with rune costs and max hit values.
 - `lib/bide-potions.hoon` — 8 potion definitions, boost computation, potion tick-down logic.
 - `lib/bide-prayers.hoon` — 8 prayer definitions, prayer bonus aggregation, drain calculation.
 - `lib/bide-specials.hoon` — 4 special attack definitions mapped to specific weapons.
@@ -104,7 +105,8 @@ Skills and items are pure data — no engine changes needed to add content.
 | `lib/bide-monsters.hoon` | Monster definitions (13 monsters) |
 | `lib/bide-areas.hoon` | Combat area definitions (6 areas) |
 | `lib/bide-equipment.hoon` | Equipment stat bonuses |
-| `lib/bide-combat.hoon` | Combat math — hit chance, damage, effective levels |
+| `lib/bide-combat.hoon` | Combat math — hit chance, damage, effective levels, spell attacks |
+| `lib/bide-spells.hoon` | Combat spell definitions (12 spells across 4 tiers) |
 | `lib/bide-food.hoon` | Food healing values (auto-eat + bank eating) |
 | `lib/bide-farming.hoon` | Seed registry, plot helpers (15 seeds) |
 | `lib/bide-agility.hoon` | Agility milestone bonus functions |

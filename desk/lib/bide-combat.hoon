@@ -196,6 +196,26 @@
   ?.  hit  [0 seed]
   (roll-damage seed max-hit)
 ::
+::  spell-based attack: max hit from spell def, accuracy from magic level
+++  player-spell-attack
+  |=  $:  seed=@uvJ
+          skills=(map skill-id skill-state)
+          slots=(map equipment-slot item-id)
+          spell-max-hit=@ud
+          enemy-def-level=@ud
+          atk-boost=@ud
+      ==
+  ^-  [dmg=@ud new-seed=@uvJ]
+  =/  bonuses  (total-equipment-bonuses slots)
+  =/  eff-atk=@ud  (effective-attack-level skills %magic atk-boost)
+  =/  atk-bonus=@ud  matk.bonuses
+  =/  atk-roll=@ud  (calc-attack-roll eff-atk atk-bonus)
+  =/  def-roll=@ud  (calc-defence-roll enemy-def-level 0)
+  =/  accuracy=@ud  (calc-accuracy atk-roll def-roll)
+  =^  hit  seed  (roll-hit seed accuracy)
+  ?.  hit  [0 seed]
+  (roll-damage seed spell-max-hit)
+::
 ++  enemy-attack
   |=  [seed=@uvJ mdef=monster-def skills=(map skill-id skill-state) slots=(map equipment-slot item-id) style=combat-style def-boost=@ud]
   ^-  [dmg=@ud new-seed=@uvJ]

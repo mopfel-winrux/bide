@@ -78,12 +78,12 @@ export function CompletionPage() {
       <h1 className="text-xl font-semibold text-gray-100 mb-6">Completion Log</h1>
 
       {/* Overall Progress */}
-      <div className="mb-8 bg-[#111827] border border-[#374151] rounded-lg p-5">
+      <div className="mb-8 bg-[#111827] border border-[#1e293b] rounded-lg p-5">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-400">Overall Progress</span>
           <span className="text-lg font-bold text-amber-400">{overallCompletion.toFixed(1)}%</span>
         </div>
-        <div className="h-3 bg-[#1f2937] rounded-full overflow-hidden">
+        <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-amber-500 transition-all duration-500"
             style={{ width: `${Math.min(overallCompletion, 100)}%` }}
@@ -113,7 +113,7 @@ export function CompletionPage() {
             return (
               <div
                 key={sid}
-                className="bg-[#111827] border border-[#374151] rounded-lg px-4 py-3"
+                className="bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-3"
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-sm font-medium text-gray-200">{skillDef.name}</span>
@@ -121,7 +121,7 @@ export function CompletionPage() {
                     {level}/{MAX_LEVEL}
                   </span>
                 </div>
-                <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+                <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-300"
                     style={{
@@ -162,7 +162,7 @@ export function CompletionPage() {
               return (
                 <div
                   key={sid}
-                  className="bg-[#111827] border border-[#374151] rounded-lg px-4 py-3"
+                  className="bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-3"
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-medium text-gray-200">{name}</span>
@@ -176,7 +176,7 @@ export function CompletionPage() {
                       )}
                     </span>
                   </div>
-                  <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+                  <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-300 bg-purple-500"
                       style={{ width: `${pct}%` }}
@@ -205,7 +205,7 @@ export function CompletionPage() {
               <div
                 key={mid}
                 className={`bg-[#111827] border rounded-lg px-4 py-3 ${
-                  found ? 'border-[#374151]' : 'border-[#374151]/50 opacity-60'
+                  found ? 'border-[#1e293b]' : 'border-[#1e293b]/50 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -239,7 +239,7 @@ export function CompletionPage() {
                 <div
                   key={did}
                   className={`bg-[#111827] border rounded-lg px-4 py-3 ${
-                    cleared ? 'border-[#374151]' : 'border-[#374151]/50 opacity-60'
+                    cleared ? 'border-[#1e293b]' : 'border-[#1e293b]/50 opacity-60'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -273,7 +273,7 @@ export function CompletionPage() {
                 <div
                   key={pid}
                   className={`bg-[#111827] border rounded-lg px-4 py-3 ${
-                    found ? 'border-[#374151]' : 'border-[#374151]/50 opacity-60'
+                    found ? 'border-[#1e293b]' : 'border-[#1e293b]/50 opacity-60'
                   }`}
                 >
                   <span className={`text-sm font-medium ${found ? 'text-gray-200' : 'text-gray-500'}`}>
@@ -289,7 +289,7 @@ export function CompletionPage() {
       {/* Statistics Section */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold text-gray-100 mb-4">Statistics</h2>
-        <div className="bg-[#111827] border border-[#374151] rounded-lg divide-y divide-[#374151]">
+        <div className="bg-[#111827] border border-[#1e293b] rounded-lg divide-y divide-[#374151]">
           {[
             { label: 'Total XP Earned', value: fmt(stats?.totalXpEarned ?? 0) },
             { label: 'Total GP Earned', value: fmt(stats?.totalGpEarned ?? 0) },

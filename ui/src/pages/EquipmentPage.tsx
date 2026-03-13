@@ -57,7 +57,7 @@ export function EquipmentPage() {
           />
 
           {/* Stat totals */}
-          <div className="mt-4 bg-[#111827] border border-[#374151] rounded-lg p-4">
+          <div className="mt-4 bg-[#111827] border border-[#1e293b] rounded-lg p-4">
             <h3 className="text-sm font-semibold text-gray-400 mb-2">Total Bonuses</h3>
             <div className="grid grid-cols-2 gap-1 text-sm">
               {totalAtk > 0 && <div className="text-gray-400">Melee Attack: <span className="text-gray-200">+{totalAtk}</span></div>}
@@ -92,7 +92,7 @@ export function EquipmentPage() {
                 }
 
                 return (
-                  <div key={item} className="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-2">
+                  <div key={item} className="flex items-center justify-between bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-2">
                     <div>
                       <div className="text-sm text-gray-200">{itemDef.name} <span className="text-gray-500">x{qty}</span></div>
                       <div className="text-xs text-gray-500">
@@ -129,7 +129,7 @@ export function EquipmentPage() {
           <div className="mt-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Familiar</h2>
             {state.activeFamiliar ? (
-              <div className="bg-[#111827] border border-[#374151] rounded-lg p-4">
+              <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-sm text-gray-200">
                     {defs.items[state.activeFamiliar.tablet]?.name ?? state.activeFamiliar.tablet}
@@ -169,7 +169,7 @@ export function EquipmentPage() {
                 {Object.entries(state.bank)
                   .filter(([id]) => defs.familiars[id])
                   .map(([id, qty]) => (
-                    <div key={id} className="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-2">
+                    <div key={id} className="flex items-center justify-between bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-2">
                       <div className="text-sm text-gray-200">
                         {defs.items[id]?.name ?? id} <span className="text-gray-500">x{qty}</span>
                       </div>
@@ -227,7 +227,7 @@ export function EquipmentPage() {
                       <div
                         key={pid}
                         className={`bg-[#111827] border rounded-lg px-3 py-2 ${
-                          found ? 'border-[#374151]' : 'border-[#374151] opacity-40'
+                          found ? 'border-[#1e293b]' : 'border-[#1e293b] opacity-40'
                         } ${isActive ? 'ring-1 ring-amber-600' : ''}`}
                       >
                         <div className="text-sm text-gray-200">{found ? pdef.name : '???'}</div>

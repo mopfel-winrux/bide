@@ -16,7 +16,7 @@ export function MobileNav() {
     : 'Skills';
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#111827] border-t border-[#374151] z-[100] flex items-center justify-around">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#0d1117]/95 backdrop-blur-sm border-t border-[#1e293b] z-[100] flex items-center justify-around">
       <NavLink
         to="/"
         end

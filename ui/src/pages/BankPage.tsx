@@ -59,7 +59,7 @@ export function BankPage() {
       </div>
 
       {/* Slots progress */}
-      <div className="relative h-2 bg-[#1f2937] rounded-full overflow-hidden mb-6 border border-[#374151]">
+      <div className="relative h-2 bg-[#0d1117] rounded-full overflow-hidden mb-6 border border-[#1e293b]">
         <div
           className="h-full bg-gradient-to-r from-amber-700 to-amber-500 rounded-full transition-[width] duration-300"
           style={{ width: `${(itemCount / state.slotsMax) * 100}%` }}
@@ -75,7 +75,7 @@ export function BankPage() {
             className={`px-3 py-1.5 text-xs rounded-md border transition-all duration-150 cursor-pointer ${
               category === cat
                 ? 'border-amber-600 bg-amber-600/10 text-amber-500'
-                : 'border-[#374151] bg-transparent text-gray-500 hover:text-gray-300'
+                : 'border-[#1e293b] bg-transparent text-gray-500 hover:text-gray-300'
             }`}
           >
             {cat === 'all' ? 'All' : CATEGORY_LABELS[cat]}

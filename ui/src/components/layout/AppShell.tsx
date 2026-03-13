@@ -11,7 +11,7 @@ export function AppShell() {
       <TopBar />
       <div className="flex h-[calc(100vh-3.5rem)] mt-14">
         <Sidebar />
-        <main className="flex-1 overflow-auto min-w-0 p-8 pt-10 md:px-12 pb-20 md:pb-10">
+        <main className="flex-1 overflow-auto min-w-0 p-6 pt-8 md:px-10 pb-20 md:pb-8">
           <Outlet />
         </main>
       </div>

@@ -1,11 +1,11 @@
 import type { Toast as ToastT } from '../../hooks/useToast';
 
-const borderColors: Record<string, string> = {
-  info: 'border-l-blue-500',
-  success: 'border-l-green-500',
-  warning: 'border-l-amber-600',
-  error: 'border-l-red-500',
-  levelup: 'border-l-yellow-500',
+const accentColors: Record<string, string> = {
+  info: '#3b82f6',
+  success: '#10b981',
+  warning: '#f59e0b',
+  error: '#ef4444',
+  levelup: '#eab308',
 };
 
 interface Props {
@@ -14,14 +14,17 @@ interface Props {
 }
 
 export function Toast({ toast, onClose }: Props) {
+  const accent = accentColors[toast.type] || accentColors.info;
+
   return (
     <div
-      className={`flex items-center gap-3 px-5 py-3 bg-[#111827] border border-[#374151] border-l-[3px] rounded-md text-sm text-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.4)] max-w-[340px] animate-[slide-in_0.3s_ease-out] ${borderColors[toast.type] || ''} ${toast.type === 'levelup' ? 'bg-gradient-to-br from-[#111827] to-[#1a1507]' : ''}`}
+      className="flex items-center gap-3 pl-4 pr-3 py-3 bg-[#111827] border border-[#1e293b] rounded-lg text-[13px] text-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.5)] animate-[slide-up_0.3s_ease-out]"
+      style={{ borderLeftColor: accent, borderLeftWidth: '3px' }}
     >
       <span className="flex-1">{toast.message}</span>
       <button
         onClick={onClose}
-        className="bg-transparent border-none text-gray-500 cursor-pointer text-base p-0 leading-none hover:text-gray-100"
+        className="bg-transparent border-none text-gray-600 cursor-pointer text-sm p-0 leading-none hover:text-gray-300 transition-colors"
       >
         &times;
       </button>

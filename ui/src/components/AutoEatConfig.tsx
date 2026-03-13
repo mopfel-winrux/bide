@@ -38,7 +38,7 @@ export function AutoEatConfig() {
   };
 
   return (
-    <div className="bg-[#111827] border border-[#374151] rounded-lg p-4">
+    <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-4">
       <h3 className="text-sm font-semibold text-gray-400 mb-3">Auto-Eat</h3>
 
       <div className="space-y-3">
@@ -62,7 +62,7 @@ export function AutoEatConfig() {
           <select
             value={food ?? ''}
             onChange={(e) => setFood(e.target.value || null)}
-            className="w-full bg-[#1f2937] border border-[#374151] rounded px-2 py-1.5 text-sm text-gray-300"
+            className="w-full bg-[#0d1117] border border-[#1e293b] rounded px-2 py-1.5 text-sm text-gray-300"
           >
             <option value="">None</option>
             {foodItems.map((f) => (

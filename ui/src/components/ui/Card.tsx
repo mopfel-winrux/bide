@@ -10,12 +10,12 @@ export function Card({ children, active, locked, onClick, className = '' }: Prop
   return (
     <div
       onClick={onClick}
-      className={`bg-[#111827] border rounded-[10px] p-5 transition-all duration-200 ${
+      className={`bg-[#111827] border rounded-lg p-5 transition-all duration-200 ${
         active
-          ? 'border-amber-600 shadow-[0_0_18px_rgba(217,119,6,0.12)] animate-[active-pulse_2s_ease-in-out_infinite]'
+          ? 'border-amber-600/60 shadow-[0_0_20px_rgba(217,119,6,0.08)] animate-[active-pulse_2.5s_ease-in-out_infinite]'
           : locked
-            ? 'border-[#374151] opacity-45'
-            : 'border-[#374151] hover:border-gray-500 hover:shadow-[0_0_12px_rgba(255,255,255,0.03)]'
+            ? 'border-[#1e293b] opacity-40'
+            : 'border-[#1e293b] hover:border-[#374151] hover:bg-[#131b2e]'
       } ${onClick ? 'cursor-pointer' : ''} ${className}`}
     >
       {children}

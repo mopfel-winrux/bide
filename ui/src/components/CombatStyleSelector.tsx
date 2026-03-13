@@ -17,7 +17,8 @@ const STYLES: { value: CombatStyle; label: string; desc: string; type: WeaponTyp
 ];
 
 export function CombatStyleSelector({ selected, onSelect, weaponType }: CombatStyleSelectorProps) {
-  const available = STYLES.filter((s) => s.type === weaponType);
+  // Show weapon-appropriate styles + always show magic (can cast spells without a magic weapon)
+  const available = STYLES.filter((s) => s.type === weaponType || s.type === 'magic');
 
   return (
     <div>
@@ -30,7 +31,7 @@ export function CombatStyleSelector({ selected, onSelect, weaponType }: CombatSt
             className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer ${
               selected === s.value
                 ? 'bg-amber-600/20 border-amber-600 text-amber-400'
-                : 'bg-[#111827] border-[#374151] text-gray-400 hover:border-gray-500'
+                : 'bg-[#111827] border-[#1e293b] text-gray-400 hover:border-gray-500'
             }`}
           >
             <div className="font-medium">{s.label}</div>

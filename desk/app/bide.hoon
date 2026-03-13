@@ -8,7 +8,7 @@
 /+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 /+  bide-potions, bide-prayers, bide-slayer, bide-specials, bide-dungeons
 /+  bide-farming, bide-agility, bide-astrology, bide-summoning
-/+  bide-modifiers, bide-shop, bide-pets
+/+  bide-modifiers, bide-shop, bide-pets, bide-spells
 /+  bide-state
 ::
 |%
@@ -356,7 +356,7 @@
       %combat
       ::  compute elapsed timer values from absolute next-attack times
       =/  ms-per=@dr  (div ~s1 1.000)
-      =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+      =/  weapon-spd=@ud  ?~(spell.aa (weapon-speed:bide-combat slots.equipment.gs) 3.000)
       =/  p-remaining=@dr
         ?:  (gth player-next-attack.aa now)
           (sub player-next-attack.aa now)
@@ -376,6 +376,7 @@
           ['area' [%s area.aa]]
           ['monster' [%s monster.aa]]
           ['style' [%s style.aa]]
+          ['spell' ?~(spell.aa ~ [%s u.spell.aa])]
           ['enemyHp' (numb:enjs:format enemy-hp.aa)]
           ['enemyMaxHp' (numb:enjs:format enemy-max-hp.aa)]
           ['playerAttackTimer' (numb:enjs:format p-elapsed)]
@@ -391,7 +392,7 @@
     ::
       %dungeon
       =/  ms-per=@dr  (div ~s1 1.000)
-      =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+      =/  weapon-spd=@ud  ?~(spell.aa (weapon-speed:bide-combat slots.equipment.gs) 3.000)
       =/  p-remaining=@dr
         ?:  (gth player-next-attack.aa now)
           (sub player-next-attack.aa now)
@@ -413,6 +414,7 @@
           ['roomKills' (numb:enjs:format room-kills.aa)]
           ['monster' [%s monster.aa]]
           ['style' [%s style.aa]]
+          ['spell' ?~(spell.aa ~ [%s u.spell.aa])]
           ['enemyHp' (numb:enjs:format enemy-hp.aa)]
           ['enemyMaxHp' (numb:enjs:format enemy-max-hp.aa)]
           ['playerAttackTimer' (numb:enjs:format p-elapsed)]
@@ -741,6 +743,27 @@
             %farming-yield  (pairs:enjs:format ~[['type' [%s 'farming-yield']] ['pct' (numb:enjs:format pct.pb)]])
           ==
       ==
+      ::  spell registry
+      :-  'spells'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by spell-registry:bide-spells)
+      |=  [sid=spell-id sd=spell-def]
+      ^-  [@t json]
+      :-  sid
+      %-  pairs:enjs:format
+      :~  ['name' [%s name.sd]]
+          ['levelReq' (numb:enjs:format level-req.sd)]
+          ['maxHit' (numb:enjs:format max-hit.sd)]
+          :-  'runes'
+          :-  %a
+          %+  turn  runes.sd
+          |=  [item=item-id qty=@ud]
+          %-  pairs:enjs:format
+          :~  ['item' [%s item]]
+              ['qty' (numb:enjs:format qty)]
+          ==
+      ==
   ==
 ::
 ++  handle-post
@@ -774,15 +797,22 @@
     ?>  ?=  $?(%helmet %platebody %weapon %shield)  slot
     (handle-action [%unequip slot] bowl)
   ::
-      [%start-combat @ @ @ ~]
+      [%start-combat @ @ @ @ ~]
     =/  area=@tas  i.t.site
     =/  monster=@tas  i.t.t.site
     =/  style=@tas  i.t.t.t.site
     ?>  ?=  combat-style  style
-    (handle-action [%start-combat area monster style] bowl)
+    =/  spell-str=@tas  i.t.t.t.t.site
+    =/  spell=(unit spell-id)  ?:(=(spell-str 'none') ~ `spell-str)
+    (handle-action [%start-combat area monster style spell] bowl)
   ::
       [%stop-combat ~]
     (handle-action [%stop-combat ~] bowl)
+  ::
+      [%change-spell @ ~]
+    =/  spell-str=@tas  i.t.site
+    =/  spell=(unit spell-id)  ?:(=(spell-str 'none') ~ `spell-str)
+    (handle-action [%change-spell spell] bowl)
   ::
       [%set-auto-eat @ @ ~]
     =/  threshold=@ud  (slav %ud i.t.site)
@@ -806,11 +836,13 @@
       [%special-attack ~]
     (handle-action [%special-attack ~] bowl)
   ::
-      [%start-dungeon @ @ ~]
+      [%start-dungeon @ @ @ ~]
     =/  dungeon=@tas  i.t.site
     =/  style=@tas  i.t.t.site
     ?>  ?=  combat-style  style
-    (handle-action [%start-dungeon dungeon style] bowl)
+    =/  spell-str=@tas  i.t.t.t.site
+    =/  spell=(unit spell-id)  ?:(=(spell-str 'none') ~ `spell-str)
+    (handle-action [%start-dungeon dungeon style spell] bowl)
   ::
       [%plant-seed @ @ ~]
     =/  plot=@ud  (slav %ud i.t.site)
@@ -995,6 +1027,18 @@
     ?~  mdef
       ~&  [%bide %unknown-monster monster.act]
       `gs
+    ::  validate spell if provided
+    =/  spell-valid=?
+      ?~  spell.act  %.y
+      =/  sdef=(unit spell-def)  (~(get by spell-registry:bide-spells) u.spell.act)
+      ?~  sdef  %.n
+      =/  magic-level=@ud  (fall (bind (~(get by skills.gs) %magic) |=(s=skill-state level.s)) 1)
+      ?.  (gte magic-level level-req.u.sdef)  %.n
+      ?.  ?=(%magic style.act)  %.n
+      %.y
+    ?.  spell-valid
+      ~&  [%bide %invalid-spell]
+      `gs
     ::  validate combat style matches weapon type
     =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
     =/  wstats=(unit equipment-stats)
@@ -1007,6 +1051,7 @@
       ?~  wstats  %.n
       (gth magic-attack-bonus.u.wstats 0)
     =/  style-ok=?
+      ?:  ?&(?=(%magic style.act) ?=(^ spell.act))  %.y
       ?:  is-ranged  ?=(%ranged style.act)
       ?:  is-magic   ?=(%magic style.act)
       ?=(?(%melee-attack %melee-strength %melee-defence) style.act)
@@ -1015,7 +1060,7 @@
       `gs
     ::  set up combat state with independent Behn timers
     =/  ms-per=@dr  (div ~s1 1.000)
-    =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+    =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)
     =/  p-next=@da  (add now.bowl (mul ms-per weapon-spd))
     =/  e-next=@da  (add now.bowl (mul ms-per attack-speed.u.mdef))
     =.  active-action.gs
@@ -1024,6 +1069,7 @@
           area.act
           monster.act
           style.act
+          spell.act
           hitpoints.u.mdef
           hitpoints.u.mdef
           p-next
@@ -1189,6 +1235,38 @@
       ~&  [%bide %not-enough-energy]
       `gs
     =.  active-action.gs  `u.aa(special-queued %.y)
+    `gs
+  ::
+      %change-spell
+    =/  aa  active-action.gs
+    ?~  aa
+      ~&  [%bide %not-in-combat]
+      `gs
+    ?.  ?=(?(%combat %dungeon) -.u.aa)
+      ~&  [%bide %not-in-combat]
+      `gs
+    ::  validate spell if provided
+    ?:  ?=(^ spell.act)
+      =/  sdef=(unit spell-def)  (~(get by spell-registry:bide-spells) u.spell.act)
+      ?~  sdef
+        ~&  [%bide %unknown-spell u.spell.act]
+        `gs
+      =/  magic-level=@ud  (fall (bind (~(get by skills.gs) %magic) |=(s=skill-state level.s)) 1)
+      ?.  (gte magic-level level-req.u.sdef)
+        ~&  [%bide %insufficient-magic-level]
+        `gs
+      ?:  ?=(%combat -.u.aa)
+        =.  active-action.gs  `u.aa(spell spell.act, style %magic)
+        `gs
+      ?>  ?=(%dungeon -.u.aa)
+      =.  active-action.gs  `u.aa(spell spell.act, style %magic)
+      `gs
+    ::  clearing spell (switching away from magic)
+    ?:  ?=(%combat -.u.aa)
+      =.  active-action.gs  `u.aa(spell ~)
+      `gs
+    ?>  ?=(%dungeon -.u.aa)
+    =.  active-action.gs  `u.aa(spell ~)
     `gs
   ::
       %plant-seed
@@ -1381,7 +1459,7 @@
       `gs
     ::  set up combat timers
     =/  ms-per=@dr  (div ~s1 1.000)
-    =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+    =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)
     =/  p-next=@da  (add now.bowl (mul ms-per weapon-spd))
     =/  e-next=@da  (add now.bowl (mul ms-per attack-speed.u.fmdef))
     =.  active-action.gs
@@ -1392,6 +1470,7 @@
           0             ::  room-kills
           u.first-monster
           style.act
+          spell.act
           hitpoints.u.fmdef
           hitpoints.u.fmdef
           p-next
@@ -1563,7 +1642,7 @@
   =/  seed=@uvJ  rng-seed.gs
   =/  p-hp=@ud  hitpoints-current.player.gs
   =/  p-hp-max=@ud  hitpoints-max.player.gs
-  =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+  =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)
   =/  ms-per=@dr  (div ~s1 1.000)
   =/  weapon-dr=@dr  (mul ms-per weapon-spd)
   =/  enemy-dr=@dr  (mul ms-per attack-speed.u.mdef)
@@ -1577,7 +1656,7 @@
     =.  rng-seed.gs  seed
     =.  hitpoints-current.player.gs  p-hp
     =.  active-action.gs
-      `[%combat area.act monster.act style.act e-hp e-max p-next e-next k p-atk-count e-atk-count p-last-dmg e-last-dmg sp-energy sp-queued started.act]
+      `[%combat area.act monster.act style.act spell.act e-hp e-max p-next e-next k p-atk-count e-atk-count p-last-dmg e-last-dmg sp-energy sp-queued started.act]
     :_  gs
     :~  [%pass /combat/player/(scot %da p-next) %arvo %b [%wait p-next]]
         [%pass /combat/enemy/(scot %da e-next) %arvo %b [%wait e-next]]
@@ -1586,12 +1665,44 @@
   ::  player attacks next
   ::
   ?:  p-first
+    ::  check runes before spell attack
+    =/  has-runes=?
+      ?~  spell.act  %.y
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      =/  rune-list=(list [item=item-id qty=@ud])  runes.sdef
+      |-
+      ?~  rune-list  %.y
+      =/  cur=@ud  (fall (~(get by items.bank.gs) item.i.rune-list) 0)
+      ?.  (gte cur qty.i.rune-list)  %.n
+      $(rune-list t.rune-list)
+    ?.  has-runes
+      ::  out of runes — stop combat
+      =.  active-action.gs  ~
+      =.  rng-seed.gs  seed
+      =.  hitpoints-current.player.gs  p-hp
+      `gs
     ::  compute unified modifiers
     =/  mods=modifier-set
       (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods)
     =^  dmg  seed
-      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
+      ?~  spell.act
+        (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      (player-spell-attack:bide-combat seed skills.gs slots.equipment.gs max-hit.sdef defence-level.u.mdef atk.cboosts)
+    ::  consume runes for spell cast
+    =?  bank.gs  ?=(^ spell.act)
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      =/  rune-list=(list [item=item-id qty=@ud])  runes.sdef
+      |-
+      ?~  rune-list  bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) item.i.rune-list) 0)
+      =/  need=@ud  qty.i.rune-list
+      =.  items.bank.gs
+        ?:  (lte cur need)
+          (~(del by items.bank.gs) item.i.rune-list)
+        (~(put by items.bank.gs) item.i.rune-list (sub cur need))
+      $(rune-list t.rune-list)
     ::  special attack multiplier
     =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
     =/  sdef=(unit special-attack-def)
@@ -1778,7 +1889,7 @@
   =/  seed=@uvJ  rng-seed.gs
   =/  p-hp=@ud  hitpoints-current.player.gs
   =/  p-hp-max=@ud  hitpoints-max.player.gs
-  =/  weapon-spd=@ud  (weapon-speed:bide-combat slots.equipment.gs)
+  =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)
   =/  ms-per=@dr  (div ~s1 1.000)
   =/  weapon-dr=@dr  (mul ms-per weapon-spd)
   =/  enemy-dr=@dr  (mul ms-per attack-speed.u.mdef)
@@ -1791,18 +1902,50 @@
     =.  rng-seed.gs  seed
     =.  hitpoints-current.player.gs  p-hp
     =.  active-action.gs
-      `[%dungeon dungeon.act room-idx room-kills monster.act style.act e-hp e-max p-next e-next k p-atk-count e-atk-count p-last-dmg e-last-dmg sp-energy sp-queued started.act]
+      `[%dungeon dungeon.act room-idx room-kills monster.act style.act spell.act e-hp e-max p-next e-next k p-atk-count e-atk-count p-last-dmg e-last-dmg sp-energy sp-queued started.act]
     :_  gs
     :~  [%pass /combat/player/(scot %da p-next) %arvo %b [%wait p-next]]
         [%pass /combat/enemy/(scot %da e-next) %arvo %b [%wait e-next]]
     ==
   ::  player attacks
   ?:  p-first
+    ::  check runes before spell attack
+    =/  has-runes=?
+      ?~  spell.act  %.y
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      =/  rune-list=(list [item=item-id qty=@ud])  runes.sdef
+      |-
+      ?~  rune-list  %.y
+      =/  cur=@ud  (fall (~(get by items.bank.gs) item.i.rune-list) 0)
+      ?.  (gte cur qty.i.rune-list)  %.n
+      $(rune-list t.rune-list)
+    ?.  has-runes
+      ::  out of runes — stop dungeon
+      =.  active-action.gs  ~
+      =.  rng-seed.gs  seed
+      =.  hitpoints-current.player.gs  p-hp
+      `gs
     =/  mods=modifier-set
       (compute-modifiers:bide-modifiers skills.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods)
     =^  dmg  seed
-      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
+      ?~  spell.act
+        (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef atk.cboosts str.cboosts)
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      (player-spell-attack:bide-combat seed skills.gs slots.equipment.gs max-hit.sdef defence-level.u.mdef atk.cboosts)
+    ::  consume runes for spell cast
+    =?  bank.gs  ?=(^ spell.act)
+      =/  sdef  (~(got by spell-registry:bide-spells) u.spell.act)
+      =/  rune-list=(list [item=item-id qty=@ud])  runes.sdef
+      |-
+      ?~  rune-list  bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) item.i.rune-list) 0)
+      =/  need=@ud  qty.i.rune-list
+      =.  items.bank.gs
+        ?:  (lte cur need)
+          (~(del by items.bank.gs) item.i.rune-list)
+        (~(put by items.bank.gs) item.i.rune-list (sub cur need))
+      $(rune-list t.rune-list)
     =.  active-potions.gs  (tick-potions:bide-potions active-potions.gs)
     =/  drain=@ud  (total-drain:bide-prayers active-prayers.gs)
     =.  prayer-points.player.gs

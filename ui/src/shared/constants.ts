@@ -22,6 +22,13 @@ export const CATEGORY_LABELS: Record<ItemCategory, string> = {
   misc: 'Misc',
 };
 
+export const SKILL_TYPE_COLORS: Record<SkillType, string> = {
+  gathering: '#10b981',
+  artisan: '#0ea5e9',
+  combat: '#ef4444',
+  passive: '#8b5cf6',
+};
+
 export const CATEGORY_COLORS: Record<ItemCategory, string> = {
   'raw-material': '#22c55e',
   processed: '#3b82f6',

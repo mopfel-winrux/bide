@@ -33,15 +33,18 @@ Four new skills providing passive bonuses computed on-the-fly from levels/master
 ### Phase 8 — Economy & Polish
 Unified modifier engine (`lib/bide-modifiers.hoon`) replacing scattered bonus calls in `process-skill-tick` and `process-combat-events` with a single `compute-modifiers` gate collecting all sources (agility, astrology, summoning, potions, prayers, pets) into a `modifier-set`. GP Shop (`lib/bide-shop.hoon`) with ~43 buyable items across raw materials, runes, seeds, food, and starter gear. Pet system (`lib/bide-pets.hoon`) with 12 pets as rare drops from skilling and combat (1/1000-1/5000 chance), each providing passive bonuses (+2-3% skill XP, +1-2% global XP, +3% GP, +5% farming yield); pets managed on Equipment page. Completion Log tracking overall progress across skills (99 count), mastery levels, monsters killed, dungeons cleared, and pets found with per-category progress bars and aggregate statistics (total XP/GP/kills/actions/max hit). Alt Magic adding 11 utility spells to the Magic skill — 3 alchemy (convert items to GP via `gp-per-action` field), 4 superheat (smelt without furnace), 4 enchant (upgrade bars to enchanted versions); 4 new enchanted bar items. Mastery tracking visible on SkillPage (pool XP + total levels) and ActionCard (per-action mastery bar). New frontend pages: ShopPage, CompletionPage. New routes: `/shop`, `/completion`, `/skill/magic` (Alt Magic in artisan sidebar section).
 
+### Phase 9 — Combat Spells
+Combat magic system allowing spellcasting without a magic weapon. 12 combat spells across 4 tiers (Strike, Bolt, Blast, Surge) defined in `lib/bide-spells.hoon`. `player-spell-attack` arm in `lib/bide-combat.hoon` uses the spell's fixed max hit with magic level for accuracy. Runes consumed per attack from bank; combat auto-stops when runes run out. Spell-based attacks use fixed 3000ms attack speed. Frontend: magic style always available in CombatStyleSelector regardless of weapon; spell selection panel on CombatPage shows rune inventory, castable spells with level/rune requirements, max hit display; fight/dungeon buttons require spell selection when magic is active.
+
 ---
 
 ## Planned
 
-### Phase 9 — Content Population
+### Phase 10 — Content Population
 - Full item/monster/action data to match content depth
 - Balance tuning: XP rates, sell prices, drop rates, combat stats
 
-### Phase 10 — Graphics
+### Phase 11 — Graphics
 - Use MCP skill to generate assets for the game
 - Work with the user to capture consistent graphics for all assets
 

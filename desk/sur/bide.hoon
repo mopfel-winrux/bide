@@ -15,6 +15,7 @@
 +$  prayer-id    @tas
 +$  dungeon-id   @tas
 +$  pet-id       @tas
++$  spell-id     @tas
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Top-level game state                                    │
@@ -128,6 +129,7 @@
           area=area-id
           monster=monster-id
           style=combat-style
+          spell=(unit spell-id)
           enemy-hp=@ud
           enemy-max-hp=@ud
           player-next-attack=@da               ::  absolute time of next attack
@@ -147,6 +149,7 @@
           room-kills=@ud                       ::  kills in current room
           monster=monster-id
           style=combat-style
+          spell=(unit spell-id)
           enemy-hp=@ud
           enemy-max-hp=@ud
           player-next-attack=@da
@@ -198,14 +201,15 @@
       [%buy item=item-id qty=@ud]
       [%equip item=item-id]
       [%unequip slot=equipment-slot]
-      [%start-combat area=area-id monster=monster-id style=combat-style]
+      [%start-combat area=area-id monster=monster-id style=combat-style spell=(unit spell-id)]
       [%stop-combat ~]
       [%set-auto-eat threshold=@ud food=(unit item-id)]
       [%drink-potion item=item-id]
       [%toggle-prayer prayer=prayer-id]
       [%get-slayer-task ~]
       [%special-attack ~]
-      [%start-dungeon dungeon=dungeon-id style=combat-style]
+      [%change-spell spell=(unit spell-id)]
+      [%start-dungeon dungeon=dungeon-id style=combat-style spell=(unit spell-id)]
       [%plant-seed plot=@ud seed=item-id]
       [%harvest-plot plot=@ud]
       [%summon-familiar tablet=item-id]
@@ -417,5 +421,16 @@
       [%gp-bonus pct=@ud]
       [%speed-bonus pct=@ud]
       [%farming-yield pct=@ud]
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Combat spell definitions (Phase 9)                      │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  spell-def
+  $:  name=@t
+      level-req=@ud                           ::  magic level required
+      max-hit=@ud                             ::  fixed max damage per cast
+      runes=(list [item=item-id qty=@ud])     ::  runes consumed per attack
   ==
 --

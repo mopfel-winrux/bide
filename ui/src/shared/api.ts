@@ -1,4 +1,4 @@
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId } from './types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId } from './types';
 
 let onAuthFailure = () => {
   window.location.href = '/~/login?redirect=' + encodeURIComponent(window.location.pathname);
@@ -35,8 +35,8 @@ export const api = {
   sellAll: (item: ItemId) => post(`sell-all/${item}`),
   equip: (item: ItemId) => post(`equip/${item}`),
   unequip: (slot: EquipmentSlot) => post(`unequip/${slot}`),
-  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle) =>
-    post(`start-combat/${area}/${monster}/${style}`),
+  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle, spell: SpellId | null = null) =>
+    post(`start-combat/${area}/${monster}/${style}/${spell ?? 'none'}`),
   stopCombat: () => post('stop-combat'),
   setAutoEat: (threshold: number, food: ItemId | null) =>
     post(`set-auto-eat/${threshold}/${food ?? 'none'}`),
@@ -45,8 +45,9 @@ export const api = {
   buryBones: (item: ItemId) => post(`bury-bones/${item}`),
   getSlayerTask: () => post('get-slayer-task'),
   specialAttack: () => post('special-attack'),
-  startDungeon: (dungeon: DungeonId, style: CombatStyle) =>
-    post(`start-dungeon/${dungeon}/${style}`),
+  changeSpell: (spell: SpellId | null) => post(`change-spell/${spell ?? 'none'}`),
+  startDungeon: (dungeon: DungeonId, style: CombatStyle, spell: SpellId | null = null) =>
+    post(`start-dungeon/${dungeon}/${style}/${spell ?? 'none'}`),
   plantSeed: (plot: number, seed: ItemId) => post(`plant-seed/${plot}/${seed}`),
   harvestPlot: (plot: number) => post(`harvest-plot/${plot}`),
   summonFamiliar: (tablet: ItemId) => post(`summon-familiar/${tablet}`),

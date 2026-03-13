@@ -73,7 +73,7 @@ export function ShopPage() {
             className={`px-3 py-1.5 text-xs rounded-md border transition-all duration-150 cursor-pointer ${
               selectedQty === q
                 ? 'border-amber-600 bg-amber-600/10 text-amber-500'
-                : 'border-[#374151] bg-transparent text-gray-500 hover:text-gray-300'
+                : 'border-[#1e293b] bg-transparent text-gray-500 hover:text-gray-300'
             }`}
           >
             {q}
@@ -84,7 +84,7 @@ export function ShopPage() {
           className={`px-3 py-1.5 text-xs rounded-md border transition-all duration-150 cursor-pointer ${
             selectedQty === 'all'
               ? 'border-amber-600 bg-amber-600/10 text-amber-500'
-              : 'border-[#374151] bg-transparent text-gray-500 hover:text-gray-300'
+              : 'border-[#1e293b] bg-transparent text-gray-500 hover:text-gray-300'
           }`}
         >
           All
@@ -112,7 +112,7 @@ export function ShopPage() {
                   return (
                     <div
                       key={id}
-                      className="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-2"
+                      className="flex items-center justify-between bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-2"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="text-sm text-gray-200">{name}</div>

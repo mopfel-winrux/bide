@@ -51,7 +51,7 @@ export function SkillPage() {
         }, 0);
         const maxMasteryLevels = sd.actions.length * 99;
         return (
-          <div className="flex items-center gap-6 text-sm text-gray-400 mb-6 bg-[#111827] border border-[#374151] rounded-lg px-4 py-2.5">
+          <div className="flex items-center gap-6 text-sm text-gray-400 mb-6 bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-2.5">
             <div>
               <span className="text-gray-500">Mastery Pool: </span>
               <span className="text-purple-400 font-medium">{fmt(poolXp)} XP</span>
@@ -77,7 +77,7 @@ export function SkillPage() {
               className={`px-3 py-1.5 text-xs rounded-md border transition-all duration-150 cursor-pointer ${
                 filter === f
                   ? 'border-amber-600 bg-amber-600/10 text-amber-500'
-                  : 'border-[#374151] bg-transparent text-gray-500 hover:text-gray-300'
+                  : 'border-[#1e293b] bg-transparent text-gray-500 hover:text-gray-300'
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}

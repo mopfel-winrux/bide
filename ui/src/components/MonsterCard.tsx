@@ -16,7 +16,7 @@ export function MonsterCard({ monster, selected, onSelect, defs }: MonsterCardPr
       className={`text-left w-full p-4 rounded-lg border transition-colors cursor-pointer ${
         selected
           ? 'bg-[#1a2332] border-amber-600 ring-1 ring-amber-600/30'
-          : 'bg-[#111827] border-[#374151] hover:border-gray-500'
+          : 'bg-[#111827] border-[#1e293b] hover:border-gray-500'
       }`}
     >
       <div className="font-medium text-gray-200 mb-2">{monster.name}</div>

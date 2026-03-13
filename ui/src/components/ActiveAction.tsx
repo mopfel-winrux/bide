@@ -8,26 +8,27 @@ export function ActiveAction() {
 
   if (!state?.activeAction) {
     return (
-      <div className="bg-[#111827] border border-[#374151] rounded-[10px] px-6 py-5 mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-base text-gray-500">Idle</span>
-        </div>
-        <p className="text-sm text-gray-500">Choose a skill to start training.</p>
+      <div className="bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-4 mb-6">
+        <span className="text-[13px] text-gray-500">No active action. Choose a skill to start training.</span>
       </div>
     );
   }
 
   const aa = state.activeAction;
 
-  // Combat/dungeon actions are displayed on the CombatPage, not here
   if (aa.type === 'combat' || aa.type === 'dungeon') {
     const monsterName = defs?.monsters[aa.monster]?.name ?? aa.monster;
-    const label = aa.type === 'dungeon' ? `Dungeon: ${defs?.dungeons?.[aa.dungeon]?.name ?? aa.dungeon}` : `Fighting: ${monsterName}`;
+    const label = aa.type === 'dungeon'
+      ? `Dungeon: ${defs?.dungeons?.[aa.dungeon]?.name ?? aa.dungeon}`
+      : `Fighting: ${monsterName}`;
     return (
-      <div className="bg-[#111827] border border-red-500/50 rounded-[10px] px-6 py-5 mb-8 shadow-[0_0_20px_rgba(239,68,68,0.08)]">
+      <div className="bg-[#111827] border border-red-500/30 rounded-lg px-5 py-4 mb-6">
         <div className="flex items-center justify-between">
-          <span className="font-semibold text-base">{label}</span>
-          <span className="text-gray-400 text-sm">Kills: {aa.kills}</span>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-[status-pulse_2s_ease-in-out_infinite]" />
+            <span className="text-[13px] font-medium text-gray-200">{label}</span>
+          </div>
+          <span className="text-[12px] text-gray-500 tabular-nums">{aa.kills} kills</span>
         </div>
       </div>
     );
@@ -39,20 +40,25 @@ export function ActiveAction() {
   const xpPerHr = actionDef ? Math.round((actionDef.xp / actionDef.baseTime) * 3600000) : 0;
 
   return (
-    <div className="bg-[#111827] border border-amber-600 rounded-[10px] px-6 py-5 mb-8 shadow-[0_0_20px_rgba(217,119,6,0.08)]">
+    <div className="bg-[#111827] border border-amber-600/30 rounded-lg px-5 py-4 mb-6">
       <div className="flex items-center justify-between mb-3 gap-4">
-        <span className="font-semibold text-base">
-          {skillName}: {actionName}
-        </span>
-        <span className="text-gray-400 text-[13px]">
-          {xpPerHr.toLocaleString()} XP/hr
-        </span>
-        <span ref={timeTextRef} className="text-gray-400 text-sm tabular-nums">
-          {actionDef ? fmtTime(actionDef.baseTime) : ''}
-        </span>
-        <Button variant="stop" size="sm" onClick={stopAction} className="flex-none !flex-initial">
-          Stop
-        </Button>
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-[status-pulse_2s_ease-in-out_infinite] shrink-0" />
+          <span className="text-[13px] font-medium text-gray-200 truncate">
+            {skillName}: {actionName}
+          </span>
+        </div>
+        <div className="flex items-center gap-4 shrink-0">
+          <span className="text-[11px] text-gray-500 tabular-nums">
+            {xpPerHr.toLocaleString()} XP/hr
+          </span>
+          <span ref={timeTextRef} className="text-[12px] text-gray-400 tabular-nums">
+            {actionDef ? fmtTime(actionDef.baseTime) : ''}
+          </span>
+          <Button variant="stop" size="sm" onClick={stopAction} className="flex-none !flex-initial">
+            Stop
+          </Button>
+        </div>
       </div>
       <ProgressBar ref={progressBarRef} />
     </div>

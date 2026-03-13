@@ -58,7 +58,7 @@ export function FarmingPage() {
             return (
               <div
                 key={idx}
-                className="bg-[#111827] border border-[#374151] rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px]"
+                className="bg-[#111827] border border-[#1e293b] rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px]"
               >
                 <div className="text-sm text-gray-500 mb-2">Empty Plot</div>
                 {selectedSeed && farmSeeds[selectedSeed] && (state.bank[selectedSeed] ?? 0) > 0 && (
@@ -89,7 +89,7 @@ export function FarmingPage() {
             <div
               key={idx}
               className={`bg-[#111827] border rounded-lg p-4 flex flex-col min-h-[120px] ${
-                isReady ? 'border-green-600' : 'border-[#374151]'
+                isReady ? 'border-green-600' : 'border-[#1e293b]'
               }`}
             >
               <div className="text-sm text-gray-200 mb-1">{seedName}</div>
@@ -97,7 +97,7 @@ export function FarmingPage() {
                 {isReady ? cropName : `Growing ${cropName}...`}
               </div>
               <div className="mt-auto">
-                <div className="relative h-3 bg-[#1f2937] rounded-full overflow-hidden mb-2">
+                <div className="relative h-3 bg-[#0d1117] rounded-full overflow-hidden mb-2">
                   <div
                     className={`h-full rounded-full transition-[width] duration-1000 ${isReady ? 'bg-green-500' : 'bg-gradient-to-r from-green-700 to-green-500'}`}
                     style={{ width: `${growthPct}%` }}
@@ -115,7 +115,7 @@ export function FarmingPage() {
                 ) : (
                   <button
                     disabled
-                    className="w-full px-2 py-1.5 rounded text-xs font-medium bg-[#1f2937] text-gray-500 cursor-not-allowed"
+                    className="w-full px-2 py-1.5 rounded text-xs font-medium bg-[#0d1117] text-gray-500 cursor-not-allowed"
                   >
                     {formatTime(remaining)}
                   </button>
@@ -143,12 +143,12 @@ export function FarmingPage() {
               key={seed.id}
               className={`flex items-center justify-between bg-[#111827] border rounded-lg px-4 py-3 transition-colors ${
                 locked
-                  ? 'border-[#374151] opacity-50 cursor-not-allowed'
+                  ? 'border-[#1e293b] opacity-50 cursor-not-allowed'
                   : bankQty === 0
-                  ? 'border-[#374151] opacity-60 cursor-not-allowed'
+                  ? 'border-[#1e293b] opacity-60 cursor-not-allowed'
                   : isSelected
                   ? 'border-amber-600 bg-[#1a1f2e] cursor-pointer'
-                  : 'border-[#374151] hover:border-gray-500 cursor-pointer'
+                  : 'border-[#1e293b] hover:border-gray-500 cursor-pointer'
               }`}
               onClick={() => !locked && bankQty > 0 && setSelectedSeed(isSelected ? null : seed.id)}
             >

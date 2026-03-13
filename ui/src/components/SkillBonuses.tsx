@@ -36,7 +36,7 @@ export function SkillBonuses({ skillId }: Props) {
   if (skillId === 'agility') {
     const ds = getDisplaySkill('agility');
     return (
-      <div className="mb-6 bg-[#111827] border border-[#374151] rounded-lg p-4">
+      <div className="mb-6 bg-[#111827] border border-[#1e293b] rounded-lg p-4">
         <h3 className="text-sm font-semibold text-gray-400 mb-3">Milestones</h3>
         <div className="space-y-1.5">
           {AGILITY_MILESTONES.map((m) => {
@@ -59,7 +59,7 @@ export function SkillBonuses({ skillId }: Props) {
   if (skillId === 'astrology') {
     const ds = getDisplaySkill('astrology');
     return (
-      <div className="mb-6 bg-[#111827] border border-[#374151] rounded-lg p-4">
+      <div className="mb-6 bg-[#111827] border border-[#1e293b] rounded-lg p-4">
         <h3 className="text-sm font-semibold text-gray-400 mb-3">Level Bonuses</h3>
         <div className="space-y-1.5 mb-4">
           {ASTROLOGY_GLOBAL.map((m) => {
@@ -107,7 +107,7 @@ export function SkillBonuses({ skillId }: Props) {
 
   if (skillId === 'summoning' && defs) {
     return (
-      <div className="mb-6 bg-[#111827] border border-[#374151] rounded-lg p-4">
+      <div className="mb-6 bg-[#111827] border border-[#1e293b] rounded-lg p-4">
         <h3 className="text-sm font-semibold text-gray-400 mb-3">Familiar Effects</h3>
         <div className="space-y-2">
           {Object.entries(defs.familiars).map(([tabletId, f]) => {

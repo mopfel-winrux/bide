@@ -1,11 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { xpProgress } from '../shared/xp';
-import type { SkillId } from '../shared/types';
+import { SKILL_TYPE_COLORS } from '../shared/constants';
+import type { SkillId, SkillType } from '../shared/types';
 
 interface Props {
   skillId: SkillId;
 }
+
+const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']);
+const CUSTOM_ROUTES: Record<string, string> = { farming: '/farming' };
 
 export function SkillCard({ skillId }: Props) {
   const { defs, getDisplaySkill } = useGame();
@@ -16,47 +20,62 @@ export function SkillCard({ skillId }: Props) {
   if (!sd) return null;
 
   const pct = xpProgress(ds.xp, ds.level);
-  // SVG ring params
-  const size = 64;
-  const stroke = 5;
+  const typeColor = SKILL_TYPE_COLORS[sd.type as SkillType] ?? '#6b7280';
+  const isMaxed = ds.level >= 99;
+
+  const linkTo = CUSTOM_ROUTES[skillId] ?? (COMBAT_SKILLS.has(skillId) ? '/combat' : `/skill/${skillId}`);
+
+  // SVG ring
+  const size = 52;
+  const stroke = 4;
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
 
   return (
     <div
-      onClick={() => navigate(`/skill/${skillId}`)}
-      className="bg-[#111827] border border-[#374151] rounded-[10px] p-6 cursor-pointer transition-all duration-200 hover:border-gray-500 hover:shadow-[0_0_12px_rgba(255,255,255,0.03)]"
+      onClick={() => navigate(linkTo)}
+      className="group bg-[#111827] border border-[#1e293b] rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-[#374151] hover:bg-[#131b2e]"
+      style={{ borderLeftColor: typeColor, borderLeftWidth: '2px' }}
     >
-      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
-        {sd.name}
-      </h3>
-      <div className="flex items-center gap-5">
-        <svg width={size} height={size} className="shrink-0 -rotate-90">
-          <circle
-            cx={size / 2} cy={size / 2} r={radius}
-            fill="none" stroke="#1f2937" strokeWidth={stroke}
-          />
-          <circle
-            cx={size / 2} cy={size / 2} r={radius}
-            fill="none" stroke="#22c55e" strokeWidth={stroke}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            className="transition-all duration-400"
-          />
-          <text
-            x={size / 2} y={size / 2}
-            textAnchor="middle" dominantBaseline="central"
-            className="fill-gray-100 text-[18px] font-bold rotate-90"
-            transform={`rotate(90 ${size / 2} ${size / 2})`}
-          >
-            {ds.level}
-          </text>
-        </svg>
-        <div>
-          <div className="text-xl font-bold mb-1">Level {ds.level}</div>
-          <div className="text-sm text-gray-400">{pct.toFixed(0)}% to next level</div>
+      <div className="flex items-center gap-4">
+        <div className="relative shrink-0">
+          <svg width={size} height={size} className="-rotate-90">
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke="#1e293b" strokeWidth={stroke}
+            />
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke={isMaxed ? '#f59e0b' : typeColor} strokeWidth={stroke}
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              strokeLinecap="round"
+              className="transition-all duration-500"
+              style={{ filter: isMaxed ? 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.4))' : undefined }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className={`text-[16px] font-bold ${isMaxed ? 'text-amber-400' : 'text-gray-100'}`}>
+              {ds.level}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-semibold text-gray-200 mb-1">{sd.name}</div>
+          <div className="h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${pct}%`,
+                backgroundColor: isMaxed ? '#f59e0b' : typeColor,
+              }}
+            />
+          </div>
+          <div className="text-[11px] text-gray-500 mt-1 tabular-nums">
+            {isMaxed ? 'Maxed' : `${pct.toFixed(0)}% to ${ds.level + 1}`}
+          </div>
         </div>
       </div>
     </div>

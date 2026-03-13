@@ -24,31 +24,31 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
   return (
     <Card active={isActive} locked={locked}>
       <div className="flex items-center justify-between mb-3">
-        <div className="font-semibold text-[15px]">{action.name}</div>
+        <div className="font-semibold text-[14px] text-gray-200">{action.name}</div>
         {isActive && (
           <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Training</span>
         )}
       </div>
 
-      <div className="flex flex-col gap-2 text-[13px] text-gray-400 mb-4">
+      <div className="flex flex-col gap-1.5 text-[12px] mb-4">
         <div className="flex justify-between">
           <span className="text-gray-500">Level</span>
-          <span className={`font-medium ${locked ? 'text-red-500' : 'text-amber-500'}`}>
+          <span className={`font-medium tabular-nums ${locked ? 'text-red-400' : 'text-amber-500'}`}>
             {action.levelReq}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">XP</span>
-          <span className="font-medium text-green-500">{fmt(action.xp)}</span>
+          <span className="font-medium text-emerald-400 tabular-nums">{fmt(action.xp)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">Time</span>
-          <span className="font-medium text-gray-100">{fmtTime(action.baseTime)}</span>
+          <span className="font-medium text-gray-300 tabular-nums">{fmtTime(action.baseTime)}</span>
         </div>
         {action.masteryXp > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">Mastery</span>
-            <span className="font-medium text-purple-400">{fmt(action.masteryXp)}</span>
+            <span className="font-medium text-purple-400 tabular-nums">{fmt(action.masteryXp)}</span>
           </div>
         )}
         {action.inputs.length > 0 && (
@@ -58,7 +58,7 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
               {action.inputs.map((inp, i) => {
                 const have = bank[inp.item] || 0;
                 const name = defs?.items[inp.item]?.name ?? inp.item;
-                const color = have >= inp.qty ? 'text-green-500' : 'text-red-500';
+                const color = have >= inp.qty ? 'text-emerald-400' : 'text-red-400';
                 return (
                   <span key={inp.item}>
                     {i > 0 && ', '}
@@ -72,13 +72,13 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
         {action.gpPerAction > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">GP</span>
-            <span className="font-medium text-amber-500">+{fmt(action.gpPerAction)}</span>
+            <span className="font-medium text-yellow-500 tabular-nums">+{fmt(action.gpPerAction)}</span>
           </div>
         )}
         {action.outputs.length > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">Output</span>
-            <span className="font-medium text-gray-100">
+            <span className="font-medium text-gray-300">
               {action.outputs.map((out, i) => {
                 const name = defs?.items[out.item]?.name ?? out.item;
                 const have = bank[out.item] || 0;
@@ -87,7 +87,7 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
                   <span key={out.item}>
                     {i > 0 && ', '}
                     {out.chance < 100 ? `${qty} ${name} (${out.chance}%)` : `${qty} ${name}`}
-                    <span className="text-gray-500 ml-1">({have})</span>
+                    <span className="text-gray-600 ml-1">({have})</span>
                   </span>
                 );
               })}
@@ -105,9 +105,9 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
           <div className="mb-4">
             <div className="flex items-center justify-between text-[11px] mb-1">
               <span className="text-purple-400 font-medium">Mastery Lv. {mlvl}</span>
-              <span className="text-gray-500">{fmt(mxp)} / {fmt(mNext)}</span>
+              <span className="text-gray-600 tabular-nums">{fmt(mxp)} / {fmt(mNext)}</span>
             </div>
-            <div className="h-1.5 bg-[#1f2937] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-[#0d1117] rounded-full overflow-hidden">
               <div
                 className="h-full bg-purple-500 rounded-full transition-[width] duration-300"
                 style={{ width: `${mpct}%` }}

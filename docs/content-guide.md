@@ -288,3 +288,20 @@ Add to `++magic-actions` in `lib/bide-skills.hoon`:
 ```
 
 For alchemy spells, set `outputs=~` and `gp-per-action` to the GP amount. The engine handles GP production in `process-skill-tick`.
+
+## Adding a Combat Spell
+
+Combat spells are used during combat (not Alt Magic skilling spells). Add to `++spell-registry` in `lib/bide-spells.hoon`:
+
+```hoon
+:-  %my-spell
+[name='My Spell' level-req=30 max-hit=15 runes=~[[item=%fire-rune qty=4] [item=%chaos-rune qty=1]]]
+```
+
+Fields:
+- `name` — display name
+- `level-req` — minimum magic level to cast
+- `max-hit` — fixed maximum damage per cast (damage rolled 0 to max-hit on hit)
+- `runes` — list of `[item=item-id qty=@ud]` consumed per attack from the bank
+
+The rune items must exist in `lib/bide-items.hoon` with `category=%rune`. Combat auto-stops when the player lacks runes for the next cast. All combat spells use a fixed 3000ms attack speed. Accuracy is based on the player's magic level and any magic attack bonus from equipment.

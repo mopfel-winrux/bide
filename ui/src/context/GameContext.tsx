@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId } from '../shared/types';
 type TabletId = ItemId;
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
@@ -23,7 +23,7 @@ interface GameContextValue {
   sellAll: (item: ItemId) => void;
   equip: (item: ItemId) => void;
   unequip: (slot: EquipmentSlot) => void;
-  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle) => void;
+  startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle, spell?: SpellId | null) => void;
   stopCombat: () => void;
   setAutoEat: (threshold: number, food: ItemId | null) => void;
   drinkPotion: (item: ItemId) => void;
@@ -31,7 +31,8 @@ interface GameContextValue {
   buryBones: (item: ItemId) => void;
   getSlayerTask: () => void;
   specialAttack: () => void;
-  startDungeon: (dungeon: DungeonId, style: CombatStyle) => void;
+  changeSpell: (spell: SpellId | null) => void;
+  startDungeon: (dungeon: DungeonId, style: CombatStyle, spell?: SpellId | null) => void;
   plantSeed: (plot: number, seed: ItemId) => void;
   harvestPlot: (plot: number) => void;
   summonFamiliar: (tablet: TabletId) => void;
@@ -138,8 +139,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.unequip(slot);
   }, []);
 
-  const startCombat = useCallback((area: AreaId, monster: MonsterId, style: CombatStyle) => {
-    api.startCombat(area, monster, style);
+  const startCombat = useCallback((area: AreaId, monster: MonsterId, style: CombatStyle, spell?: SpellId | null) => {
+    api.startCombat(area, monster, style, spell ?? null);
   }, []);
 
   const stopCombat = useCallback(() => {
@@ -170,8 +171,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.specialAttack();
   }, []);
 
-  const startDungeon = useCallback((dungeon: DungeonId, style: CombatStyle) => {
-    api.startDungeon(dungeon, style);
+  const changeSpell = useCallback((spell: SpellId | null) => {
+    api.changeSpell(spell);
+  }, []);
+
+  const startDungeon = useCallback((dungeon: DungeonId, style: CombatStyle, spell?: SpellId | null) => {
+    api.startDungeon(dungeon, style, spell ?? null);
   }, []);
 
   const plantSeed = useCallback((plot: number, seed: ItemId) => {
@@ -209,7 +214,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startAction, stopAction, sellAll,
       equip, unequip,
       startCombat, stopCombat, setAutoEat, drinkPotion,
-      togglePrayer, buryBones, getSlayerTask, specialAttack, startDungeon,
+      togglePrayer, buryBones, getSlayerTask, specialAttack, changeSpell, startDungeon,
       plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
       buyItem, setPet,
       actionProgress: timer.progress,

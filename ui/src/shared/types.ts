@@ -8,6 +8,7 @@ export type AreaId = string;
 export type PrayerId = string;
 export type DungeonId = string;
 export type PetId = string;
+export type SpellId = string;
 
 export type ItemCategory =
   | 'raw-material'
@@ -129,6 +130,7 @@ export interface ActiveCombatAction {
   area: AreaId;
   monster: MonsterId;
   style: CombatStyle;
+  spell: SpellId | null;
   enemyHp: number;
   enemyMaxHp: number;
   playerAttackTimer: number;
@@ -149,6 +151,7 @@ export interface ActiveDungeonAction {
   roomKills: number;
   monster: MonsterId;
   style: CombatStyle;
+  spell: SpellId | null;
   enemyHp: number;
   enemyMaxHp: number;
   playerAttackTimer: number;
@@ -284,6 +287,18 @@ export interface PetDef {
   effects: PetBonus[];
 }
 
+export interface SpellRuneCost {
+  item: ItemId;
+  qty: number;
+}
+
+export interface SpellDef {
+  name: string;
+  levelReq: number;
+  maxHit: number;
+  runes: SpellRuneCost[];
+}
+
 export interface GameStats {
   actionsCompleted: Record<ActionId, number>;
   monstersKilled: Record<MonsterId, number>;
@@ -311,6 +326,7 @@ export interface GameDefs {
   constellations: Record<ActionId, SkillId>;
   shop: Record<ItemId, number>;
   pets: Record<PetId, PetDef>;
+  spells: Record<SpellId, SpellDef>;
 }
 
 export interface DisplaySkill {

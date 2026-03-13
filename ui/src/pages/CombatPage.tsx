@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useGame } from '../context/GameContext';
 import { MonsterCard } from '../components/MonsterCard';
 import { CombatPanel } from '../components/CombatPanel';
 import { CombatStyleSelector, type WeaponType } from '../components/CombatStyleSelector';
-import type { AreaId, MonsterId, CombatStyle, GameDefs, EquipmentState, DungeonId } from '../shared/types';
+import type { AreaId, MonsterId, CombatStyle, GameDefs, EquipmentState, DungeonId, SpellId } from '../shared/types';
 
 const DEFAULT_STYLE: Record<WeaponType, CombatStyle> = {
   melee: 'melee-attack',
@@ -22,10 +22,11 @@ function getWeaponType(equipment: EquipmentState | undefined, defs: GameDefs): W
 }
 
 export function CombatPage() {
-  const { defs, state, startCombat, stopCombat, drinkPotion, specialAttack, togglePrayer, getSlayerTask, startDungeon } = useGame();
+  const { defs, state, startCombat, stopCombat, drinkPotion, specialAttack, changeSpell, togglePrayer, getSlayerTask, startDungeon } = useGame();
   const [selectedArea, setSelectedArea] = useState<AreaId | null>(null);
   const [selectedMonster, setSelectedMonster] = useState<MonsterId | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<CombatStyle>('melee-attack');
+  const [selectedSpell, setSelectedSpell] = useState<SpellId | null>(null);
   const [selectedTab, setSelectedTab] = useState<'areas' | 'dungeons' | 'prayers'>('areas');
 
   const weaponType = defs && state ? getWeaponType(state.equipment, defs) : 'melee';
@@ -41,7 +42,24 @@ export function CombatPage() {
     });
   }, [weaponType]);
 
+  // Clear spell when switching away from magic
+  useEffect(() => {
+    if (selectedStyle !== 'magic') {
+      setSelectedSpell(null);
+    }
+  }, [selectedStyle]);
+
+  // Get available spells sorted by level
+  const availableSpells = useMemo(() => {
+    if (!defs?.spells) return [];
+    return Object.entries(defs.spells)
+      .sort((a, b) => a[1].levelReq - b[1].levelReq);
+  }, [defs?.spells]);
+
   if (!defs || !state) return null;
+
+  const magicLevel = state.skills?.magic?.level ?? 1;
+  const bank = state.bank ?? {};
 
   const isCombatActive = state.activeAction?.type === 'combat' || state.activeAction?.type === 'dungeon';
   const combatAction = isCombatActive ? state.activeAction : null;
@@ -50,12 +68,16 @@ export function CombatPage() {
 
   const handleFight = () => {
     if (selectedArea && selectedMonster) {
-      startCombat(selectedArea, selectedMonster, selectedStyle);
+      startCombat(selectedArea, selectedMonster, selectedStyle, selectedStyle === 'magic' ? selectedSpell : null);
     }
   };
 
   // Compute player weapon speed for attack timer bar
   const getWeaponSpeed = (): number => {
+    // If using a spell, fixed 3000ms attack speed
+    if (combatAction && (combatAction.type === 'combat' || combatAction.type === 'dungeon') && combatAction.spell) {
+      return 3000;
+    }
     const weaponId = state.equipment?.slots?.weapon;
     if (!weaponId) return 2400; // unarmed kick
     const stats = defs.equipmentStats[weaponId];
@@ -66,10 +88,16 @@ export function CombatPage() {
   if (isCombatActive && combatAction && (combatAction.type === 'combat' || combatAction.type === 'dungeon')) {
     const monsterDef = defs.monsters[combatAction.monster];
     const title = combatAction.type === 'dungeon' ? `Dungeon: ${defs.dungeons?.[combatAction.dungeon]?.name ?? combatAction.dungeon}` : 'Combat';
+    const activeSpell = combatAction.spell;
     return (
       <div className="p-6 max-w-4xl">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-semibold text-gray-100">{title}</h1>
+          <div>
+            <h1 className="text-xl font-semibold text-gray-100">{title}</h1>
+            {activeSpell && defs.spells?.[activeSpell] && (
+              <span className="text-xs text-purple-400">Casting: {defs.spells[activeSpell].name}</span>
+            )}
+          </div>
           <button
             onClick={stopCombat}
             className="px-4 py-2 rounded-lg text-sm font-medium border border-red-500/40 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
@@ -94,6 +122,67 @@ export function CombatPage() {
           onSpecialAttack={specialAttack}
           onTogglePrayer={togglePrayer}
         />
+
+        {/* Spell switcher during combat */}
+        {combatAction.style === 'magic' && (
+          <div className="mt-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Change Spell</h2>
+            <div className="mb-3 flex flex-wrap gap-2">
+              {Object.entries(bank)
+                .filter(([id]) => defs.items[id]?.category === 'rune')
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .map(([runeId, qty]) => (
+                  <div key={runeId} className="flex items-center gap-1.5 bg-[#111827] border border-[#1e293b] rounded-md px-2.5 py-1.5 text-xs">
+                    <span className="text-purple-300">{defs.items[runeId]?.name ?? runeId}</span>
+                    <span className="text-gray-500 tabular-nums">{qty.toLocaleString()}</span>
+                  </div>
+                ))
+              }
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {availableSpells.map(([spellId, spell]) => {
+                const hasLevel = magicLevel >= spell.levelReq;
+                const hasRunes = spell.runes.every(r => (bank[r.item] ?? 0) >= r.qty);
+                const castable = hasLevel && hasRunes;
+                const isActive = activeSpell === spellId;
+
+                return (
+                  <button
+                    key={spellId}
+                    onClick={() => castable && changeSpell(isActive ? null : spellId)}
+                    disabled={!castable}
+                    className={`text-left px-3 py-2.5 rounded-lg border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                      isActive
+                        ? 'bg-purple-600/20 border-purple-500/60 text-purple-300'
+                        : castable
+                          ? 'bg-[#111827] border-[#1e293b] text-gray-300 hover:border-purple-500/40'
+                          : 'bg-[#111827] border-[#1e293b] text-gray-500'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-sm">{spell.name}</span>
+                      <span className="text-xs text-gray-500">Lvl {spell.levelReq}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-wrap gap-1.5">
+                        {spell.runes.map((r) => {
+                          const owned = bank[r.item] ?? 0;
+                          const enough = owned >= r.qty;
+                          return (
+                            <span key={r.item} className={`text-[10px] ${enough ? 'text-gray-400' : 'text-red-400'}`}>
+                              {r.qty} {defs.items[r.item]?.name ?? r.item}
+                            </span>
+                          );
+                        })}
+                      </div>
+                      <span className="text-xs text-amber-400 tabular-nums">Max {spell.maxHit}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -107,7 +196,7 @@ export function CombatPage() {
   const prayers = defs.prayers ? Object.entries(defs.prayers).sort((a, b) => a[1].levelReq - b[1].levelReq) : [];
 
   const handleStartDungeon = (dungeonId: DungeonId) => {
-    startDungeon(dungeonId, selectedStyle);
+    startDungeon(dungeonId, selectedStyle, selectedStyle === 'magic' ? selectedSpell : null);
   };
 
   const tabs = [
@@ -116,12 +205,15 @@ export function CombatPage() {
     { id: 'prayers' as const, label: 'Prayers' },
   ];
 
+  // Check if magic is selected but no spell chosen (needed for fight button)
+  const magicReady = selectedStyle !== 'magic' || selectedSpell !== null;
+
   return (
     <div className="p-6 max-w-4xl">
       <h1 className="text-xl font-semibold text-gray-100 mb-6">Combat</h1>
 
       {/* Slayer task */}
-      <div className="mb-6 bg-[#111827] border border-[#374151] rounded-lg px-5 py-4">
+      <div className="mb-6 bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-gray-400">Slayer Task</span>
           <button
@@ -138,7 +230,7 @@ export function CombatPage() {
               <span className="text-gray-300">{defs.monsters[slayerTask.monster]?.name ?? slayerTask.monster}</span>
               <span className="text-gray-400">{slayerTask.qtyRemaining}/{slayerTask.qtyTotal}</span>
             </div>
-            <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+            <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full bg-orange-500 transition-all duration-300"
                 style={{ width: ((slayerTask.qtyTotal - slayerTask.qtyRemaining) / slayerTask.qtyTotal * 100) + '%' }}
@@ -155,15 +247,87 @@ export function CombatPage() {
         <CombatStyleSelector selected={selectedStyle} onSelect={setSelectedStyle} weaponType={weaponType} />
       </div>
 
+      {/* Spell selector — shown when magic style is selected */}
+      {selectedStyle === 'magic' && (
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Select Spell</h2>
+
+          {/* Rune inventory */}
+          <div className="mb-3 flex flex-wrap gap-2">
+            {Object.entries(bank)
+              .filter(([id]) => defs.items[id]?.category === 'rune')
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([runeId, qty]) => (
+                <div key={runeId} className="flex items-center gap-1.5 bg-[#111827] border border-[#1e293b] rounded-md px-2.5 py-1.5 text-xs">
+                  <span className="text-purple-300">{defs.items[runeId]?.name ?? runeId}</span>
+                  <span className="text-gray-500 tabular-nums">{qty.toLocaleString()}</span>
+                </div>
+              ))
+            }
+            {Object.entries(bank).filter(([id]) => defs.items[id]?.category === 'rune').length === 0 && (
+              <p className="text-xs text-gray-500">No runes in bank</p>
+            )}
+          </div>
+
+          {/* Spell list */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {availableSpells.map(([spellId, spell]) => {
+              const hasLevel = magicLevel >= spell.levelReq;
+              const hasRunes = spell.runes.every(r => (bank[r.item] ?? 0) >= r.qty);
+              const castable = hasLevel && hasRunes;
+              const isSelected = selectedSpell === spellId;
+
+              return (
+                <button
+                  key={spellId}
+                  onClick={() => castable && setSelectedSpell(isSelected ? null : spellId)}
+                  disabled={!castable}
+                  className={`text-left px-3 py-2.5 rounded-lg border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                    isSelected
+                      ? 'bg-purple-600/20 border-purple-500/60 text-purple-300'
+                      : castable
+                        ? 'bg-[#111827] border-[#1e293b] text-gray-300 hover:border-purple-500/40'
+                        : 'bg-[#111827] border-[#1e293b] text-gray-500'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-medium text-sm">{spell.name}</span>
+                    <span className="text-xs text-gray-500">Lvl {spell.levelReq}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap gap-1.5">
+                      {spell.runes.map((r) => {
+                        const owned = bank[r.item] ?? 0;
+                        const enough = owned >= r.qty;
+                        return (
+                          <span key={r.item} className={`text-[10px] ${enough ? 'text-gray-400' : 'text-red-400'}`}>
+                            {r.qty} {defs.items[r.item]?.name ?? r.item}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <span className="text-xs text-amber-400 tabular-nums">Max {spell.maxHit}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {availableSpells.length === 0 && (
+            <p className="text-sm text-gray-500">No spells available.</p>
+          )}
+        </div>
+      )}
+
       {/* Tab selector */}
-      <div className="flex gap-1 mb-6 bg-[#111827] rounded-lg p-1 border border-[#374151]">
+      <div className="flex gap-1 mb-6 bg-[#111827] rounded-lg p-1 border border-[#1e293b]">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setSelectedTab(tab.id)}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
               selectedTab === tab.id
-                ? 'bg-[#1f2937] text-gray-100'
+                ? 'bg-[#0d1117] text-gray-100'
                 : 'text-gray-500 hover:text-gray-300'
             }`}
           >
@@ -187,8 +351,8 @@ export function CombatPage() {
                     }}
                     className={`w-full text-left px-4 py-3 rounded-lg border transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-[#1f2937] border-amber-600/50 text-gray-100'
-                        : 'bg-[#111827] border-[#374151] text-gray-300 hover:border-gray-500'
+                        ? 'bg-[#0d1117] border-amber-600/50 text-gray-100'
+                        : 'bg-[#111827] border-[#1e293b] text-gray-300 hover:border-gray-500'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -226,9 +390,13 @@ export function CombatPage() {
             <div className="mt-6">
               <button
                 onClick={handleFight}
-                className="w-full py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-gray-100 font-semibold text-sm transition-colors shadow-lg shadow-amber-600/25 cursor-pointer"
+                disabled={!magicReady}
+                className="w-full py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-gray-100 font-semibold text-sm transition-colors shadow-lg shadow-amber-600/25 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Fight {defs.monsters[selectedMonster]?.name ?? selectedMonster}
+                {!magicReady
+                  ? 'Select a spell to cast'
+                  : `Fight ${defs.monsters[selectedMonster]?.name ?? selectedMonster}`
+                }
               </button>
             </div>
           )}
@@ -242,7 +410,7 @@ export function CombatPage() {
             <p className="text-sm text-gray-500">No dungeons available.</p>
           )}
           {dungeons.map(([dungeonId, dungeon]) => (
-            <div key={dungeonId} className="bg-[#111827] border border-[#374151] rounded-lg p-5">
+            <div key={dungeonId} className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-medium text-gray-200">{dungeon.name}</span>
                 <span className="text-xs text-gray-500">Level {dungeon.levelReq}+</span>
@@ -260,9 +428,10 @@ export function CombatPage() {
               )}
               <button
                 onClick={() => handleStartDungeon(dungeonId)}
-                className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-gray-100 font-semibold text-sm transition-colors cursor-pointer"
+                disabled={!magicReady}
+                className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-gray-100 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Enter Dungeon
+                {!magicReady ? 'Select a spell first' : 'Enter Dungeon'}
               </button>
             </div>
           ))}
@@ -294,7 +463,7 @@ export function CombatPage() {
                 className={`w-full text-left px-4 py-3 rounded-lg border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
                   isActive
                     ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300'
-                    : 'bg-[#111827] border-[#374151] text-gray-300 hover:border-gray-500'
+                    : 'bg-[#111827] border-[#1e293b] text-gray-300 hover:border-gray-500'
                 }`}
               >
                 <div className="flex items-center justify-between">
