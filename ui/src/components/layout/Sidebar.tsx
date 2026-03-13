@@ -5,6 +5,7 @@ import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS } from '../../shared/constants';
 import type { SkillType } from '../../shared/types';
 
 const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer', 'slayer']);
+const CUSTOM_ROUTES: Record<string, string> = { farming: '/farming' };
 
 export function Sidebar() {
   const { defs, getDisplaySkill } = useGame();
@@ -52,7 +53,7 @@ export function Sidebar() {
                 const ds = getDisplaySkill(sid);
                 // Combat skills link to /combat instead of /skill/:id
                 const isCombatSkill = COMBAT_SKILLS.has(sid);
-                const linkTo = isCombatSkill ? '/combat' : `/skill/${sid}`;
+                const linkTo = CUSTOM_ROUTES[sid] ?? (isCombatSkill ? '/combat' : `/skill/${sid}`);
                 return (
                   <NavLink
                     key={sid}

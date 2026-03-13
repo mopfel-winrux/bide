@@ -16,6 +16,8 @@ export type ItemCategory =
   | 'gem'
   | 'rune'
   | 'potion'
+  | 'seed'
+  | 'tablet'
   | 'misc';
 
 export type SkillType = 'gathering' | 'artisan' | 'combat' | 'passive';
@@ -209,6 +211,18 @@ export interface DungeonDef {
   rewardTable: LootEntry[];
 }
 
+export interface FarmPlot {
+  seed: ItemId;
+  plantedAt: number;
+  growthTime: number;
+  ready: boolean;
+}
+
+export interface FamiliarState {
+  tablet: ItemId;
+  charges: number;
+}
+
 export interface GameState {
   gp: number;
   hp: number;
@@ -223,6 +237,31 @@ export interface GameState {
   activePotions: PotionEffect[];
   activePrayers: PrayerId[];
   slayerTask: SlayerTask | null;
+  farmPlots: (FarmPlot | null)[];
+  activeFamiliar: FamiliarState | null;
+}
+
+export interface FarmSeedDef {
+  level: number;
+  growthTime: number;
+  xp: number;
+  crop: ItemId;
+  minYield: number;
+  maxYield: number;
+}
+
+export interface FamiliarDef {
+  charges: number;
+  gatheringXp: number;
+  artisanXp: number;
+  thievingXp: number;
+  herbloreXp: number;
+  combatXp: number;
+  allXp: number;
+  atkBoost: number;
+  strBoost: number;
+  defBoost: number;
+  farmingYield: number;
 }
 
 export interface GameDefs {
@@ -236,6 +275,9 @@ export interface GameDefs {
   prayers: Record<PrayerId, PrayerDef>;
   specials: Record<ItemId, SpecialAttackDef>;
   dungeons: Record<DungeonId, DungeonDef>;
+  farmSeeds: Record<ItemId, FarmSeedDef>;
+  familiars: Record<ItemId, FamiliarDef>;
+  constellations: Record<ActionId, SkillId>;
 }
 
 export interface DisplaySkill {

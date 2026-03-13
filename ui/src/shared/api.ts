@@ -47,4 +47,8 @@ export const api = {
   specialAttack: () => post('special-attack'),
   startDungeon: (dungeon: DungeonId, style: CombatStyle) =>
     post(`start-dungeon/${dungeon}/${style}`),
+  plantSeed: (plot: number, seed: ItemId) => post(`plant-seed/${plot}/${seed}`),
+  harvestPlot: (plot: number) => post(`harvest-plot/${plot}`),
+  summonFamiliar: (tablet: ItemId) => post(`summon-familiar/${tablet}`),
+  dismissFamiliar: () => post('dismiss-familiar'),
 };

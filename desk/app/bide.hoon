@@ -7,6 +7,7 @@
 /+  bide-xp, bide-skills, bide-items
 /+  bide-equipment, bide-combat, bide-monsters, bide-areas, bide-food
 /+  bide-potions, bide-prayers, bide-slayer, bide-specials, bide-dungeons
+/+  bide-farming, bide-agility, bide-astrology, bide-summoning
 /+  bide-state
 ::
 |%
@@ -49,6 +50,10 @@
             [%magic [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
             [%prayer [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
             [%slayer [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%farming [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%agility [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%astrology [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
+            [%summoning [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]]]
         ==
         [items=*(map item-id @ud) slots-max=12]
         [slots=*(map equipment-slot item-id) auto-eat-threshold=50 selected-food=~]
@@ -59,6 +64,8 @@
         ~                                      ::  active-potions
         *(set prayer-id)                       ::  active-prayers
         ~                                      ::  slayer-task
+        ~[~ ~]                                 ::  farm-plots (2 empty)
+        ~                                      ::  active-familiar
     ==
   :_  this
   :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/bide/api] dap.bowl]
@@ -91,6 +98,31 @@
     [cards this]
   ::
       %noun
+    ?:  =(q.vase %test-setup)
+      =.  skills.gs
+        %-  ~(gas by skills.gs)
+        :~  [%farming [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%agility [xp=5.000.000 level=70 mastery=[pool-xp=0 actions=~]]]
+            [%astrology [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%summoning [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
+        ==
+      =.  items.bank.gs
+        %-  ~(gas by items.bank.gs)
+        :~  [%potato-seed 50]
+            [%onion-seed 30]
+            [%tomato-seed 20]
+            [%guam-seed 40]
+            [%marrentill-seed 25]
+            [%wolf-tablet 5]
+            [%hawk-tablet 5]
+            [%bear-tablet 3]
+            [%dragon-tablet 2]
+            [%charcoal 100]
+            [%raw-shrimp 100]
+            [%iron-ore 50]
+            [%steel-bar 30]
+        ==
+      `this
     =.  gs  (game-state q.vase)
     `this
   ==
@@ -396,6 +428,30 @@
         ['qtyRemaining' (numb:enjs:format qty-remaining.st)]
         ['qtyTotal' (numb:enjs:format qty-total.st)]
     ==
+  ::  farm plots
+  =/  ms-per=@dr  (div ~s1 1.000)
+  =/  farm-json=json
+    :-  %a
+    %+  turn  farm-plots.gs
+    |=  plot=(unit farm-plot)
+    ?~  plot  ~
+    =/  growth-dr=@dr  (mul ms-per growth-time.u.plot)
+    =/  ready-at=@da  (add planted-at.u.plot growth-dr)
+    =/  is-ready=?  (gte now ready-at)
+    %-  pairs:enjs:format
+    :~  ['seed' [%s seed.u.plot]]
+        ['plantedAt' (numb:enjs:format (div (sub planted-at.u.plot *@da) ms-per))]
+        ['growthTime' (numb:enjs:format growth-time.u.plot)]
+        ['ready' [%b is-ready]]
+    ==
+  ::  active familiar
+  =/  familiar-json=json
+    ?~  active-familiar.gs  ~
+    =/  af  u.active-familiar.gs
+    %-  pairs:enjs:format
+    :~  ['tablet' [%s tablet.af]]
+        ['charges' (numb:enjs:format charges.af)]
+    ==
   %-  pairs:enjs:format
   :~  ['gp' (numb:enjs:format gp.player.gs)]
       ['hp' (numb:enjs:format hitpoints-current.player.gs)]
@@ -410,6 +466,8 @@
       ['activePotions' potions-json]
       ['activePrayers' prayers-json]
       ['slayerTask' slayer-json]
+      ['farmPlots' farm-json]
+      ['activeFamiliar' familiar-json]
   ==
 ::
 ++  defs-to-json
@@ -528,6 +586,45 @@
         ['magnitude' (numb:enjs:format magnitude.pd)]
         ['duration' (numb:enjs:format duration.pd)]
     ==
+  ::  farm seed defs
+  =/  farm-seed-defs=(list [@t json])
+    %+  turn  ~(tap by seed-registry:bide-farming)
+    |=  [iid=item-id sd=farm-seed-def:bide-farming]
+    ^-  [@t json]
+    :-  iid
+    %-  pairs:enjs:format
+    :~  ['level' (numb:enjs:format level.sd)]
+        ['growthTime' (numb:enjs:format growth-time.sd)]
+        ['xp' (numb:enjs:format xp.sd)]
+        ['crop' [%s crop.sd]]
+        ['minYield' (numb:enjs:format min-yield.sd)]
+        ['maxYield' (numb:enjs:format max-yield.sd)]
+    ==
+  ::  familiar defs
+  =/  fam-defs=(list [@t json])
+    %+  turn  ~(tap by familiar-registry:bide-summoning)
+    |=  [iid=item-id fd=familiar-def:bide-summoning]
+    ^-  [@t json]
+    :-  iid
+    %-  pairs:enjs:format
+    :~  ['charges' (numb:enjs:format charges.fd)]
+        ['gatheringXp' (numb:enjs:format gathering-xp.fd)]
+        ['artisanXp' (numb:enjs:format artisan-xp.fd)]
+        ['thievingXp' (numb:enjs:format thieving-xp.fd)]
+        ['herbloreXp' (numb:enjs:format herblore-xp.fd)]
+        ['combatXp' (numb:enjs:format combat-xp.fd)]
+        ['allXp' (numb:enjs:format all-xp.fd)]
+        ['atkBoost' (numb:enjs:format atk-boost.fd)]
+        ['strBoost' (numb:enjs:format str-boost.fd)]
+        ['defBoost' (numb:enjs:format def-boost.fd)]
+        ['farmingYield' (numb:enjs:format farming-yield.fd)]
+    ==
+  ::  astrology constellation defs
+  =/  constellation-defs=(list [@t json])
+    %+  turn  ~(tap by constellation-registry:bide-astrology)
+    |=  [aid=action-id sid=skill-id]
+    ^-  [@t json]
+    [aid [%s sid]]
   %-  pairs:enjs:format
   :~  ['skills' [%o (~(gas by *(map @t json)) skill-defs)]]
       ['items' [%o (~(gas by *(map @t json)) item-defs)]]
@@ -538,6 +635,9 @@
       ['prayers' [%o (~(gas by *(map @t json)) prayer-defs)]]
       ['potions' [%o (~(gas by *(map @t json)) pot-defs)]]
       ['dungeons' [%o (~(gas by *(map @t json)) dungeon-defs-to-json)]]
+      ['farmSeeds' [%o (~(gas by *(map @t json)) farm-seed-defs)]]
+      ['familiars' [%o (~(gas by *(map @t json)) fam-defs)]]
+      ['constellations' [%o (~(gas by *(map @t json)) constellation-defs)]]
       :-  'specials'
       :-  %o
       %-  ~(gas by *(map @t json))
@@ -621,6 +721,22 @@
     =/  style=@tas  i.t.t.site
     ?>  ?=  combat-style  style
     (handle-action [%start-dungeon dungeon style] bowl)
+  ::
+      [%plant-seed @ @ ~]
+    =/  plot=@ud  (slav %ud i.t.site)
+    =/  seed=@tas  i.t.t.site
+    (handle-action [%plant-seed plot seed] bowl)
+  ::
+      [%harvest-plot @ ~]
+    =/  plot=@ud  (slav %ud i.t.site)
+    (handle-action [%harvest-plot plot] bowl)
+  ::
+      [%summon-familiar @ ~]
+    =/  tablet=@tas  i.t.site
+    (handle-action [%summon-familiar tablet] bowl)
+  ::
+      [%dismiss-familiar ~]
+    (handle-action [%dismiss-familiar ~] bowl)
   ==
 ::
 ++  handle-action
@@ -948,6 +1064,139 @@
     =.  active-action.gs  `u.aa(special-queued %.y)
     `gs
   ::
+      %plant-seed
+    ::  validate seed exists in registry
+    =/  sdef=(unit farm-seed-def:bide-farming)  (~(get by seed-registry:bide-farming) seed.act)
+    ?~  sdef
+      ~&  [%bide %unknown-seed seed.act]
+      `gs
+    ::  validate farming level
+    =/  farming-level=@ud
+      =/  ss  (~(get by skills.gs) %farming)
+      ?~(ss 1 level.u.ss)
+    ?.  (gte farming-level level.u.sdef)
+      ~&  [%bide %farming-level-too-low need=level.u.sdef have=farming-level]
+      `gs
+    ::  ensure plots list is correct size
+    =.  farm-plots.gs  (ensure-plots:bide-farming farm-plots.gs farming-level)
+    ::  validate plot index in range
+    ?.  (lth plot.act (lent farm-plots.gs))
+      ~&  [%bide %invalid-plot-index plot.act]
+      `gs
+    ::  validate plot is empty
+    =/  current-plot=(unit farm-plot)  (snag plot.act farm-plots.gs)
+    ?^  current-plot
+      ~&  [%bide %plot-not-empty plot.act]
+      `gs
+    ::  validate seed in bank
+    =/  have=@ud  (fall (~(get by items.bank.gs) seed.act) 0)
+    ?:  =(have 0)
+      ~&  [%bide %no-seeds-in-bank seed.act]
+      `gs
+    ::  consume seed
+    =/  new-have=@ud  (sub have 1)
+    =.  items.bank.gs
+      ?:  =(new-have 0)
+        (~(del by items.bank.gs) seed.act)
+      (~(put by items.bank.gs) seed.act new-have)
+    ::  set plot state
+    =/  new-plot=farm-plot  [seed=seed.act planted-at=now.bowl growth-time=growth-time.u.sdef harvested=%.n]
+    =.  farm-plots.gs
+      =/  idx=@ud  0
+      =/  plots=(list (unit farm-plot))  farm-plots.gs
+      =/  result=(list (unit farm-plot))  ~
+      |-
+      ?~  plots  (flop result)
+      ?:  =(idx plot.act)
+        $(plots t.plots, idx (add idx 1), result [`new-plot result])
+      $(plots t.plots, idx (add idx 1), result [i.plots result])
+    `gs
+  ::
+      %harvest-plot
+    ::  ensure plots list is correct size
+    =/  farming-level=@ud
+      =/  ss  (~(get by skills.gs) %farming)
+      ?~(ss 1 level.u.ss)
+    =.  farm-plots.gs  (ensure-plots:bide-farming farm-plots.gs farming-level)
+    ::  validate plot index
+    ?.  (lth plot.act (lent farm-plots.gs))
+      ~&  [%bide %invalid-plot-index plot.act]
+      `gs
+    =/  current-plot=(unit farm-plot)  (snag plot.act farm-plots.gs)
+    ?~  current-plot
+      ~&  [%bide %plot-is-empty plot.act]
+      `gs
+    ::  check if growth time has elapsed
+    =/  ms-per=@dr  (div ~s1 1.000)
+    =/  growth-dr=@dr  (mul ms-per growth-time.u.current-plot)
+    =/  ready-at=@da  (add planted-at.u.current-plot growth-dr)
+    ?.  (gte now.bowl ready-at)
+      ~&  [%bide %plot-not-ready-yet]
+      `gs
+    ::  look up seed def for crop + xp
+    =/  sdef=(unit farm-seed-def:bide-farming)  (~(get by seed-registry:bide-farming) seed.u.current-plot)
+    ?~  sdef
+      ~&  [%bide %unknown-seed-in-plot]
+      `gs
+    ::  RNG for yield
+    =/  range=@ud  (add (sub max-yield.u.sdef min-yield.u.sdef) 1)
+    =^  rng-val  rng-seed.gs  [(mod (mug rng-seed.gs) range) `@uvJ`(mug rng-seed.gs)]
+    =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
+    ::  apply yield bonuses (agility + familiar)
+    =/  agility-level=@ud
+      =/  ss  (~(get by skills.gs) %agility)
+      ?~(ss 1 level.u.ss)
+    =/  yield-bonus=@ud  (add (farming-yield-bonus:bide-agility agility-level) (familiar-farming-yield:bide-summoning active-familiar.gs))
+    =/  final-yield=@ud  (add base-yield (div (mul base-yield yield-bonus) 100))
+    ::  award farming XP
+    =/  fss=skill-state
+      (fall (~(get by skills.gs) %farming) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  new-xp=@ud  (add xp.fss xp.u.sdef)
+    =/  new-level=@ud  (level-from-xp:bide-xp new-xp)
+    =.  fss  fss(xp new-xp, level new-level)
+    =.  skills.gs  (~(put by skills.gs) %farming fss)
+    ::  add crops to bank
+    =/  cur-crop=@ud  (fall (~(get by items.bank.gs) crop.u.sdef) 0)
+    =.  items.bank.gs  (~(put by items.bank.gs) crop.u.sdef (add cur-crop final-yield))
+    ::  clear the plot
+    =.  farm-plots.gs
+      =/  idx=@ud  0
+      =/  plots=(list (unit farm-plot))  farm-plots.gs
+      =/  result=(list (unit farm-plot))  ~
+      |-
+      ?~  plots  (flop result)
+      ?:  =(idx plot.act)
+        $(plots t.plots, idx (add idx 1), result [~ result])
+      $(plots t.plots, idx (add idx 1), result [i.plots result])
+    ::  ensure plot list stays correct
+    =.  farm-plots.gs  (ensure-plots:bide-farming farm-plots.gs new-level)
+    `gs
+  ::
+      %summon-familiar
+    ::  validate tablet exists in familiar registry
+    =/  fdef=(unit familiar-def:bide-summoning)  (~(get by familiar-registry:bide-summoning) tablet.act)
+    ?~  fdef
+      ~&  [%bide %not-a-tablet tablet.act]
+      `gs
+    ::  check bank has tablet
+    =/  have=@ud  (fall (~(get by items.bank.gs) tablet.act) 0)
+    ?:  =(have 0)
+      ~&  [%bide %no-tablets-in-bank tablet.act]
+      `gs
+    ::  consume from bank
+    =/  new-have=@ud  (sub have 1)
+    =.  items.bank.gs
+      ?:  =(new-have 0)
+        (~(del by items.bank.gs) tablet.act)
+      (~(put by items.bank.gs) tablet.act new-have)
+    ::  set familiar state
+    =.  active-familiar.gs  `[tablet=tablet.act charges=charges.u.fdef]
+    `gs
+  ::
+      %dismiss-familiar
+    =.  active-familiar.gs  ~
+    `gs
+  ::
       %start-dungeon
     ::  validate dungeon exists
     =/  ddef=(unit dungeon-def)  (~(get by dungeon-registry:bide-dungeons) dungeon.act)
@@ -1021,7 +1270,13 @@
     ?:  =(id.i.acts target.act)  `i.acts
     $(acts t.acts)
   ?~  adef  `gs
-  =/  base-dr=@dr  (div (mul ~s1 base-time.u.adef) 1.000)
+  ::  apply agility speed bonus
+  =/  agility-level=@ud
+    =/  ss  (~(get by skills.gs) %agility)
+    ?~(ss 1 level.u.ss)
+  =/  speed-pct=@ud  (speed-bonus:bide-agility agility-level)
+  =/  adjusted-time=@ud  (sub base-time.u.adef (div (mul base-time.u.adef speed-pct) 100))
+  =/  base-dr=@dr  (div (mul ~s1 (max adjusted-time 500)) 1.000)
   ?:  =(base-dr *@dr)  `gs
   =/  elapsed=@dr  (sub now.bowl started.act)
   ?:  (lth elapsed base-dr)  `gs
@@ -1052,6 +1307,20 @@
   =/  ss=skill-state
     (fall (~(get by skills.gs) skill.act) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
   =/  total-xp=@ud  (mul xp.u.adef num-actions)
+  ::  apply XP bonuses from agility, astrology, and familiar
+  =/  astrology-ss=skill-state
+    (fall (~(get by skills.gs) %astrology) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+  =/  agility-xp-pct=@ud  (xp-bonus:bide-agility agility-level skill.act)
+  =/  astrology-xp-pct=@ud  (xp-bonus:bide-astrology level.astrology-ss mastery.astrology-ss skill.act)
+  =/  familiar-xp-pct=@ud  (familiar-xp-bonus:bide-summoning active-familiar.gs skill.act skill-type.u.sdef)
+  =/  xp-bonus-pct=@ud  (add agility-xp-pct (add astrology-xp-pct familiar-xp-pct))
+  =.  total-xp  (add total-xp (div (mul total-xp xp-bonus-pct) 100))
+  ::  decrement familiar charges per action
+  =?  active-familiar.gs  ?=(^ active-familiar.gs)
+    =/  af  u.active-familiar.gs
+    =/  new-charges=@ud  ?:((gth charges.af num-actions) (sub charges.af num-actions) 0)
+    ?:  =(new-charges 0)  ~
+    `af(charges new-charges)
   =/  new-xp=@ud  (add xp.ss total-xp)
   =/  new-level=@ud  (level-from-xp:bide-xp new-xp)
   =.  ss  ss(xp new-xp, level new-level)
@@ -1136,11 +1405,12 @@
   ::  player attacks next
   ::
   ?:  p-first
-    ::  compute potion + prayer boosts
+    ::  compute potion + prayer + familiar boosts
     =/  pot-boosts  (compute-boosts:bide-potions active-potions.gs)
     =/  pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-    =/  total-atk-boost=@ud  (add atk-boost.pot-boosts atk.pra-boosts)
-    =/  total-str-boost=@ud  (add str-boost.pot-boosts str.pra-boosts)
+    =/  fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
+    =/  total-atk-boost=@ud  (add atk-boost.pot-boosts (add atk.pra-boosts atk.fam-boosts))
+    =/  total-str-boost=@ud  (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts))
     =^  dmg  seed
       (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef total-atk-boost total-str-boost)
     ::  special attack multiplier
@@ -1166,6 +1436,12 @@
     ::  deactivate all prayers if points hit 0
     =?  active-prayers.gs  =(prayer-points.player.gs 0)
       *(set prayer-id)
+    ::  decrement familiar charges
+    =?  active-familiar.gs  ?=(^ active-familiar.gs)
+      =/  af  u.active-familiar.gs
+      =/  new-charges=@ud  ?:((gth charges.af 1) (sub charges.af 1) 0)
+      ?:  =(new-charges 0)  ~
+      `af(charges new-charges)
     =.  p-atk-count  (add p-atk-count 1)
     =.  p-last-dmg  dmg
     =.  e-hp  ?:((gte e-hp dmg) (sub e-hp dmg) 0)
@@ -1173,8 +1449,13 @@
     ::  enemy killed?
     ?.  =(e-hp 0)
       $(iterations (add iterations 1))
-    ::  award xp
+    ::  award xp (with agility combat XP bonus)
+    =/  combat-agility-level=@ud
+      =/  ss  (~(get by skills.gs) %agility)
+      ?~(ss 1 level.u.ss)
+    =/  combat-xp-pct=@ud  (combat-xp-bonus:bide-agility combat-agility-level)
     =/  xp-total=@ud  combat-xp.u.mdef
+    =.  xp-total  (add xp-total (div (mul xp-total combat-xp-pct) 100))
     =/  style-xp=@ud  (div (mul xp-total 2) 3)
     =/  hp-xp=@ud  (div xp-total 3)
     =/  style-skill=skill-id
@@ -1235,7 +1516,8 @@
   ::
   =/  def-pot-boosts  (compute-boosts:bide-potions active-potions.gs)
   =/  def-pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
-  =/  total-def-boost=@ud  (add def-boost.def-pot-boosts def.def-pra-boosts)
+  =/  def-fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
+  =/  total-def-boost=@ud  (add def-boost.def-pot-boosts (add def.def-pra-boosts def.def-fam-boosts))
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act total-def-boost)
   ::  apply protection prayer damage reduction
@@ -1332,8 +1614,9 @@
   ?:  p-first
     =/  pot-boosts  (compute-boosts:bide-potions active-potions.gs)
     =/  pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
+    =/  fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
     =^  dmg  seed
-      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef (add atk-boost.pot-boosts atk.pra-boosts) (add str-boost.pot-boosts str.pra-boosts))
+      (player-attack:bide-combat seed skills.gs slots.equipment.gs style.act defence-level.u.mdef (add atk-boost.pot-boosts (add atk.pra-boosts atk.fam-boosts)) (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts)))
     =.  active-potions.gs  (tick-potions:bide-potions active-potions.gs)
     =/  drain=@ud  (total-drain:bide-prayers active-prayers.gs)
     =.  prayer-points.player.gs
@@ -1342,6 +1625,12 @@
       0
     =?  active-prayers.gs  =(prayer-points.player.gs 0)
       *(set prayer-id)
+    ::  decrement familiar charges
+    =?  active-familiar.gs  ?=(^ active-familiar.gs)
+      =/  af  u.active-familiar.gs
+      =/  new-charges=@ud  ?:((gth charges.af 1) (sub charges.af 1) 0)
+      ?:  =(new-charges 0)  ~
+      `af(charges new-charges)
     =?  dmg  ?&(sp-queued !=(~ (~(get by special-registry:bide-specials) (fall (~(get by slots.equipment.gs) %weapon) %$))))
       =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
       ?~  weapon  dmg
@@ -1427,8 +1716,9 @@
   ::  enemy attacks
   =/  def-pot-boosts  (compute-boosts:bide-potions active-potions.gs)
   =/  def-pra-boosts  (compute-prayer-boosts:bide-prayers active-prayers.gs)
+  =/  def-fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar.gs)
   =^  dmg  seed
-    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act (add def-boost.def-pot-boosts def.def-pra-boosts))
+    (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act (add def-boost.def-pot-boosts (add def.def-pra-boosts def.def-fam-boosts)))
   =/  protect-pct=@ud
     ?-  attack-style.u.mdef
       ?(%melee-attack %melee-strength %melee-defence)  pro-melee.def-pra-boosts

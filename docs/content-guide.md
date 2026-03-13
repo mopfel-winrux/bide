@@ -107,3 +107,97 @@ inputs=~[[item=%gold-bar qty=1] [item=%onyx qty=1]]
 | `min-qty` | `@ud` | Minimum quantity (currently always 1) |
 | `max-qty` | `@ud` | Maximum quantity (used for production calc) |
 | `chance` | `@ud` | Drop chance 0-100 (currently always 100, RNG not yet wired) |
+
+## Adding a Monster
+
+Add the monster definition in `lib/bide-monsters.hoon`:
+
+```hoon
+++  my-monster-def
+  ^-  monster-def
+  :*  id=%my-monster
+      name='My Monster'
+      hitpoints=500
+      attack-level=40
+      strength-level=40
+      defence-level=40
+      attack-speed=2.400  ::  ms between attacks
+      combat-xp=200
+      loot-table=~[[item=%bones min-qty=1 max-qty=1 chance=100]]
+      gp-min=50
+      gp-max=150
+  ==
+```
+
+Register it in `++monster-registry` and add it to an area in `lib/bide-areas.hoon`.
+
+## Adding an Area
+
+Add area definitions in `lib/bide-areas.hoon`:
+
+```hoon
+++  my-area-def
+  ^-  area-def
+  [id=%my-area name='My Area' level-req=30 monsters=~[%monster-a %monster-b]]
+```
+
+Register it in `++area-registry`.
+
+## Adding Equipment
+
+Add equipment stat definitions in `lib/bide-equipment.hoon`:
+
+```hoon
+[%my-sword [attack-bonus=20 strength-bonus=15 defence-bonus=0 ranged-attack-bonus=0 ranged-strength-bonus=0 magic-attack-bonus=0 magic-strength-bonus=0 attack-speed=2.400]]
+```
+
+The item itself must also exist in `lib/bide-items.hoon` with `category=%equipment`.
+
+## Adding a Potion
+
+Add to `++potion-registry` in `lib/bide-potions.hoon`:
+
+```hoon
+[%my-potion [%attack-boost 10 50]]  ::  [effect-type magnitude duration]
+```
+
+Effect types: `%attack-boost`, `%strength-boost`, `%defence-boost` (timed, magnitude is percent), `%heal` (instant, magnitude is HP), `%prayer-restore` (instant, magnitude is points).
+
+The potion item must exist in `lib/bide-items.hoon` and be craftable via a Herblore recipe in `lib/bide-skills.hoon`.
+
+## Adding a Prayer
+
+Add to `++prayer-registry` in `lib/bide-prayers.hoon`:
+
+```hoon
+[%my-prayer [id=%my-prayer name='My Prayer' level-req=20 drain-per-attack=2 bonuses=~[[%strength-pct 10]]]]
+```
+
+Bonus types: `%attack-pct`, `%strength-pct`, `%defence-pct` (additive percent boost), `%protect-melee`, `%protect-ranged`, `%protect-magic` (damage reduction percent).
+
+## Adding a Special Attack
+
+Add to `++special-registry` in `lib/bide-specials.hoon`:
+
+```hoon
+[%my-weapon [name='Power Strike' energy-cost=50 damage-mult=150 accuracy-mult=100 effect=[%none ~]]]
+```
+
+The weapon item must already exist in the equipment registry. `damage-mult` and `accuracy-mult` are percentages (100 = normal).
+
+## Adding a Dungeon
+
+Add to `++dungeon-registry` in `lib/bide-dungeons.hoon`:
+
+```hoon
+++  my-dungeon-def
+  ^-  dungeon-def
+  :*  id=%my-dungeon
+      name='My Dungeon'
+      level-req=50
+      rooms=~[[monster=%ogre qty=5] [monster=%demon qty=3] [monster=%dragon qty=1]]
+      reward-table=~[[item=%runite-bar min-qty=1 max-qty=3 chance=30]]
+  ==
+```
+
+All monsters referenced in rooms must exist in `++monster-registry`.

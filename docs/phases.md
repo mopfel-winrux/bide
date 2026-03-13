@@ -22,16 +22,12 @@ Dark theme, smooth client-side timers, optimistic XP/item updates via pending re
 ### Phase 5 — Combat System
 Equipment system (4 slots: helmet, platebody, weapon, shield) with stat bonuses. Combat engine with two independent Behn timers (player + enemy), hit/miss/damage calculations, PRNG-based rolls. 13 monsters across 6 areas with loot tables and GP drops. Food consumption with auto-eat threshold. 3 combat styles (melee/ranged/magic) validated against weapon type. 6 combat skills: Attack, Strength, Defence, Hitpoints, Ranged, Magic. Frontend: attack timer bars, damage splats via monotonic counters, HP bars, kill tracking.
 
+### Phase 6 — Advanced Combat
+Combat potions (8 potions — attack/strength/defence boosts at 10-15%, instant heal, prayer restore; timed buffs last 50 player attacks, consumed from bank during combat). Prayer system (8 prayers from Thick Skin to Protect from Magic, level 1-43 requirements, drain points per attack, auto-deactivate at 0 points, toggleable during combat). Special attacks (4 weapon specials on ranged bows with energy bar 0-100, +10 per attack, damage/accuracy multipliers). Slayer tasks (task assignment from slayer master based on slayer level, kill tracking with progress bar). Dungeons (3 multi-room dungeons — Goblin Lair/Dark Fortress/Dragons Den, level 10-80, room-by-room progression with reward loot tables rolled on completion). State extracted to `lib/bide-state.hoon` with `versioned-state` union. Debug `%noun` poke for state injection via MCP.
+
 ---
 
 ## Planned
-
-### Phase 6 — Advanced Combat
-- Prayer skill with prayer points and overhead prayers
-- Slayer skill with slayer tasks and slayer-only monsters
-- Dungeons: multi-room encounters with boss fights
-- Special attacks on weapons
-- Combat potions (use existing herblore potions)
 
 ### Phase 7 — Passive Skills
 - Farming: seed plots, growth timers, herb/food harvesting

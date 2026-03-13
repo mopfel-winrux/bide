@@ -19,5 +19,13 @@
       [%cooked-shark 260]
       [%cooked-whale 300]
       [%cooked-anglerfish 320]
+      ::  farming crops
+      [%potato 20]
+      [%onion 35]
+      [%tomato 55]
+      [%sweetcorn 80]
+      [%strawberry 110]
+      [%watermelon 150]
+      [%snape-grass 200]
   ==
 --

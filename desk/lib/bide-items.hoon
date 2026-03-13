@@ -136,6 +136,39 @@
       ::  equipment
       [%bronze-sword bronze-sword-def]
       [%wooden-shield wooden-shield-def]
+      ::  farming seeds
+      [%potato-seed potato-seed-def]
+      [%onion-seed onion-seed-def]
+      [%tomato-seed tomato-seed-def]
+      [%sweetcorn-seed sweetcorn-seed-def]
+      [%strawberry-seed strawberry-seed-def]
+      [%watermelon-seed watermelon-seed-def]
+      [%snape-grass-seed snape-grass-seed-def]
+      [%guam-seed guam-seed-def]
+      [%marrentill-seed marrentill-seed-def]
+      [%tarromin-seed tarromin-seed-def]
+      [%harralander-seed harralander-seed-def]
+      [%ranarr-seed ranarr-seed-def]
+      [%irit-seed irit-seed-def]
+      [%kwuarm-seed kwuarm-seed-def]
+      [%torstol-seed torstol-seed-def]
+      ::  farming crops
+      [%potato potato-def]
+      [%onion onion-def]
+      [%tomato tomato-def]
+      [%sweetcorn sweetcorn-def]
+      [%strawberry strawberry-def]
+      [%watermelon watermelon-def]
+      [%snape-grass snape-grass-def]
+      ::  summoning tablets
+      [%wolf-tablet wolf-tablet-def]
+      [%hawk-tablet hawk-tablet-def]
+      [%bear-tablet bear-tablet-def]
+      [%serpent-tablet serpent-tablet-def]
+      [%phoenix-tablet phoenix-tablet-def]
+      [%dragon-tablet dragon-tablet-def]
+      [%hydra-tablet hydra-tablet-def]
+      [%titan-tablet titan-tablet-def]
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Woodcutting logs                                        │
@@ -607,4 +640,109 @@
 ++  super-defence-potion-def
   ^-  item-def
   [id=%super-defence-potion name='Super Defence Potion' description='A potent potion that boosts defence.' category=%potion sell-price=1.500]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Farming — seeds                                        │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  potato-seed-def
+  ^-  item-def
+  [id=%potato-seed name='Potato Seed' description='A seed for growing potatoes.' category=%seed sell-price=1]
+++  onion-seed-def
+  ^-  item-def
+  [id=%onion-seed name='Onion Seed' description='A seed for growing onions.' category=%seed sell-price=3]
+++  tomato-seed-def
+  ^-  item-def
+  [id=%tomato-seed name='Tomato Seed' description='A seed for growing tomatoes.' category=%seed sell-price=8]
+++  sweetcorn-seed-def
+  ^-  item-def
+  [id=%sweetcorn-seed name='Sweetcorn Seed' description='A seed for growing sweetcorn.' category=%seed sell-price=15]
+++  strawberry-seed-def
+  ^-  item-def
+  [id=%strawberry-seed name='Strawberry Seed' description='A seed for growing strawberries.' category=%seed sell-price=25]
+++  watermelon-seed-def
+  ^-  item-def
+  [id=%watermelon-seed name='Watermelon Seed' description='A seed for growing watermelons.' category=%seed sell-price=50]
+++  snape-grass-seed-def
+  ^-  item-def
+  [id=%snape-grass-seed name='Snape Grass Seed' description='A seed for growing snape grass.' category=%seed sell-price=100]
+++  guam-seed-def
+  ^-  item-def
+  [id=%guam-seed name='Guam Seed' description='A seed for growing guam herbs.' category=%seed sell-price=5]
+++  marrentill-seed-def
+  ^-  item-def
+  [id=%marrentill-seed name='Marrentill Seed' description='A seed for growing marrentill herbs.' category=%seed sell-price=10]
+++  tarromin-seed-def
+  ^-  item-def
+  [id=%tarromin-seed name='Tarromin Seed' description='A seed for growing tarromin herbs.' category=%seed sell-price=20]
+++  harralander-seed-def
+  ^-  item-def
+  [id=%harralander-seed name='Harralander Seed' description='A seed for growing harralander herbs.' category=%seed sell-price=35]
+++  ranarr-seed-def
+  ^-  item-def
+  [id=%ranarr-seed name='Ranarr Seed' description='A seed for growing ranarr herbs.' category=%seed sell-price=60]
+++  irit-seed-def
+  ^-  item-def
+  [id=%irit-seed name='Irit Seed' description='A seed for growing irit herbs.' category=%seed sell-price=100]
+++  kwuarm-seed-def
+  ^-  item-def
+  [id=%kwuarm-seed name='Kwuarm Seed' description='A seed for growing kwuarm herbs.' category=%seed sell-price=175]
+++  torstol-seed-def
+  ^-  item-def
+  [id=%torstol-seed name='Torstol Seed' description='A seed for growing torstol herbs.' category=%seed sell-price=300]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Farming — crops                                        │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  potato-def
+  ^-  item-def
+  [id=%potato name='Potato' description='A freshly harvested potato.' category=%food sell-price=5]
+++  onion-def
+  ^-  item-def
+  [id=%onion name='Onion' description='A freshly harvested onion.' category=%food sell-price=10]
+++  tomato-def
+  ^-  item-def
+  [id=%tomato name='Tomato' description='A ripe tomato.' category=%food sell-price=20]
+++  sweetcorn-def
+  ^-  item-def
+  [id=%sweetcorn name='Sweetcorn' description='A golden ear of sweetcorn.' category=%food sell-price=35]
+++  strawberry-def
+  ^-  item-def
+  [id=%strawberry name='Strawberry' description='A juicy strawberry.' category=%food sell-price=55]
+++  watermelon-def
+  ^-  item-def
+  [id=%watermelon name='Watermelon' description='A large watermelon.' category=%food sell-price=100]
+++  snape-grass-def
+  ^-  item-def
+  [id=%snape-grass name='Snape Grass' description='A tall blade of snape grass.' category=%food sell-price=175]
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Summoning — tablets                                    │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  wolf-tablet-def
+  ^-  item-def
+  [id=%wolf-tablet name='Wolf Tablet' description='A tablet to summon a wolf familiar.' category=%tablet sell-price=25]
+++  hawk-tablet-def
+  ^-  item-def
+  [id=%hawk-tablet name='Hawk Tablet' description='A tablet to summon a hawk familiar.' category=%tablet sell-price=75]
+++  bear-tablet-def
+  ^-  item-def
+  [id=%bear-tablet name='Bear Tablet' description='A tablet to summon a bear familiar.' category=%tablet sell-price=150]
+++  serpent-tablet-def
+  ^-  item-def
+  [id=%serpent-tablet name='Serpent Tablet' description='A tablet to summon a serpent familiar.' category=%tablet sell-price=300]
+++  phoenix-tablet-def
+  ^-  item-def
+  [id=%phoenix-tablet name='Phoenix Tablet' description='A tablet to summon a phoenix familiar.' category=%tablet sell-price=600]
+++  dragon-tablet-def
+  ^-  item-def
+  [id=%dragon-tablet name='Dragon Tablet' description='A tablet to summon a dragon familiar.' category=%tablet sell-price=1.200]
+++  hydra-tablet-def
+  ^-  item-def
+  [id=%hydra-tablet name='Hydra Tablet' description='A tablet to summon a hydra familiar.' category=%tablet sell-price=2.500]
+++  titan-tablet-def
+  ^-  item-def
+  [id=%titan-tablet name='Titan Tablet' description='A tablet to summon a titan familiar.' category=%tablet sell-price=5.000]
 --

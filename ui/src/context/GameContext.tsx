@@ -1,5 +1,6 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId } from '../shared/types';
+type TabletId = ItemId;
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
 import { useActionTimer } from '../hooks/useActionTimer';
@@ -31,6 +32,10 @@ interface GameContextValue {
   getSlayerTask: () => void;
   specialAttack: () => void;
   startDungeon: (dungeon: DungeonId, style: CombatStyle) => void;
+  plantSeed: (plot: number, seed: ItemId) => void;
+  harvestPlot: (plot: number) => void;
+  summonFamiliar: (tablet: TabletId) => void;
+  dismissFamiliar: () => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -153,6 +158,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.startDungeon(dungeon, style);
   }, []);
 
+  const plantSeed = useCallback((plot: number, seed: ItemId) => {
+    api.plantSeed(plot, seed);
+  }, []);
+
+  const harvestPlot = useCallback((plot: number) => {
+    api.harvestPlot(plot);
+  }, []);
+
+  const summonFamiliar = useCallback((tablet: TabletId) => {
+    api.summonFamiliar(tablet);
+  }, []);
+
+  const dismissFamiliar = useCallback(() => {
+    api.dismissFamiliar();
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
@@ -161,6 +182,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       equip, unequip,
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, startDungeon,
+      plantSeed, harvestPlot, summonFamiliar, dismissFamiliar,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

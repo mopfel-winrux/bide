@@ -12,7 +12,7 @@ const SLOT_LABELS: Record<EquipmentSlot, string> = {
 };
 
 export function EquipmentPage() {
-  const { defs, state, equip, unequip } = useGame();
+  const { defs, state, equip, unequip, summonFamiliar, dismissFamiliar } = useGame();
 
   if (!defs || !state) return null;
 
@@ -123,6 +123,69 @@ export function EquipmentPage() {
 
           <div className="mt-6">
             <AutoEatConfig />
+          </div>
+
+          {/* Active Familiar */}
+          <div className="mt-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Familiar</h2>
+            {state.activeFamiliar ? (
+              <div className="bg-[#111827] border border-[#374151] rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm text-gray-200">
+                    {defs.items[state.activeFamiliar.tablet]?.name ?? state.activeFamiliar.tablet}
+                  </div>
+                  <button
+                    onClick={() => dismissFamiliar()}
+                    className="px-3 py-1 rounded text-xs font-medium bg-red-900/50 hover:bg-red-800/50 text-red-300 cursor-pointer transition-colors"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+                <div className="text-xs text-gray-400">
+                  Charges: {state.activeFamiliar.charges}
+                </div>
+                {defs.familiars[state.activeFamiliar.tablet] && (() => {
+                  const f = defs.familiars[state.activeFamiliar.tablet];
+                  const bonuses: string[] = [];
+                  if (f.gatheringXp > 0) bonuses.push(`+${f.gatheringXp}% Gathering XP`);
+                  if (f.artisanXp > 0) bonuses.push(`+${f.artisanXp}% Artisan XP`);
+                  if (f.thievingXp > 0) bonuses.push(`+${f.thievingXp}% Thieving XP`);
+                  if (f.herbloreXp > 0) bonuses.push(`+${f.herbloreXp}% Herblore XP`);
+                  if (f.combatXp > 0) bonuses.push(`+${f.combatXp}% Combat XP`);
+                  if (f.allXp > 0) bonuses.push(`+${f.allXp}% All XP`);
+                  if (f.atkBoost > 0) bonuses.push(`+${f.atkBoost}% Attack`);
+                  if (f.strBoost > 0) bonuses.push(`+${f.strBoost}% Strength`);
+                  if (f.defBoost > 0) bonuses.push(`+${f.defBoost}% Defence`);
+                  if (f.farmingYield > 0) bonuses.push(`+${f.farmingYield}% Farming Yield`);
+                  return (
+                    <div className="text-xs text-green-400 mt-1">
+                      {bonuses.join(' | ')}
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {Object.entries(state.bank)
+                  .filter(([id]) => defs.familiars[id])
+                  .map(([id, qty]) => (
+                    <div key={id} className="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-2">
+                      <div className="text-sm text-gray-200">
+                        {defs.items[id]?.name ?? id} <span className="text-gray-500">x{qty}</span>
+                      </div>
+                      <button
+                        onClick={() => summonFamiliar(id)}
+                        className="px-3 py-1 rounded text-xs font-medium bg-amber-600 hover:bg-amber-500 text-gray-100 cursor-pointer transition-colors"
+                      >
+                        Summon
+                      </button>
+                    </div>
+                  ))}
+                {Object.entries(state.bank).filter(([id]) => defs.familiars[id]).length === 0 && (
+                  <div className="text-sm text-gray-500">No tablets in bank</div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -17,6 +17,8 @@ export const CATEGORY_LABELS: Record<ItemCategory, string> = {
   gem: 'Gems',
   rune: 'Runes',
   potion: 'Potions',
+  seed: 'Seeds',
+  tablet: 'Tablets',
   misc: 'Misc',
 };
 
@@ -28,5 +30,7 @@ export const CATEGORY_COLORS: Record<ItemCategory, string> = {
   gem: '#ec4899',
   rune: '#6366f1',
   potion: '#14b8a6',
+  seed: '#84cc16',
+  tablet: '#f59e0b',
   misc: '#6b7280',
 };

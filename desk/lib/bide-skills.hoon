@@ -1,6 +1,6 @@
 ::  lib/bide/data/skills.hoon — skill and action definitions
 ::
-::  Phase 2-5: Gathering, Artisan, and Combat skills
+::  Phase 2-7: Gathering, Artisan, Combat, and Passive skills
 ::
 /-  *bide
 |%
@@ -19,6 +19,11 @@
       [%crafting crafting-def]
       [%runecrafting runecrafting-def]
       [%herblore herblore-def]
+      ::  passive/new skills
+      [%farming farming-def]
+      [%agility agility-def]
+      [%astrology astrology-def]
+      [%summoning summoning-def]
       ::  combat skills
       [%attack attack-def]
       [%strength strength-def]
@@ -392,7 +397,7 @@
           xp=80
           base-time=2.500
           inputs=~
-          outputs=~[[item=%gp-pouch-small min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-small min-qty=1 max-qty=1 chance=100] [item=%potato-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=8
       ==
       :*  id=%pickpocket-farmer
@@ -401,7 +406,7 @@
           xp=150
           base-time=2.500
           inputs=~
-          outputs=~[[item=%gp-pouch-medium min-qty=1 max-qty=1 chance=100] [item=%grimy-guam min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-medium min-qty=1 max-qty=1 chance=100] [item=%grimy-guam min-qty=1 max-qty=1 chance=100] [item=%onion-seed min-qty=1 max-qty=1 chance=15] [item=%guam-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=15
       ==
       :*  id=%pickpocket-warrior
@@ -410,7 +415,7 @@
           xp=260
           base-time=3.000
           inputs=~
-          outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-marrentill min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-marrentill min-qty=1 max-qty=1 chance=100] [item=%tomato-seed min-qty=1 max-qty=1 chance=12] [item=%marrentill-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=26
       ==
       :*  id=%pickpocket-merchant
@@ -419,7 +424,7 @@
           xp=400
           base-time=3.000
           inputs=~
-          outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-tarromin min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-large min-qty=1 max-qty=1 chance=100] [item=%grimy-tarromin min-qty=1 max-qty=1 chance=100] [item=%sweetcorn-seed min-qty=1 max-qty=1 chance=12] [item=%tarromin-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=40
       ==
       :*  id=%pickpocket-knight
@@ -428,7 +433,7 @@
           xp=550
           base-time=3.500
           inputs=~
-          outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-harralander min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-harralander min-qty=1 max-qty=1 chance=100] [item=%strawberry-seed min-qty=1 max-qty=1 chance=12] [item=%harralander-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=55
       ==
       :*  id=%pickpocket-noble
@@ -437,7 +442,7 @@
           xp=750
           base-time=3.500
           inputs=~
-          outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-ranarr min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-huge min-qty=1 max-qty=1 chance=100] [item=%grimy-ranarr min-qty=1 max-qty=1 chance=100] [item=%watermelon-seed min-qty=1 max-qty=1 chance=12] [item=%ranarr-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=75
       ==
       :*  id=%pickpocket-princess
@@ -446,7 +451,7 @@
           xp=1.050
           base-time=4.000
           inputs=~
-          outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-irit min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-irit min-qty=1 max-qty=1 chance=100] [item=%snape-grass-seed min-qty=1 max-qty=1 chance=10] [item=%irit-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=105
       ==
       :*  id=%pickpocket-king
@@ -455,7 +460,7 @@
           xp=1.500
           base-time=4.500
           inputs=~
-          outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-kwuarm min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-royal min-qty=1 max-qty=1 chance=100] [item=%grimy-kwuarm min-qty=1 max-qty=1 chance=100] [item=%kwuarm-seed min-qty=1 max-qty=1 chance=10]]
           mastery-xp=150
       ==
       :*  id=%pickpocket-dragon
@@ -464,7 +469,7 @@
           xp=3.000
           base-time=5.000
           inputs=~
-          outputs=~[[item=%gp-pouch-dragon min-qty=1 max-qty=1 chance=100] [item=%grimy-torstol min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%gp-pouch-dragon min-qty=1 max-qty=1 chance=100] [item=%grimy-torstol min-qty=1 max-qty=1 chance=100] [item=%torstol-seed min-qty=1 max-qty=1 chance=15]]
           mastery-xp=300
       ==
   ==
@@ -1253,6 +1258,336 @@
           inputs=~[[item=%grimy-torstol qty=1] [item=%vial-of-water qty=1]]
           outputs=~[[item=%super-defence-potion min-qty=1 max-qty=1 chance=100]]
           mastery-xp=400
+      ==
+  ==
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Farming (passive — uses farm plots, not normal actions) │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  farming-def
+  ^-  skill-def
+  :*  id=%farming
+      name='Farming'
+      skill-type=%gathering
+      max-level=99
+      actions=~
+  ==
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Agility                                                 │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  agility-def
+  ^-  skill-def
+  :*  id=%agility
+      name='Agility'
+      skill-type=%gathering
+      max-level=99
+      actions=agility-actions
+  ==
+::
+++  agility-actions
+  ^-  (list action-def)
+  :~  :*  id=%jog-trail
+          name='Jog Trail'
+          level-req=1
+          xp=80
+          base-time=3.000
+          inputs=~
+          outputs=~
+          mastery-xp=8
+      ==
+      :*  id=%balance-beam
+          name='Balance Beam'
+          level-req=10
+          xp=200
+          base-time=3.500
+          inputs=~
+          outputs=~
+          mastery-xp=20
+      ==
+      :*  id=%rope-swing
+          name='Rope Swing'
+          level-req=20
+          xp=400
+          base-time=4.000
+          inputs=~
+          outputs=~
+          mastery-xp=40
+      ==
+      :*  id=%wall-climb
+          name='Wall Climb'
+          level-req=30
+          xp=650
+          base-time=4.500
+          inputs=~
+          outputs=~
+          mastery-xp=65
+      ==
+      :*  id=%pipe-balance
+          name='Pipe Balance'
+          level-req=40
+          xp=950
+          base-time=5.000
+          inputs=~
+          outputs=~
+          mastery-xp=95
+      ==
+      :*  id=%rooftop-run
+          name='Rooftop Run'
+          level-req=50
+          xp=1.300
+          base-time=5.500
+          inputs=~
+          outputs=~
+          mastery-xp=130
+      ==
+      :*  id=%cliff-scramble
+          name='Cliff Scramble'
+          level-req=60
+          xp=1.800
+          base-time=6.000
+          inputs=~
+          outputs=~
+          mastery-xp=180
+      ==
+      :*  id=%tower-climb
+          name='Tower Climb'
+          level-req=70
+          xp=2.400
+          base-time=6.500
+          inputs=~
+          outputs=~
+          mastery-xp=240
+      ==
+      :*  id=%canyon-leap
+          name='Canyon Leap'
+          level-req=80
+          xp=3.200
+          base-time=7.000
+          inputs=~
+          outputs=~
+          mastery-xp=320
+      ==
+      :*  id=%dragon-gauntlet
+          name='Dragon Gauntlet'
+          level-req=90
+          xp=4.500
+          base-time=8.000
+          inputs=~
+          outputs=~
+          mastery-xp=450
+      ==
+  ==
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Astrology                                               │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  astrology-def
+  ^-  skill-def
+  :*  id=%astrology
+      name='Astrology'
+      skill-type=%gathering
+      max-level=99
+      actions=astrology-actions
+  ==
+::
+++  astrology-actions
+  ^-  (list action-def)
+  :~  :*  id=%study-deedree
+          name='Study Deedree'
+          level-req=1
+          xp=80
+          base-time=4.000
+          inputs=~
+          outputs=~
+          mastery-xp=8
+      ==
+      :*  id=%study-iridan
+          name='Study Iridan'
+          level-req=5
+          xp=150
+          base-time=4.500
+          inputs=~
+          outputs=~
+          mastery-xp=15
+      ==
+      :*  id=%study-ameria
+          name='Study Ameria'
+          level-req=15
+          xp=300
+          base-time=5.000
+          inputs=~
+          outputs=~
+          mastery-xp=30
+      ==
+      :*  id=%study-ko
+          name='Study Ko'
+          level-req=20
+          xp=450
+          base-time=5.000
+          inputs=~
+          outputs=~
+          mastery-xp=45
+      ==
+      :*  id=%study-vale
+          name='Study Vale'
+          level-req=25
+          xp=600
+          base-time=5.500
+          inputs=~
+          outputs=~
+          mastery-xp=60
+      ==
+      :*  id=%study-arach
+          name='Study Arach'
+          level-req=30
+          xp=800
+          base-time=5.500
+          inputs=~
+          outputs=~
+          mastery-xp=80
+      ==
+      :*  id=%study-hyden
+          name='Study Hyden'
+          level-req=40
+          xp=1.100
+          base-time=6.000
+          inputs=~
+          outputs=~
+          mastery-xp=110
+      ==
+      :*  id=%study-qimican
+          name='Study Qimican'
+          level-req=50
+          xp=1.500
+          base-time=6.500
+          inputs=~
+          outputs=~
+          mastery-xp=150
+      ==
+      :*  id=%study-terra
+          name='Study Terra'
+          level-req=55
+          xp=1.700
+          base-time=6.500
+          inputs=~
+          outputs=~
+          mastery-xp=170
+      ==
+      :*  id=%study-sylvan
+          name='Study Sylvan'
+          level-req=60
+          xp=2.000
+          base-time=7.000
+          inputs=~
+          outputs=~
+          mastery-xp=200
+      ==
+      :*  id=%study-murtia
+          name='Study Murtia'
+          level-req=70
+          xp=2.600
+          base-time=7.500
+          inputs=~
+          outputs=~
+          mastery-xp=260
+      ==
+      :*  id=%study-cerberus
+          name='Study Cerberus'
+          level-req=80
+          xp=3.400
+          base-time=8.000
+          inputs=~
+          outputs=~
+          mastery-xp=340
+      ==
+  ==
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Summoning                                               │
+::  └──────────────────────────────────────────────────────────┘
+::
+++  summoning-def
+  ^-  skill-def
+  :*  id=%summoning
+      name='Summoning'
+      skill-type=%artisan
+      max-level=99
+      actions=summoning-actions
+  ==
+::
+++  summoning-actions
+  ^-  (list action-def)
+  :~  :*  id=%make-wolf-tablet
+          name='Wolf Tablet'
+          level-req=1
+          xp=100
+          base-time=3.000
+          inputs=~[[item=%charcoal qty=1] [item=%raw-shrimp qty=5]]
+          outputs=~[[item=%wolf-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=10
+      ==
+      :*  id=%make-hawk-tablet
+          name='Hawk Tablet'
+          level-req=10
+          xp=250
+          base-time=3.500
+          inputs=~[[item=%charcoal qty=1] [item=%iron-ore qty=3]]
+          outputs=~[[item=%hawk-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=25
+      ==
+      :*  id=%make-bear-tablet
+          name='Bear Tablet'
+          level-req=20
+          xp=500
+          base-time=4.000
+          inputs=~[[item=%charcoal qty=2] [item=%steel-bar qty=2]]
+          outputs=~[[item=%bear-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=50
+      ==
+      :*  id=%make-serpent-tablet
+          name='Serpent Tablet'
+          level-req=30
+          xp=800
+          base-time=4.500
+          inputs=~[[item=%charcoal qty=2] [item=%grimy-ranarr qty=1]]
+          outputs=~[[item=%serpent-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=80
+      ==
+      :*  id=%make-phoenix-tablet
+          name='Phoenix Tablet'
+          level-req=45
+          xp=1.200
+          base-time=5.000
+          inputs=~[[item=%charcoal qty=3] [item=%gold-bar qty=1] [item=%fire-rune qty=1]]
+          outputs=~[[item=%phoenix-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=120
+      ==
+      :*  id=%make-dragon-tablet
+          name='Dragon Tablet'
+          level-req=60
+          xp=1.800
+          base-time=5.500
+          inputs=~[[item=%charcoal qty=4] [item=%adamantite-bar qty=1] [item=%death-rune qty=1]]
+          outputs=~[[item=%dragon-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=180
+      ==
+      :*  id=%make-hydra-tablet
+          name='Hydra Tablet'
+          level-req=75
+          xp=2.800
+          base-time=6.000
+          inputs=~[[item=%charcoal qty=5] [item=%runite-bar qty=1] [item=%blood-rune qty=1]]
+          outputs=~[[item=%hydra-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=280
+      ==
+      :*  id=%make-titan-tablet
+          name='Titan Tablet'
+          level-req=90
+          xp=4.500
+          base-time=7.000
+          inputs=~[[item=%charcoal qty=6] [item=%dragonite-bar qty=1] [item=%soul-rune qty=1]]
+          outputs=~[[item=%titan-tablet min-qty=1 max-qty=1 chance=100]]
+          mastery-xp=450
       ==
   ==
 ::  ┌──────────────────────────────────────────────────────────┐

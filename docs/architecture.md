@@ -17,10 +17,22 @@ POST endpoints:
 - `/stop` — stop current action
 - `/sell/<item>/<qty>` — sell items for GP
 - `/sell-all/<item>` — sell entire stack
+- `/equip/<item>` — equip an item
+- `/unequip/<slot>` — unequip a slot
+- `/fight/<area>/<monster>/<style>` — start combat
+- `/flee` — stop combat
+- `/set-auto-eat/<threshold>/<food>` — configure auto-eat
+- `/drink-potion/<item>` — drink a potion during combat
+- `/toggle-prayer/<prayer>` — toggle a prayer on/off
+- `/special-attack` — queue a special attack
+- `/get-slayer-task` — request a slayer task
+- `/start-dungeon/<dungeon>/<style>` — enter a dungeon
 
 **Scry.** The same data is available via scry at `/x/state` and `/x/defs`.
 
-**State versioning.** Agent state is `state-0` inside a `versioned-state` tagged union, ready for future migrations in `++on-load`.
+**State versioning.** Agent state is `state-0` inside a `versioned-state` tagged union in `lib/bide-state.hoon`, ready for future migrations in `++on-load`.
+
+**Debug poke.** A `%noun` poke accepts a raw `game-state` noun and overwrites the entire agent state. Used with the MCP `poke-our-agent` tool to inject specific state for testing.
 
 ## Frontend — React + Vite
 
@@ -36,6 +48,8 @@ The UI lives in `ui/` and is a single-page app using React Router.
 - `/` — OverviewPage (skill summary grid)
 - `/skill/:skillId` — SkillPage (action list, XP bar, start/stop)
 - `/bank` — BankPage (items, sell buttons)
+- `/combat` — CombatPage (areas, dungeons, prayers, fight controls)
+- `/equipment` — EquipmentPage (gear slots, equip/unequip)
 - `*` — NotFoundPage
 
 ## Data-Driven Engine
@@ -44,23 +58,50 @@ Skills and items are pure data — no engine changes needed to add content.
 
 - `lib/bide-skills.hoon` — `++skill-registry` returns `(map skill-id skill-def)`. Each skill has a list of `action-def` with level requirements, XP, base time (ms), input items, output items, and mastery XP.
 - `lib/bide-items.hoon` — `++item-registry` returns `(map item-id item-def)`. Each item has a name, category, and sell price.
-- `sur/bide.hoon` — All type definitions: `game-state`, `skill-def`, `action-def`, `item-def`, `item-category`, `action`, `update`.
+- `sur/bide.hoon` — All type definitions: `game-state`, `skill-def`, `action-def`, `item-def`, `item-category`, `action`, `update`, combat types, prayer/potion/dungeon types.
 - `lib/bide-xp.hoon` — Hardcoded 99-level XP table and `++level-from-xp` / `++xp-for-level` / `++xp-to-next` gates.
+- `lib/bide-monsters.hoon` — `++monster-registry` returns `(map monster-id monster-def)`. 13 monsters with combat stats, attack speed, loot tables.
+- `lib/bide-areas.hoon` — `++area-registry` returns `(map area-id area-def)`. 6 areas with level requirements and monster lists.
+- `lib/bide-equipment.hoon` — `++equipment-stats-registry` returns equipment stat bonuses for all gear items.
+- `lib/bide-combat.hoon` — Combat engine: hit calculations, damage rolls, effective levels with boost/prayer integration.
+- `lib/bide-potions.hoon` — 8 potion definitions, boost computation, potion tick-down logic.
+- `lib/bide-prayers.hoon` — 8 prayer definitions, prayer bonus aggregation, drain calculation.
+- `lib/bide-specials.hoon` — 4 special attack definitions mapped to specific weapons.
+- `lib/bide-slayer.hoon` — Slayer task assignment tables by level range.
+- `lib/bide-dungeons.hoon` — 3 dungeon definitions with room sequences and reward tables.
+- `lib/bide-food.hoon` — Food healing values for auto-eat system.
+- `lib/bide-state.hoon` — Agent state types (`state-0`, `versioned-state`).
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `app/bide.hoon` | Gall agent — HTTP handler, timer loop, game tick engine |
-| `sur/bide.hoon` | Type definitions (game state, actions, items, updates) |
+| `app/bide.hoon` | Gall agent — HTTP handler, timer loop, game tick engine, combat processing |
+| `sur/bide.hoon` | Type definitions (game state, combat, prayers, potions, dungeons, all actions) |
+| `lib/bide-state.hoon` | Agent state versioning (`state-0`, `versioned-state`) |
 | `lib/bide-skills.hoon` | Skill and action data definitions (11 skills) |
 | `lib/bide-items.hoon` | Item data definitions (~120 items) |
 | `lib/bide-xp.hoon` | XP table and level calculation |
+| `lib/bide-monsters.hoon` | Monster definitions (13 monsters) |
+| `lib/bide-areas.hoon` | Combat area definitions (6 areas) |
+| `lib/bide-equipment.hoon` | Equipment stat bonuses |
+| `lib/bide-combat.hoon` | Combat math — hit chance, damage, effective levels |
+| `lib/bide-food.hoon` | Food healing values and auto-eat |
+| `lib/bide-potions.hoon` | Potion effect registry (8 potions) |
+| `lib/bide-prayers.hoon` | Prayer definitions and bonus computation (8 prayers) |
+| `lib/bide-specials.hoon` | Special attack registry (4 weapon specials) |
+| `lib/bide-slayer.hoon` | Slayer task assignment tables |
+| `lib/bide-dungeons.hoon` | Dungeon definitions (3 dungeons) |
 | `ui/src/App.tsx` | React router and layout shell |
-| `ui/src/hooks/useGameState.ts` | Polling, optimistic updates, level-up detection |
+| `ui/src/context/GameContext.tsx` | Game state provider, polling, API method wrappers |
 | `ui/src/pages/OverviewPage.tsx` | Skill summary grid |
 | `ui/src/pages/SkillPage.tsx` | Per-skill action list and controls |
 | `ui/src/pages/BankPage.tsx` | Inventory and sell interface |
+| `ui/src/pages/CombatPage.tsx` | Combat — area/dungeon selection, prayers, fight controls |
+| `ui/src/pages/EquipmentPage.tsx` | Equipment management |
+| `ui/src/components/CombatPanel.tsx` | Active combat UI — HP bars, timers, potions, prayers, specials |
+| `ui/src/components/MonsterCard.tsx` | Monster stat display card |
+| `ui/src/components/CombatStyleSelector.tsx` | Melee/ranged/magic style picker |
 | `ui/src/shared/types.ts` | TypeScript type definitions |
 | `ui/src/shared/api.ts` | HTTP API client |
 | `ui/src/shared/xp.ts` | Client-side XP table (mirrors Hoon) |

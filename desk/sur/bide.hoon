@@ -1,6 +1,6 @@
 ::  sur/bide.hoon — core type definitions for Bide (Melvor Idle on Urbit)
 ::
-::  Phase 1-5: Skills, Bank, Equipment, Combat
+::  Phase 1-7: Skills, Bank, Equipment, Combat, Passive Skills
 ::
 |%
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -31,6 +31,8 @@
       active-potions=(list potion-effect)      ::  timed combat buffs
       active-prayers=(set prayer-id)           ::  toggled prayers
       slayer-task=(unit slayer-task)            ::  current slayer assignment
+      farm-plots=(list (unit farm-plot))       ::  farming plots
+      active-familiar=(unit familiar-state)    ::  summoned familiar
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -66,6 +68,18 @@
   $:  monster=monster-id
       qty-remaining=@ud
       qty-total=@ud
+  ==
+::
++$  farm-plot
+  $:  seed=item-id
+      planted-at=@da
+      growth-time=@ud                          ::  ms to fully grow
+      harvested=?
+  ==
+::
++$  familiar-state
+  $:  tablet=item-id
+      charges=@ud
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -182,6 +196,10 @@
       [%get-slayer-task ~]
       [%special-attack ~]
       [%start-dungeon dungeon=dungeon-id style=combat-style]
+      [%plant-seed plot=@ud seed=item-id]
+      [%harvest-plot plot=@ud]
+      [%summon-familiar tablet=item-id]
+      [%dismiss-familiar ~]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -250,6 +268,8 @@
       %gem                                     ::  onyx, sapphire, etc
       %rune                                    ::  crafted runes
       %potion                                  ::  brewed potions
+      %seed                                    ::  farming seeds
+      %tablet                                  ::  summoning tablets
       %misc                                    ::  quest items, junk
   ==
 ::
