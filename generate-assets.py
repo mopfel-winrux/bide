@@ -1,24 +1,24 @@
-#!/usr/bin/env python3
+#!/home/amadeo/git/bide/.venv/bin/python3
 """
 Batch asset generator for Bide.
 Reads items.txt and assets.txt, generates images via the FLUX MCP server.
 
 Usage:
-    python3 generate-assets.py                  # generate all
-    python3 generate-assets.py --only items     # only item icons
-    python3 generate-assets.py --only assets    # only non-item assets
-    python3 generate-assets.py --filter "sword" # only entries matching filter
-    python3 generate-assets.py --skip-existing  # skip already generated files
-    python3 generate-assets.py --dry-run        # print prompts without generating
+    ./generate-assets.py                        # generate all
+    ./generate-assets.py --only items           # only item icons
+    ./generate-assets.py --only assets          # only non-item assets
+    ./generate-assets.py --filter "sword"       # only entries matching filter
+    ./generate-assets.py --skip-existing        # skip already generated files
+    ./generate-assets.py --dry-run              # print prompts without generating
+
+Requires: pip install mcp (installed in .venv)
 """
 
 import argparse
-import json
+import asyncio
 import os
 import re
-import sys
 import time
-import urllib.request
 
 SERVER_URL = "http://192.168.0.156:8000"
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "generated")
@@ -47,16 +47,12 @@ DIMENSIONS = {
 }
 
 
-def generate_image(prompt: str, save_path: str, width: int = 512, height: int = 512, seed: int = -1):
-    """Call the FLUX MCP server's generate endpoint directly via HTTP."""
-    # MCP SSE servers expose a JSON-RPC endpoint. We'll use the tool call format.
-    payload = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "tools/call",
-        "params": {
-            "name": "generate_image",
-            "arguments": {
+async def generate_image(session, prompt: str, save_path: str, width: int = 512, height: int = 512, seed: int = -1):
+    """Call the FLUX MCP server via MCP protocol."""
+    try:
+        result = await session.call_tool(
+            "generate_image",
+            arguments={
                 "prompt": prompt,
                 "width": width,
                 "height": height,
@@ -64,23 +60,8 @@ def generate_image(prompt: str, save_path: str, width: int = 512, height: int = 
                 "seed": seed,
                 "save_path": save_path,
             },
-        },
-    }
-
-    data = json.dumps(payload).encode()
-    req = urllib.request.Request(
-        f"{SERVER_URL}/mcp/v1",
-        data=data,
-        headers={"Content-Type": "application/json"},
-    )
-
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            result = json.loads(resp.read().decode())
-            if "error" in result:
-                print(f"  ERROR: {result['error']}")
-                return False
-            return True
+        )
+        return True
     except Exception as e:
         print(f"  ERROR: {e}")
         return False
@@ -193,20 +174,10 @@ def build_asset_prompt(asset_type: str, name: str, visual: str) -> str:
     return STYLE_PREFIX.format(kind=kind) + f"{name}, {visual}"
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Generate Bide game assets via FLUX")
-    parser.add_argument("--only", choices=["items", "assets"], help="Only generate items or non-item assets")
-    parser.add_argument("--filter", type=str, default="", help="Only generate entries matching this substring")
-    parser.add_argument("--skip-existing", action="store_true", help="Skip files that already exist")
-    parser.add_argument("--dry-run", action="store_true", help="Print prompts without generating")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
-    args = parser.parse_args()
+def build_task_list(args):
+    """Build the list of (save_path, prompt, width, height) tasks."""
+    tasks = []
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    tasks = []  # list of (save_path, prompt, width, height)
-
-    # Parse item icons
     if args.only != "assets":
         items_path = os.path.join(DOCS_DIR, "items.txt")
         if os.path.exists(items_path):
@@ -219,7 +190,6 @@ def main():
                 w, h = DIMENSIONS["item"]
                 tasks.append((save_path, prompt, w, h))
 
-    # Parse non-item assets
     if args.only != "items":
         assets_path = os.path.join(DOCS_DIR, "assets.txt")
         if os.path.exists(assets_path):
@@ -232,44 +202,79 @@ def main():
                 w, h = DIMENSIONS.get(asset_type, (512, 512))
                 tasks.append((save_path, prompt, w, h))
 
-    # Apply filters
     if args.filter:
         tasks = [(p, pr, w, h) for p, pr, w, h in tasks if args.filter.lower() in p.lower() or args.filter.lower() in pr.lower()]
 
     if args.skip_existing:
         tasks = [(p, pr, w, h) for p, pr, w, h in tasks if not os.path.exists(p)]
 
+    return tasks
+
+
+async def run(args, tasks):
+    """Connect to MCP server and generate all assets."""
+    from mcp.client.sse import sse_client
+    from mcp import ClientSession
+
+    print(f"Connecting to {SERVER_URL}/sse ...")
+    async with sse_client(f"{SERVER_URL}/sse") as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            print("Connected.\n")
+
+            success = 0
+            failed = 0
+            start_time = time.time()
+            offset = args.start
+
+            for i, (save_path, prompt, w, h) in enumerate(tasks):
+                num = i + offset
+                rel = os.path.relpath(save_path, OUTPUT_DIR)
+                print(f"[{num}] {rel} ...", end=" ", flush=True)
+
+                ok = await generate_image(session, prompt, save_path, width=w, height=h, seed=args.seed)
+                if ok:
+                    success += 1
+                    print("OK")
+                else:
+                    failed += 1
+                    print("FAILED")
+
+            elapsed = time.time() - start_time
+            print()
+            print(f"Done in {elapsed:.0f}s — {success} generated, {failed} failed")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate Bide game assets via FLUX")
+    parser.add_argument("--only", choices=["items", "assets"], help="Only generate items or non-item assets")
+    parser.add_argument("--filter", type=str, default="", help="Only generate entries matching this substring")
+    parser.add_argument("--skip-existing", action="store_true", help="Skip files that already exist")
+    parser.add_argument("--start", type=int, default=1, help="Start at this asset number (1-indexed)")
+    parser.add_argument("--dry-run", action="store_true", help="Print prompts without generating")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
+    args = parser.parse_args()
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    tasks = build_task_list(args)
+
+    if args.start > 1:
+        tasks = tasks[args.start - 1:]
+        print(f"Starting from asset #{args.start}")
+
     print(f"Total assets to generate: {len(tasks)}")
     print()
 
     if args.dry_run:
-        for save_path, prompt, w, h in tasks:
+        for i, (save_path, prompt, w, h) in enumerate(tasks):
+            num = i + args.start
             rel = os.path.relpath(save_path, OUTPUT_DIR)
-            print(f"[{w}x{h}] {rel}")
+            print(f"[{num}] [{w}x{h}] {rel}")
             print(f"  {prompt[:120]}...")
             print()
         return
 
-    # Generate
-    success = 0
-    failed = 0
-    start = time.time()
-
-    for i, (save_path, prompt, w, h) in enumerate(tasks):
-        rel = os.path.relpath(save_path, OUTPUT_DIR)
-        print(f"[{i+1}/{len(tasks)}] {rel} ...", end=" ", flush=True)
-
-        ok = generate_image(prompt, save_path, width=w, height=h, seed=args.seed)
-        if ok:
-            success += 1
-            print("OK")
-        else:
-            failed += 1
-            print("FAILED")
-
-    elapsed = time.time() - start
-    print()
-    print(f"Done in {elapsed:.0f}s — {success} generated, {failed} failed")
+    asyncio.run(run(args, tasks))
 
 
 if __name__ == "__main__":
