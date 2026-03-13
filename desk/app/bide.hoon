@@ -737,6 +737,10 @@
   ::
       [%dismiss-familiar ~]
     (handle-action [%dismiss-familiar ~] bowl)
+  ::
+      [%eat-food @ ~]
+    =/  item=@tas  i.t.site
+    (handle-action [%eat-food item] bowl)
   ==
 ::
 ++  handle-action
@@ -952,19 +956,36 @@
     `gs
   ::
       %drink-potion
-    ::  must be in combat or dungeon
-    =/  aa  active-action.gs
-    ?~  aa
-      ~&  [%bide %not-in-combat]
-      `gs
-    ?.  ?=(?(%combat %dungeon) -.u.aa)
-      ~&  [%bide %not-in-combat]
-      `gs
     ::  validate potion exists in registry
     =/  pdef=(unit potion-def:bide-potions)  (~(get by potion-registry:bide-potions) item.act)
     ?~  pdef
       ~&  [%bide %not-a-potion item.act]
       `gs
+    ::  duration-based potions require combat
+    ?.  =(duration.u.pdef 0)
+      =/  aa  active-action.gs
+      ?~  aa
+        ~&  [%bide %not-in-combat]
+        `gs
+      ?.  ?=(?(%combat %dungeon) -.u.aa)
+        ~&  [%bide %not-in-combat]
+        `gs
+      ::  check bank has potion
+      =/  have=@ud  (fall (~(get by items.bank.gs) item.act) 0)
+      ?:  =(have 0)
+        ~&  [%bide %no-potions-in-bank item.act]
+        `gs
+      ::  consume from bank
+      =/  new-have=@ud  (sub have 1)
+      =.  items.bank.gs
+        ?:  =(new-have 0)
+          (~(del by items.bank.gs) item.act)
+        (~(put by items.bank.gs) item.act new-have)
+      ::  timed buff — add to active potions
+      =.  active-potions.gs
+        [[item=item.act turns-left=duration.u.pdef] active-potions.gs]
+      `gs
+    ::  instant effect — no combat required
     ::  check bank has potion
     =/  have=@ud  (fall (~(get by items.bank.gs) item.act) 0)
     ?:  =(have 0)
@@ -976,24 +997,20 @@
       ?:  =(new-have 0)
         (~(del by items.bank.gs) item.act)
       (~(put by items.bank.gs) item.act new-have)
-    ::  apply effect
+    ::  apply instant effect
     ?-  effect-type.u.pdef
         %heal
-      ::  instant heal
       =.  hitpoints-current.player.gs
         (min hitpoints-max.player.gs (add hitpoints-current.player.gs magnitude.u.pdef))
       `gs
     ::
         %prayer-restore
-      ::  instant prayer point restore
       =.  prayer-points.player.gs
         (min prayer-max.player.gs (add prayer-points.player.gs magnitude.u.pdef))
       `gs
     ::
         ?(%attack-boost %strength-boost %defence-boost)
-      ::  timed buff — add to active potions
-      =.  active-potions.gs
-        [[item=item.act turns-left=duration.u.pdef] active-potions.gs]
+      ::  shouldn't reach here (duration > 0), but just in case
       `gs
     ==
   ::
@@ -1195,6 +1212,31 @@
   ::
       %dismiss-familiar
     =.  active-familiar.gs  ~
+    `gs
+  ::
+      %eat-food
+    ::  validate food exists in registry
+    =/  heal=(unit @ud)  (~(get by food-registry:bide-food) item.act)
+    ?~  heal
+      ~&  [%bide %not-food item.act]
+      `gs
+    ::  check bank has item
+    =/  have=@ud  (fall (~(get by items.bank.gs) item.act) 0)
+    ?:  =(have 0)
+      ~&  [%bide %no-food-in-bank item.act]
+      `gs
+    ::  check not at max HP
+    ?:  (gte hitpoints-current.player.gs hitpoints-max.player.gs)
+      `gs
+    ::  consume from bank
+    =/  new-have=@ud  (sub have 1)
+    =.  items.bank.gs
+      ?:  =(new-have 0)
+        (~(del by items.bank.gs) item.act)
+      (~(put by items.bank.gs) item.act new-have)
+    ::  heal
+    =.  hitpoints-current.player.gs
+      (min hitpoints-max.player.gs (add hitpoints-current.player.gs u.heal))
     `gs
   ::
       %start-dungeon

@@ -20,10 +20,6 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
   const hasInputs = action.inputs.every(inp => (bank[inp.item] || 0) >= inp.qty);
   const canStart = !locked && hasInputs;
 
-  const outputName = action.outputs.length > 0
-    ? (defs?.items[action.outputs[0].item]?.name ?? action.outputs[0].item)
-    : null;
-
   return (
     <Card active={isActive} locked={locked}>
       <div className="flex items-center justify-between mb-3">
@@ -65,17 +61,30 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
                 return (
                   <span key={inp.item}>
                     {i > 0 && ', '}
-                    <span className={color}>{inp.qty} {name}</span>
+                    <span className={color}>{have}/{inp.qty} {name}</span>
                   </span>
                 );
               })}
             </span>
           </div>
         )}
-        {outputName && (
+        {action.outputs.length > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">Output</span>
-            <span className="font-medium text-gray-100">{outputName}</span>
+            <span className="font-medium text-gray-100">
+              {action.outputs.map((out, i) => {
+                const name = defs?.items[out.item]?.name ?? out.item;
+                const have = bank[out.item] || 0;
+                const qty = out.minQty === out.maxQty ? `${out.minQty}` : `${out.minQty}-${out.maxQty}`;
+                return (
+                  <span key={out.item}>
+                    {i > 0 && ', '}
+                    {out.chance < 100 ? `${qty} ${name} (${out.chance}%)` : `${qty} ${name}`}
+                    <span className="text-gray-500 ml-1">({have})</span>
+                  </span>
+                );
+              })}
+            </span>
           </div>
         )}
       </div>

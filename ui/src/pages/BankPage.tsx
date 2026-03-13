@@ -9,7 +9,7 @@ import type { ItemCategory } from '../shared/types';
 type SortMode = 'name' | 'qty' | 'value';
 
 const ALL_CATEGORIES: (ItemCategory | 'all')[] = [
-  'all', 'raw-material', 'processed', 'equipment', 'food', 'gem', 'rune', 'potion', 'misc',
+  'all', 'raw-material', 'processed', 'equipment', 'food', 'gem', 'rune', 'potion', 'seed', 'tablet', 'misc',
 ];
 
 export function BankPage() {

@@ -200,6 +200,7 @@
       [%harvest-plot plot=@ud]
       [%summon-familiar tablet=item-id]
       [%dismiss-familiar ~]
+      [%eat-food item=item-id]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐

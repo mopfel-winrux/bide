@@ -36,6 +36,7 @@ interface GameContextValue {
   harvestPlot: (plot: number) => void;
   summonFamiliar: (tablet: TabletId) => void;
   dismissFamiliar: () => void;
+  eatFood: (item: ItemId) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -174,6 +175,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.dismissFamiliar();
   }, []);
 
+  const eatFood = useCallback((item: ItemId) => {
+    api.eatFood(item);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
@@ -182,7 +187,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       equip, unequip,
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, startDungeon,
-      plantSeed, harvestPlot, summonFamiliar, dismissFamiliar,
+      plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

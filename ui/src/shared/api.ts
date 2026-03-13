@@ -51,4 +51,5 @@ export const api = {
   harvestPlot: (plot: number) => post(`harvest-plot/${plot}`),
   summonFamiliar: (tablet: ItemId) => post(`summon-familiar/${tablet}`),
   dismissFamiliar: () => post('dismiss-familiar'),
+  eatFood: (item: ItemId) => post(`eat-food/${item}`),
 };

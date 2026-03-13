@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { XpBar } from '../components/ui/XpBar';
 import { XpDropContainer } from '../components/XpDrop';
 import { ActiveAction } from '../components/ActiveAction';
 import { ActionCard } from '../components/ActionCard';
+import { SkillBonuses } from '../components/SkillBonuses';
 import { EmptyState } from '../components/ui/EmptyState';
 import { useState } from 'react';
 
@@ -13,6 +14,8 @@ export function SkillPage() {
   const { skillId } = useParams<{ skillId: string }>();
   const { defs, getDisplaySkill } = useGame();
   const [filter, setFilter] = useState<Filter>('all');
+
+  if (skillId === 'farming') return <Navigate to="/farming" replace />;
 
   if (!skillId || !defs?.skills[skillId]) {
     return <EmptyState>Unknown skill.</EmptyState>;
@@ -39,6 +42,7 @@ export function SkillPage() {
       <XpBar xp={ds.xp} level={ds.level} className="mb-8" />
       <XpDropContainer />
       <ActiveAction />
+      <SkillBonuses skillId={skillId} />
 
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-semibold">Actions</h2>

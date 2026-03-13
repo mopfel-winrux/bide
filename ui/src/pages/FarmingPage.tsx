@@ -97,20 +97,13 @@ export function FarmingPage() {
                 {isReady ? cropName : `Growing ${cropName}...`}
               </div>
               <div className="mt-auto">
-                {!isReady && (
-                  <>
-                    <div className="relative h-3 bg-[#1f2937] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-green-700 to-green-500 rounded-full transition-[width] duration-1000"
-                        style={{ width: `${growthPct}%` }}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1 text-center">
-                      {formatTime(remaining)}
-                    </div>
-                  </>
-                )}
-                {isReady && (
+                <div className="relative h-3 bg-[#1f2937] rounded-full overflow-hidden mb-2">
+                  <div
+                    className={`h-full rounded-full transition-[width] duration-1000 ${isReady ? 'bg-green-500' : 'bg-gradient-to-r from-green-700 to-green-500'}`}
+                    style={{ width: `${growthPct}%` }}
+                  />
+                </div>
+                {isReady ? (
                   <Button
                     size="sm"
                     variant="start"
@@ -119,6 +112,13 @@ export function FarmingPage() {
                   >
                     Harvest
                   </Button>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full px-2 py-1.5 rounded text-xs font-medium bg-[#1f2937] text-gray-500 cursor-not-allowed"
+                  >
+                    {formatTime(remaining)}
+                  </button>
                 )}
               </div>
             </div>
