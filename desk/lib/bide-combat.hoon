@@ -69,7 +69,7 @@
 ::  └─────────────────────────────────┘
 ::
 ++  effective-attack-level
-  |=  [skills=(map skill-id skill-state) style=combat-style]
+  |=  [skills=(map skill-id skill-state) style=combat-style boost-pct=@ud]
   ^-  @ud
   =/  base=@ud
     ?-  style
@@ -79,11 +79,12 @@
       %ranged          (fall (bind (~(get by skills) %ranged) |=(s=skill-state level.s)) 1)
       %magic           (fall (bind (~(get by skills) %magic) |=(s=skill-state level.s)) 1)
     ==
+  =.  base  (add base (div (mul base boost-pct) 100))
   ?:  =(style %melee-attack)  (add base 3)
   base
 ::
 ++  effective-strength-level
-  |=  [skills=(map skill-id skill-state) style=combat-style]
+  |=  [skills=(map skill-id skill-state) style=combat-style boost-pct=@ud]
   ^-  @ud
   =/  base=@ud
     ?-  style
@@ -93,11 +94,12 @@
       %ranged          (fall (bind (~(get by skills) %ranged) |=(s=skill-state level.s)) 1)
       %magic           (fall (bind (~(get by skills) %magic) |=(s=skill-state level.s)) 1)
     ==
+  =.  base  (add base (div (mul base boost-pct) 100))
   ?:  =(style %melee-strength)  (add base 3)
   base
 ::
 ++  effective-defence-level
-  |=  [skills=(map skill-id skill-state) style=combat-style]
+  |=  [skills=(map skill-id skill-state) style=combat-style boost-pct=@ud]
   ^-  @ud
   =/  base=@ud
     ?-  style
@@ -107,6 +109,7 @@
       %ranged          (fall (bind (~(get by skills) %defence) |=(s=skill-state level.s)) 1)
       %magic           (fall (bind (~(get by skills) %magic) |=(s=skill-state level.s)) 1)
     ==
+  =.  base  (add base (div (mul base boost-pct) 100))
   ?:  =(style %melee-defence)  (add base 3)
   base
 ::
@@ -154,11 +157,18 @@
 ::  └─────────────────────────────────┘
 ::
 ++  player-attack
-  |=  [seed=@uvJ skills=(map skill-id skill-state) slots=(map equipment-slot item-id) style=combat-style enemy-def-level=@ud]
+  |=  $:  seed=@uvJ
+          skills=(map skill-id skill-state)
+          slots=(map equipment-slot item-id)
+          style=combat-style
+          enemy-def-level=@ud
+          atk-boost=@ud
+          str-boost=@ud
+      ==
   ^-  [dmg=@ud new-seed=@uvJ]
   =/  bonuses  (total-equipment-bonuses slots)
-  =/  eff-atk=@ud  (effective-attack-level skills style)
-  =/  eff-str=@ud  (effective-strength-level skills style)
+  =/  eff-atk=@ud  (effective-attack-level skills style atk-boost)
+  =/  eff-str=@ud  (effective-strength-level skills style str-boost)
   =/  atk-bonus=@ud
     ?-  style
       %ranged  ratk.bonuses
@@ -187,10 +197,10 @@
   (roll-damage seed max-hit)
 ::
 ++  enemy-attack
-  |=  [seed=@uvJ mdef=monster-def skills=(map skill-id skill-state) slots=(map equipment-slot item-id) style=combat-style]
+  |=  [seed=@uvJ mdef=monster-def skills=(map skill-id skill-state) slots=(map equipment-slot item-id) style=combat-style def-boost=@ud]
   ^-  [dmg=@ud new-seed=@uvJ]
   =/  bonuses  (total-equipment-bonuses slots)
-  =/  eff-def=@ud  (effective-defence-level skills style)
+  =/  eff-def=@ud  (effective-defence-level skills style def-boost)
   =/  atk-roll=@ud  (calc-attack-roll attack-level.mdef 0)
   =/  def-roll=@ud  (calc-defence-roll eff-def def.bonuses)
   =/  accuracy=@ud  (calc-accuracy atk-roll def-roll)

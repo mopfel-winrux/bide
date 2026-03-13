@@ -22,6 +22,7 @@
           gp-min=1
           gp-max=5
           combat-xp=40
+          slayer-req=0
       ==
       :-  %goblin
       :*  id=%goblin
@@ -37,6 +38,7 @@
           gp-min=3
           gp-max=12
           combat-xp=80
+          slayer-req=0
       ==
       :-  %rat
       :*  id=%rat
@@ -52,6 +54,7 @@
           gp-min=5
           gp-max=20
           combat-xp=120
+          slayer-req=0
       ==
       :-  %zombie
       :*  id=%zombie
@@ -67,6 +70,7 @@
           gp-min=10
           gp-max=35
           combat-xp=200
+          slayer-req=0
       ==
       :-  %skeleton
       :*  id=%skeleton
@@ -82,6 +86,7 @@
           gp-min=15
           gp-max=50
           combat-xp=350
+          slayer-req=0
       ==
       :-  %giant-spider
       :*  id=%giant-spider
@@ -97,6 +102,7 @@
           gp-min=20
           gp-max=70
           combat-xp=500
+          slayer-req=0
       ==
       :-  %bandit
       :*  id=%bandit
@@ -112,6 +118,7 @@
           gp-min=30
           gp-max=100
           combat-xp=700
+          slayer-req=0
       ==
       :-  %dark-knight
       :*  id=%dark-knight
@@ -127,6 +134,7 @@
           gp-min=50
           gp-max=150
           combat-xp=1.000
+          slayer-req=0
       ==
       :-  %cave-troll
       :*  id=%cave-troll
@@ -142,6 +150,7 @@
           gp-min=80
           gp-max=250
           combat-xp=1.500
+          slayer-req=0
       ==
       :-  %ogre
       :*  id=%ogre
@@ -157,6 +166,7 @@
           gp-min=120
           gp-max=400
           combat-xp=2.000
+          slayer-req=0
       ==
       :-  %demon
       :*  id=%demon
@@ -172,6 +182,7 @@
           gp-min=180
           gp-max=600
           combat-xp=2.800
+          slayer-req=0
       ==
       :-  %fire-giant
       :*  id=%fire-giant
@@ -187,6 +198,7 @@
           gp-min=250
           gp-max=800
           combat-xp=3.500
+          slayer-req=0
       ==
       :-  %dragon
       :*  id=%dragon
@@ -202,6 +214,7 @@
           gp-min=400
           gp-max=1.200
           combat-xp=5.000
+          slayer-req=0
       ==
   ==
 --

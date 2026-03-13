@@ -7,11 +7,13 @@
 ::  │  Atom aliases                                            │
 ::  └──────────────────────────────────────────────────────────┘
 ::
-+$  skill-id     @tas                          ::  e.g. %woodcutting
-+$  action-id    @tas                          ::  e.g. %cut-normal-logs
-+$  item-id      @tas                          ::  e.g. %normal-logs
-+$  monster-id   @tas                          ::  e.g. %chicken
-+$  area-id      @tas                          ::  e.g. %farmlands
++$  skill-id     @tas
++$  action-id    @tas
++$  item-id      @tas
++$  monster-id   @tas
++$  area-id      @tas
++$  prayer-id    @tas
++$  dungeon-id   @tas
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Top-level game state                                    │
@@ -26,6 +28,9 @@
       stats=game-stats                         ::  lifetime counters
       last-tick=@da                            ::  last processed time
       rng-seed=@uvJ                            ::  PRNG state
+      active-potions=(list potion-effect)      ::  timed combat buffs
+      active-prayers=(set prayer-id)           ::  toggled prayers
+      slayer-task=(unit slayer-task)            ::  current slayer assignment
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -36,6 +41,8 @@
   $:  gp=@ud                                   ::  gold pieces
       hitpoints-current=@ud
       hitpoints-max=@ud
+      prayer-points=@ud                        ::  current prayer points
+      prayer-max=@ud                           ::  max prayer points (level * 10)
       created=@da                              ::  account creation time
   ==
 ::
@@ -48,6 +55,17 @@
 +$  mastery-state
   $:  pool-xp=@ud                              ::  unspent mastery pool xp
       actions=(map action-id @ud)              ::  per-action mastery xp
+  ==
+::
++$  potion-effect
+  $:  item=item-id                             ::  which potion
+      turns-left=@ud                           ::  player attacks remaining
+  ==
+::
++$  slayer-task
+  $:  monster=monster-id
+      qty-remaining=@ud
+      qty-total=@ud
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -102,6 +120,27 @@
           enemy-atk-count=@ud                  ::  monotonic counter
           player-last-dmg=@ud                  ::  damage dealt in last player attack
           enemy-last-dmg=@ud                   ::  damage dealt in last enemy attack
+          special-energy=@ud                   ::  0-100 energy bar
+          special-queued=?                     ::  use special on next attack
+          started=@da
+      ==
+      $:  %dungeon
+          dungeon=dungeon-id
+          room-idx=@ud                         ::  current room (0-indexed)
+          room-kills=@ud                       ::  kills in current room
+          monster=monster-id
+          style=combat-style
+          enemy-hp=@ud
+          enemy-max-hp=@ud
+          player-next-attack=@da
+          enemy-next-attack=@da
+          kills=@ud                            ::  total kills this dungeon
+          player-atk-count=@ud
+          enemy-atk-count=@ud
+          player-last-dmg=@ud
+          enemy-last-dmg=@ud
+          special-energy=@ud
+          special-queued=?
           started=@da
       ==
   ==
@@ -138,6 +177,11 @@
       [%start-combat area=area-id monster=monster-id style=combat-style]
       [%stop-combat ~]
       [%set-auto-eat threshold=@ud food=(unit item-id)]
+      [%drink-potion item=item-id]
+      [%toggle-prayer prayer=prayer-id]
+      [%get-slayer-task ~]
+      [%special-attack ~]
+      [%start-dungeon dungeon=dungeon-id style=combat-style]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -242,6 +286,7 @@
       gp-min=@ud
       gp-max=@ud
       combat-xp=@ud
+      slayer-req=@ud                           ::  0 = no requirement
   ==
 ::
 +$  area-def
@@ -249,5 +294,54 @@
       name=@t
       monsters=(list monster-id)
       level-req=@ud
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Prayer definitions (static data)                        │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  prayer-def
+  $:  id=prayer-id
+      name=@t
+      level-req=@ud
+      drain-per-attack=@ud                     ::  prayer points drained per player attack
+      effects=(list prayer-bonus)
+  ==
+::
++$  prayer-bonus
+  $%  [%attack-pct boost=@ud]
+      [%strength-pct boost=@ud]
+      [%defence-pct boost=@ud]
+      [%protect-melee reduce=@ud]
+      [%protect-ranged reduce=@ud]
+      [%protect-magic reduce=@ud]
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Dungeon definitions (static data)                       │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  dungeon-def
+  $:  id=dungeon-id
+      name=@t
+      rooms=(list dungeon-room)
+      level-req=@ud
+      reward-table=(list loot-entry)
+  ==
+::
++$  dungeon-room
+  $:  monster=monster-id
+      qty=@ud
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Special attack definitions (static data)                │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  special-attack-def
+  $:  name=@t
+      energy-cost=@ud                          ::  percent of 100
+      damage-mult=@ud                          ::  percentage (150 = 1.5x)
+      accuracy-mult=@ud                        ::  percentage (100 = normal)
   ==
 --

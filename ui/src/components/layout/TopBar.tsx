@@ -14,6 +14,9 @@ export function TopBar() {
     } else if (aa.type === 'combat') {
       const monsterName = defs?.monsters[aa.monster]?.name ?? aa.monster;
       statusText = `Fighting: ${monsterName}`;
+    } else if (aa.type === 'dungeon') {
+      const dungeonName = defs?.dungeons?.[aa.dungeon]?.name ?? aa.dungeon;
+      statusText = `Dungeon: ${dungeonName}`;
     }
   }
 

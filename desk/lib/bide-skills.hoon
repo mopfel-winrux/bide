@@ -26,6 +26,8 @@
       [%hitpoints hitpoints-def]
       [%ranged ranged-def]
       [%magic magic-def]
+      [%prayer prayer-skill-def]
+      [%slayer slayer-skill-def]
   ==
 ::
 ++  woodcutting-def
@@ -1306,6 +1308,24 @@
   ^-  skill-def
   :*  id=%magic
       name='Magic'
+      skill-type=%combat
+      max-level=99
+      actions=~
+  ==
+::
+++  prayer-skill-def
+  ^-  skill-def
+  :*  id=%prayer
+      name='Prayer'
+      skill-type=%passive
+      max-level=99
+      actions=~
+  ==
+::
+++  slayer-skill-def
+  ^-  skill-def
+  :*  id=%slayer
+      name='Slayer'
       skill-type=%combat
       max-level=99
       actions=~

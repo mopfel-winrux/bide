@@ -29,6 +29,9 @@ export function MonsterCard({ monster, selected, onSelect, defs }: MonsterCardPr
         <div>Speed: <span className="text-gray-400">{(monster.attackSpeed / 1000).toFixed(1)}s</span></div>
         <div>XP: <span className="text-gray-400">{fmt(monster.combatXp)}</span></div>
         <div>GP: <span className="text-gray-400">{fmt(monster.gpMin)}-{fmt(monster.gpMax)}</span></div>
+        {monster.slayerReq > 0 && (
+          <div className="col-span-2">Slayer: <span className="text-orange-400">{monster.slayerReq}</span></div>
+        )}
       </div>
       {monster.lootTable.length > 0 && (
         <div className="mt-2 text-xs text-gray-500">

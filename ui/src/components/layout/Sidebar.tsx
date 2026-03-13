@@ -4,7 +4,7 @@ import { Badge } from '../ui/Badge';
 import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS } from '../../shared/constants';
 import type { SkillType } from '../../shared/types';
 
-const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']);
+const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer', 'slayer']);
 
 export function Sidebar() {
   const { defs, getDisplaySkill } = useGame();

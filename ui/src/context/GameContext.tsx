@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId } from '../shared/types';
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
 import { useActionTimer } from '../hooks/useActionTimer';
@@ -25,6 +25,12 @@ interface GameContextValue {
   startCombat: (area: AreaId, monster: MonsterId, style: CombatStyle) => void;
   stopCombat: () => void;
   setAutoEat: (threshold: number, food: ItemId | null) => void;
+  drinkPotion: (item: ItemId) => void;
+  togglePrayer: (prayer: PrayerId) => void;
+  buryBones: (item: ItemId) => void;
+  getSlayerTask: () => void;
+  specialAttack: () => void;
+  startDungeon: (dungeon: DungeonId, style: CombatStyle) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -123,13 +129,38 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.setAutoEat(threshold, food);
   }, []);
 
+  const drinkPotion = useCallback((item: ItemId) => {
+    api.drinkPotion(item);
+  }, []);
+
+  const togglePrayer = useCallback((prayer: PrayerId) => {
+    api.togglePrayer(prayer);
+  }, []);
+
+  const buryBones = useCallback((item: ItemId) => {
+    api.buryBones(item);
+  }, []);
+
+  const getSlayerTask = useCallback(() => {
+    api.getSlayerTask();
+  }, []);
+
+  const specialAttack = useCallback(() => {
+    api.specialAttack();
+  }, []);
+
+  const startDungeon = useCallback((dungeon: DungeonId, style: CombatStyle) => {
+    api.startDungeon(dungeon, style);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
       getDisplaySkill, getDisplayBank,
       startAction, stopAction, sellAll,
       equip, unequip,
-      startCombat, stopCombat, setAutoEat,
+      startCombat, stopCombat, setAutoEat, drinkPotion,
+      togglePrayer, buryBones, getSlayerTask, specialAttack, startDungeon,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

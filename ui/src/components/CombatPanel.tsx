@@ -1,16 +1,25 @@
 import { useRef, useEffect } from 'react';
-import type { ActiveCombatAction, MonsterDef } from '../shared/types';
+import type { ActiveCombatAction, ActiveDungeonAction, MonsterDef, PotionEffect, ItemId, GameDefs, PrayerId } from '../shared/types';
 import { fmt } from '../shared/format';
 
 interface CombatPanelProps {
-  combatAction: ActiveCombatAction;
+  combatAction: ActiveCombatAction | ActiveDungeonAction;
   monsterDef: MonsterDef;
   playerHp: number;
   playerHpMax: number;
+  prayerPoints: number;
+  prayerMax: number;
   weaponSpeed: number;
+  activePotions: PotionEffect[];
+  activePrayers: PrayerId[];
+  bank: Record<ItemId, number>;
+  defs: GameDefs;
+  onDrinkPotion: (item: ItemId) => void;
+  onSpecialAttack: () => void;
+  onTogglePrayer: (prayer: PrayerId) => void;
 }
 
-export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, weaponSpeed }: CombatPanelProps) {
+export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, prayerPoints, prayerMax, weaponSpeed, activePotions, activePrayers, bank, defs, onDrinkPotion, onSpecialAttack, onTogglePrayer }: CombatPanelProps) {
   const enemyDmgRef = useRef<HTMLDivElement | null>(null);
   const playerDmgRef = useRef<HTMLDivElement | null>(null);
 
@@ -45,13 +54,16 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, w
   const eTimerPct = monsterDef.attackSpeed > 0 ? Math.min(100, (eTimer / monsterDef.attackSpeed) * 100) : 0;
 
   // Detect reset via counter increment (independent per combatant)
-  // Refs read before effect updates them, so this compares current vs previous render
   const pTimerReset = combatAction.playerAtkCount !== prevPAtkRef.current;
   const eTimerReset = combatAction.enemyAtkCount !== prevEAtkRef.current;
 
-  // On reset frame: snap to 0%. Next render animates from 0 to actual value.
   const effectivePTimerPct = pTimerReset ? 0 : pTimerPct;
   const effectiveETimerPct = eTimerReset ? 0 : eTimerPct;
+
+  // Available potions in bank
+  const bankPotions = Object.entries(bank)
+    .filter(([id, qty]) => qty > 0 && defs.potions[id])
+    .map(([id, qty]) => ({ id, qty, def: defs.potions[id], name: defs.items[id]?.name ?? id }));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,6 +105,58 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, w
         <div className="mt-2 text-xs text-gray-500">
           Style: <span className="text-gray-400">{formatStyle(combatAction.style)}</span>
         </div>
+        {/* Special energy bar */}
+        <div className="mt-3">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="text-gray-500">Special</span>
+            <span className="text-gray-500 tabular-nums">{combatAction.specialEnergy}%</span>
+          </div>
+          <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+            <div className="h-full rounded-full bg-yellow-500 transition-all duration-300" style={{ width: combatAction.specialEnergy + '%' }} />
+          </div>
+          <button
+            onClick={onSpecialAttack}
+            disabled={combatAction.specialQueued || combatAction.specialEnergy < 25}
+            className="mt-1.5 px-3 py-1 rounded text-xs font-medium border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-yellow-500/10 border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20"
+          >
+            {combatAction.specialQueued ? 'Queued' : 'Special Attack'}
+          </button>
+        </div>
+        {/* Prayer points */}
+        {prayerMax > 0 && (
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-gray-500">Prayer</span>
+              <span className="text-gray-500 tabular-nums">{prayerPoints}/{prayerMax}</span>
+            </div>
+            <div className="h-2 bg-[#1f2937] rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-cyan-500 transition-all duration-300" style={{ width: prayerMax > 0 ? (prayerPoints / prayerMax * 100) + '%' : '0%' }} />
+            </div>
+          </div>
+        )}
+        {/* Active buff indicators */}
+        {(activePotions.length > 0 || activePrayers.length > 0) && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {activePotions.map((pe, i) => {
+              const pd = defs.potions[pe.item];
+              if (!pd) return null;
+              return (
+                <span key={'pot-' + i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  {formatEffectType(pd.effectType)} +{pd.magnitude}%
+                  <span className="text-purple-400/60">{pe.turnsLeft}</span>
+                </span>
+              );
+            })}
+            {activePrayers.map((pid) => {
+              const pd = defs.prayers?.[pid];
+              return (
+                <span key={'pray-' + pid} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-pointer hover:bg-cyan-500/30" onClick={() => onTogglePrayer(pid)}>
+                  {pd?.name ?? pid}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Enemy */}
@@ -129,13 +193,45 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, w
         </div>
       </div>
 
-      {/* Kill count */}
+      {/* Kill count + dungeon progress */}
       <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-400">Kills</span>
           <span className="text-lg font-semibold text-amber-500">{fmt(combatAction.kills)}</span>
         </div>
+        {combatAction.type === 'dungeon' && defs.dungeons && (
+          <div className="mt-2 flex items-center justify-between text-sm">
+            <span className="text-gray-400">
+              Room {combatAction.roomIdx + 1}/{defs.dungeons[combatAction.dungeon]?.rooms?.length ?? '?'}
+            </span>
+            <span className="text-gray-400">
+              {combatAction.roomKills}/{defs.dungeons[combatAction.dungeon]?.rooms?.[combatAction.roomIdx]?.qty ?? '?'} cleared
+            </span>
+          </div>
+        )}
       </div>
+
+      {/* Potions */}
+      {bankPotions.length > 0 && (
+        <div className="md:col-span-2 bg-[#111827] border border-[#374151] rounded-lg px-5 py-4">
+          <div className="text-sm font-semibold text-gray-400 mb-3">Potions</div>
+          <div className="flex flex-wrap gap-2">
+            {bankPotions.map(({ id, qty, def, name }) => (
+              <button
+                key={id}
+                onClick={() => onDrinkPotion(id)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer bg-[#1f2937] border-[#374151] text-gray-300 hover:border-purple-500/50 hover:text-purple-300"
+              >
+                {name}
+                <span className="text-gray-500">x{qty}</span>
+                <span className="text-gray-600">
+                  {def.effectType === 'heal' ? `+${def.magnitude} HP` : `+${def.magnitude}%`}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -145,6 +241,15 @@ function formatStyle(style: string): string {
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
+}
+
+function formatEffectType(et: string): string {
+  switch (et) {
+    case 'attack-boost': return 'Atk';
+    case 'strength-boost': return 'Str';
+    case 'defence-boost': return 'Def';
+    default: return et;
+  }
 }
 
 function showSplat(el: HTMLDivElement | null, dmg: number, color: string) {

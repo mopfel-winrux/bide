@@ -1,4 +1,4 @@
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot } from './types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId } from './types';
 
 let onAuthFailure = () => {
   window.location.href = '/~/login?redirect=' + encodeURIComponent(window.location.pathname);
@@ -40,4 +40,11 @@ export const api = {
   stopCombat: () => post('stop-combat'),
   setAutoEat: (threshold: number, food: ItemId | null) =>
     post(`set-auto-eat/${threshold}/${food ?? 'none'}`),
+  drinkPotion: (item: ItemId) => post(`drink-potion/${item}`),
+  togglePrayer: (prayer: PrayerId) => post(`toggle-prayer/${prayer}`),
+  buryBones: (item: ItemId) => post(`bury-bones/${item}`),
+  getSlayerTask: () => post('get-slayer-task'),
+  specialAttack: () => post('special-attack'),
+  startDungeon: (dungeon: DungeonId, style: CombatStyle) =>
+    post(`start-dungeon/${dungeon}/${style}`),
 };

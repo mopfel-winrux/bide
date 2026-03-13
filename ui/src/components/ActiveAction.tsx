@@ -19,13 +19,14 @@ export function ActiveAction() {
 
   const aa = state.activeAction;
 
-  // Combat actions are displayed on the CombatPage, not here
-  if (aa.type === 'combat') {
+  // Combat/dungeon actions are displayed on the CombatPage, not here
+  if (aa.type === 'combat' || aa.type === 'dungeon') {
     const monsterName = defs?.monsters[aa.monster]?.name ?? aa.monster;
+    const label = aa.type === 'dungeon' ? `Dungeon: ${defs?.dungeons?.[aa.dungeon]?.name ?? aa.dungeon}` : `Fighting: ${monsterName}`;
     return (
       <div className="bg-[#111827] border border-red-500/50 rounded-[10px] px-6 py-5 mb-8 shadow-[0_0_20px_rgba(239,68,68,0.08)]">
         <div className="flex items-center justify-between">
-          <span className="font-semibold text-base">Fighting: {monsterName}</span>
+          <span className="font-semibold text-base">{label}</span>
           <span className="text-gray-400 text-sm">Kills: {aa.kills}</span>
         </div>
       </div>

@@ -19,17 +19,12 @@ Dark theme, smooth client-side timers, optimistic XP/item updates via pending re
 
 ---
 
-## Planned
-
 ### Phase 5 — Combat System
-- Equipment slots (helmet, platebody, weapon, shield, etc.)
-- Equipment stats: attack bonus, strength bonus, defence bonus, attack speed
-- Combat engine: turn-based auto-combat with hit/miss/damage calculations
-- Monster definitions: HP, max hit, attack speed, loot tables
-- Combat areas: lists of monsters, area requirements
-- Food consumption + auto-eat threshold
-- 3 combat styles: melee (Attack/Strength/Defence), ranged, magic
-- 6 combat skills: Attack, Strength, Defence, Hitpoints, Ranged, Magic
+Equipment system (4 slots: helmet, platebody, weapon, shield) with stat bonuses. Combat engine with two independent Behn timers (player + enemy), hit/miss/damage calculations, PRNG-based rolls. 13 monsters across 6 areas with loot tables and GP drops. Food consumption with auto-eat threshold. 3 combat styles (melee/ranged/magic) validated against weapon type. 6 combat skills: Attack, Strength, Defence, Hitpoints, Ranged, Magic. Frontend: attack timer bars, damage splats via monotonic counters, HP bars, kill tracking.
+
+---
+
+## Planned
 
 ### Phase 6 — Advanced Combat
 - Prayer skill with prayer points and overhead prayers
@@ -56,7 +51,11 @@ Dark theme, smooth client-side timers, optimistic XP/item updates via pending re
 - Full item/monster/action data to match content depth
 - Balance tuning: XP rates, sell prices, drop rates, combat stats
 
-### Phase 10 — Multiplayer
+### Phase 10 — Graphics
+- Use MCP skill to generate assets for the game
+- Work with the user to capture consistent graphics for all assets
+
+### Phase 11 — Multiplayer
 - Peer-to-peer features leveraging Urbit networking
 - Guilds: shared goals, group challenges
 - Trading between ships
