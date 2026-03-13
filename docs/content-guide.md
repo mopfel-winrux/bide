@@ -201,3 +201,42 @@ Add to `++dungeon-registry` in `lib/bide-dungeons.hoon`:
 ```
 
 All monsters referenced in rooms must exist in `++monster-registry`.
+
+## Adding a Farm Seed
+
+Add to `++seed-registry` in `lib/bide-farming.hoon`:
+
+```hoon
+[%my-seed [level=25 growth-time=600.000 xp=400 crop=%my-crop min-yield=2 max-yield=4]]
+```
+
+The seed item must exist in `lib/bide-items.hoon` with `category=%seed`, and the crop item must also exist (typically `category=%food` for allotments or `category=%raw-material` for herbs).
+
+If the crop is edible, add a healing value in `lib/bide-food.hoon`.
+
+## Adding a Familiar
+
+1. Add the tablet recipe to `++summoning-actions` in `lib/bide-skills.hoon`:
+
+```hoon
+:*  id=%make-my-tablet
+    name='My Tablet'
+    level-req=40
+    xp=800
+    base-time=4.500
+    inputs=~[[item=%charcoal qty=3] [item=%some-material qty=1]]
+    outputs=~[[item=%my-tablet min-qty=1 max-qty=1 chance=100]]
+    mastery-xp=80
+==
+```
+
+2. Add the tablet item in `lib/bide-items.hoon` with `category=%tablet`.
+
+3. Register the familiar in `++familiar-registry` in `lib/bide-summoning.hoon`:
+
+```hoon
+:-  %my-tablet
+[charges=60 gathering-xp=0 artisan-xp=5 thieving-xp=0 herblore-xp=0 combat-xp=0 all-xp=0 atk-boost=0 str-boost=0 def-boost=0 farming-yield=0]
+```
+
+Fields are percentage bonuses. `charges` is the number of actions/attacks before the familiar auto-dismisses.

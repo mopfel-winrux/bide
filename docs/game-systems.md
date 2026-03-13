@@ -33,9 +33,13 @@ There are four skill types implemented:
 - Ranged (ranged accuracy + damage, leveled with ranged weapons)
 - Magic (magic accuracy + damage, leveled with magic weapons)
 
-**Passive** — leveled through non-combat activities, provides combat benefits.
+**Passive** — provide on-the-fly bonuses to other skills and combat.
 - Prayer (unlocks combat prayers, leveled via slayer tasks)
 - Slayer (unlocks slayer-only monsters, leveled via task kills)
+- Farming (plant seeds in plots, harvest crops after growth timer; 15 seeds, 2-8 plots by level)
+- Agility (10 obstacle courses; milestones grant XP bonuses, speed bonuses, farming yield)
+- Astrology (12 constellations linked to skills; mastery-based XP bonuses per constellation, global level bonuses)
+- Summoning (craft 8 tablet types from charcoal + materials; summon familiars for XP/combat/farming bonuses)
 
 ## Action Timing
 
@@ -49,14 +53,16 @@ The bank is a simple `(map item-id @ud)` — item ID to quantity. There's a `slo
 
 ## Item Categories
 
-Items are tagged with one of 8 categories defined in `sur/bide.hoon`:
+Items are tagged with one of 10 categories defined in `sur/bide.hoon`:
 - `%raw-material` — logs, ore, fish, herbs, rune essence
 - `%processed` — bars
 - `%equipment` — weapons, armor, bows
-- `%food` — cooked fish
+- `%food` — cooked fish, farming crops
 - `%gem` — onyx
 - `%rune` — crafted runes
 - `%potion` — brewed potions
+- `%seed` — farming seeds
+- `%tablet` — summoning tablets
 - `%misc` — GP pouches, vials
 
 ## Mastery
@@ -89,13 +95,17 @@ Four equipment slots: helmet, platebody, weapon, shield. Each equipped item prov
 
 ## Potions
 
-8 potions brewed via Herblore, consumed during combat from the bank. Three types of effects:
+8 potions brewed via Herblore, consumed from the bank. Three types of effects:
 
-- **Timed boosts** (attack/strength/defence): +10% or +15% for 50 player attacks. Multiple potions stack by taking the max of each boost type.
-- **Instant heal**: Hitpoints potion restores 150 HP immediately.
-- **Prayer restore**: Prayer potion restores 30 prayer points immediately.
+- **Timed boosts** (attack/strength/defence): +10% or +15% for 50 player attacks. Multiple potions stack by taking the max of each boost type. **Requires active combat.**
+- **Instant heal**: Hitpoints potion restores 150 HP immediately. **Works outside combat.**
+- **Prayer restore**: Prayer potion restores 30 prayer points immediately. **Works outside combat.**
 
 Active potion effects are tracked in `game-state.active-potions`. Each player attack decrements `turns-left`; expired effects are removed. `compute-boosts` in `lib/bide-potions.hoon` aggregates the max boost percentage for each stat from all active effects.
+
+## Food
+
+Food can be eaten from the bank to heal HP outside combat via the `%eat-food` action. Healing values are defined in `lib/bide-food.hoon`. During combat, food is consumed automatically via the auto-eat system when HP drops below the configured threshold. Farming crops (potato through snape-grass) heal 20-200 HP; cooked fish heal 30-320 HP.
 
 ## Prayers
 
@@ -142,3 +152,73 @@ Dungeons are multi-room encounters. Each room has a monster type and kill count.
 | Dragons Den | 80 | Fire Giant ×3 → Demon ×2 → Dragon ×1 |
 
 Dungeon state tracks room index and room kills separately. The combat panel shows room progress during a dungeon run. All combat mechanics (potions, prayers, specials, auto-eat) work inside dungeons.
+
+## Farming
+
+Players plant seeds in farm plots. Each seed has a level requirement, growth time (real-time), XP reward, and crop yield range. Plots are unlocked by farming level: 2 at level 1, +1 at levels 15, 30, 50, 70, 85 (max 8).
+
+**Seed types:**
+- **Allotment** (7 seeds): potato through snape-grass, levels 1-61, growth 2-60 min, yield 3-5 food items
+- **Herb** (8 seeds): guam through torstol, levels 9-73, growth 3-120 min, yield 1-3 grimy herbs
+
+Seeds are obtained from thieving NPC drops (10-15% chance). Crops harvested from allotments double as food with healing values 20-200 HP.
+
+Farming XP includes bonuses from agility (farming yield at level 70), astrology (constellation mastery), and active familiar effects. Yield is computed with RNG between min/max, plus percentage bonuses from agility and familiar.
+
+## Agility
+
+A gathering-type skill with 10 obstacle courses (pure XP actions, no items). Provides passive milestone bonuses computed on-the-fly from agility level:
+
+| Level | Bonus |
+|-------|-------|
+| 10 | +2% Woodcutting XP |
+| 20 | +2% Mining XP |
+| 30 | +2% Fishing XP |
+| 40 | +3% Thieving XP |
+| 50 | -5% action time (all gathering/artisan) |
+| 60 | +3% Combat XP |
+| 70 | +5% Farming Yield |
+| 80 | -5% more action time (stacks to -10%) |
+| 90 | +5% all skill XP |
+
+Bonuses are applied in `process-skill-tick` (speed and XP) and `process-combat-events` (combat XP on kill).
+
+## Astrology
+
+A gathering-type skill with 12 constellations, each linked to a different skill (woodcutting, mining, fishing, firemaking, cooking, thieving, smithing, herblore, farming, fletching, attack, defence).
+
+**Global level bonuses** (applied to all XP):
+- Level 25: +1%, Level 50: +3%, Level 75: +4%, Level 99: +6%
+
+**Per-constellation mastery bonuses** (applied to the linked skill's XP):
+- 100 mastery XP: +1%, 500 mastery XP: +3%, 2,000 mastery XP: +6%
+
+## Summoning
+
+An artisan-type skill with 8 tablet recipes. Each tablet requires charcoal plus skill-specific materials. Summoning a familiar consumes one tablet from the bank and sets the active familiar state.
+
+**Familiar effects:**
+
+| Familiar | Charges | Effect |
+|----------|---------|--------|
+| Wolf | 100 | +3% Gathering XP |
+| Hawk | 100 | +5% Thieving XP |
+| Bear | 80 | +5% Strength boost |
+| Serpent | 80 | +5% Herblore XP, +5% Farming Yield |
+| Phoenix | 60 | +8% Artisan XP |
+| Dragon | 60 | +8% Attack & Strength boost |
+| Hydra | 50 | +10% Defence boost, +5% Combat XP |
+| Titan | 40 | +10% All XP |
+
+Charges decrement per completed skill action or per player attack in combat. When charges reach 0, the familiar auto-dismisses. Combat boosts are added to effective stats alongside potion and prayer boosts.
+
+## Passive Bonus Integration
+
+All passive bonuses are computed on-the-fly — no stored modifier state. The `process-skill-tick` arm aggregates:
+1. **Speed bonus** from agility (reduces action base time)
+2. **XP bonus** from agility milestones + astrology level/mastery + active familiar
+
+The `process-combat-events` arm adds:
+1. **Combat stat boosts** from active familiar (atk/str/def percentages)
+2. **Combat XP bonus** from agility + familiar on kill
+3. **Familiar charge decrement** per player attack

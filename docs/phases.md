@@ -25,15 +25,12 @@ Equipment system (4 slots: helmet, platebody, weapon, shield) with stat bonuses.
 ### Phase 6 — Advanced Combat
 Combat potions (8 potions — attack/strength/defence boosts at 10-15%, instant heal, prayer restore; timed buffs last 50 player attacks, consumed from bank during combat). Prayer system (8 prayers from Thick Skin to Protect from Magic, level 1-43 requirements, drain points per attack, auto-deactivate at 0 points, toggleable during combat). Special attacks (4 weapon specials on ranged bows with energy bar 0-100, +10 per attack, damage/accuracy multipliers). Slayer tasks (task assignment from slayer master based on slayer level, kill tracking with progress bar). Dungeons (3 multi-room dungeons — Goblin Lair/Dark Fortress/Dragons Den, level 10-80, room-by-room progression with reward loot tables rolled on completion). State extracted to `lib/bide-state.hoon` with `versioned-state` union. Debug `%noun` poke for state injection via MCP.
 
+### Phase 7 — Passive Skills
+Four new skills providing passive bonuses computed on-the-fly from levels/mastery. Farming (15 seeds — allotment and herb — planted in plots that grow in real-time, 2-8 plots unlocked by farming level, yield RNG with agility/familiar bonuses). Agility (10 obstacle courses, level-based milestones granting XP bonuses to specific skills, action speed reduction at 50/80, farming yield bonus at 70). Astrology (12 constellations each linked to a skill, mastery-based XP bonuses at 100/500/2000 mastery XP, global level bonuses at 25/50/75/99). Summoning (8 tablet recipes crafted from charcoal + materials, familiars with charges providing XP bonuses, combat stat boosts, and farming yield bonuses; charges decrement per action/attack, auto-dismiss at 0). ~30 new items (seeds, crops, tablets), 7 new food items from farming. Seed drops added to thieving NPCs. Eat food and drink instant potions outside combat. Frontend: dedicated FarmingPage with plot grid and timers, milestone/bonus panels on Agility/Astrology/Summoning skill pages, familiar management on Equipment page, Eat/Drink buttons in bank, ingredient/output counts on action cards, notifications moved to bottom-center.
+
 ---
 
 ## Planned
-
-### Phase 7 — Passive Skills
-- Farming: seed plots, growth timers, herb/food harvesting
-- Agility: obstacle courses granting global bonuses
-- Astrology: constellation bonuses to skill efficiency
-- Summoning: combat familiars and skilling helpers
 
 ### Phase 8 — Economy & Polish
 - Shop: buy items with GP, stock limits
