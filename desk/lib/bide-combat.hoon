@@ -253,4 +253,15 @@
   |=  [seed=@uvJ min=@ud max=@ud]
   ^-  [@ud @uvJ]
   (rng-range seed min max)
+::
+++  style-to-skill
+  |=  =combat-style
+  ^-  skill-id
+  ?-  combat-style
+    %melee-attack    %attack
+    %melee-strength  %strength
+    %melee-defence   %defence
+    %ranged          %ranged
+    %magic           %magic
+  ==
 --
