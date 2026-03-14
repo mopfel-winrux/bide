@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId, WelcomeBackSummary } from '../shared/types';
 type TabletId = ItemId;
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
@@ -50,6 +50,8 @@ interface GameContextValue {
   addToast: (message: string, type?: ToastType) => void;
   removeToast: (id: number) => void;
   xpDrops: XpDrop[];
+  welcomeBack: WelcomeBackSummary | null;
+  dismissWelcomeBack: () => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -75,6 +77,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     levelUps, clearLevelUps,
     addPendingXP, addPendingItems,
     getDisplaySkill, getDisplayBank,
+    welcomeBack, clearWelcomeBack,
   } = useGameState();
 
   const { toasts, addToast, removeToast } = useToast();
@@ -225,6 +228,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       timeTextRef: timer.timeTextRef,
       toasts, addToast, removeToast,
       xpDrops,
+      welcomeBack,
+      dismissWelcomeBack: clearWelcomeBack,
     }}>
       {children}
     </GameContext.Provider>

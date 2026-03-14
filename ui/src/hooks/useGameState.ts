@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { GameState, GameDefs, SkillId, DisplaySkill, ItemId } from '../shared/types';
+import type { GameState, GameDefs, SkillId, DisplaySkill, ItemId, WelcomeBackSummary } from '../shared/types';
 import { api } from '../shared/api';
 import { levelFromXp } from '../shared/xp';
 
@@ -7,6 +7,121 @@ interface LevelUp {
   skill: string;
   level: number;
 }
+
+interface SavedSnapshot {
+  gp: number;
+  skills: Record<string, { xp: number; level: number }>;
+  bank: Record<string, number>;
+  stats: {
+    actionsCompleted: Record<string, number>;
+    monstersKilled: Record<string, number>;
+    dungeonsCompleted: Record<string, number>;
+    totalXpEarned: number;
+    totalGpEarned: number;
+    totalGpSpent: number;
+  };
+  petsFound: string[];
+}
+
+function snapshotFromState(s: GameState): SavedSnapshot {
+  const skills: Record<string, { xp: number; level: number }> = {};
+  for (const sid in s.skills) {
+    skills[sid] = { xp: s.skills[sid].xp, level: s.skills[sid].level };
+  }
+  return {
+    gp: s.gp,
+    skills,
+    bank: { ...s.bank },
+    stats: {
+      actionsCompleted: { ...s.stats.actionsCompleted },
+      monstersKilled: { ...s.stats.monstersKilled },
+      dungeonsCompleted: { ...s.stats.dungeonsCompleted },
+      totalXpEarned: s.stats.totalXpEarned,
+      totalGpEarned: s.stats.totalGpEarned,
+      totalGpSpent: s.stats.totalGpSpent,
+    },
+    petsFound: [...(s.petsFound ?? [])],
+  };
+}
+
+function computeWelcomeBack(old: SavedSnapshot, cur: GameState, elapsedMs: number): WelcomeBackSummary {
+  const gpEarned = cur.stats.totalGpEarned - (old.stats.totalGpEarned ?? 0);
+  const gpSpent = cur.stats.totalGpSpent - (old.stats.totalGpSpent ?? 0);
+  const xpEarned = cur.stats.totalXpEarned - (old.stats.totalXpEarned ?? 0);
+
+  const skillChanges: WelcomeBackSummary['skillChanges'] = [];
+  for (const sid in cur.skills) {
+    const oldSkill = old.skills[sid];
+    const curSkill = cur.skills[sid];
+    if (!oldSkill) {
+      if (curSkill.xp > 0) {
+        skillChanges.push({ skillId: sid, xpGained: curSkill.xp, oldLevel: 1, newLevel: curSkill.level });
+      }
+    } else {
+      const xpGained = curSkill.xp - oldSkill.xp;
+      if (xpGained > 0) {
+        skillChanges.push({ skillId: sid, xpGained, oldLevel: oldSkill.level, newLevel: curSkill.level });
+      }
+    }
+  }
+
+  const itemChanges: WelcomeBackSummary['itemChanges'] = [];
+  const allItems = new Set([...Object.keys(old.bank), ...Object.keys(cur.bank)]);
+  for (const iid of allItems) {
+    const delta = (cur.bank[iid] ?? 0) - (old.bank[iid] ?? 0);
+    if (delta !== 0) itemChanges.push({ itemId: iid, delta });
+  }
+  itemChanges.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+
+  const monstersKilled: WelcomeBackSummary['monstersKilled'] = [];
+  for (const mid in cur.stats.monstersKilled) {
+    const count = cur.stats.monstersKilled[mid] - (old.stats.monstersKilled[mid] ?? 0);
+    if (count > 0) monstersKilled.push({ monsterId: mid, count });
+  }
+
+  const dungeonsCompleted: WelcomeBackSummary['dungeonsCompleted'] = [];
+  for (const did in cur.stats.dungeonsCompleted) {
+    const count = cur.stats.dungeonsCompleted[did] - (old.stats.dungeonsCompleted[did] ?? 0);
+    if (count > 0) dungeonsCompleted.push({ dungeonId: did, count });
+  }
+
+  let actionsCompleted = 0;
+  for (const aid in cur.stats.actionsCompleted) {
+    actionsCompleted += cur.stats.actionsCompleted[aid] - (old.stats.actionsCompleted[aid] ?? 0);
+  }
+
+  const oldPetSet = new Set(old.petsFound ?? []);
+  const petsFound = (cur.petsFound ?? []).filter((p) => !oldPetSet.has(p));
+
+  return {
+    elapsedMs,
+    gpGained: cur.gp - old.gp,
+    gpEarned,
+    gpSpent,
+    xpEarned,
+    skillChanges,
+    itemChanges,
+    monstersKilled,
+    dungeonsCompleted,
+    actionsCompleted,
+    petsFound,
+  };
+}
+
+function hasMeaningfulChanges(s: WelcomeBackSummary): boolean {
+  if (s.xpEarned < 0) return false; // state was nuked
+  return (
+    s.xpEarned > 0 ||
+    s.gpEarned > 0 ||
+    s.monstersKilled.length > 0 ||
+    s.petsFound.length > 0 ||
+    s.dungeonsCompleted.length > 0
+  );
+}
+
+const LS_STATE_KEY = 'bide-last-state';
+const LS_TS_KEY = 'bide-last-state-ts';
+const MIN_AWAY_MS = 30_000;
 
 export function useGameState() {
   const [defs, setDefs] = useState<GameDefs | null>(null);
@@ -16,6 +131,8 @@ export function useGameState() {
   const pendingXPRef = useRef<Record<SkillId, number>>({});
   const pendingItemsRef = useRef<Record<ItemId, number>>({});
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
+  const [welcomeBack, setWelcomeBack] = useState<WelcomeBackSummary | null>(null);
+  const hasCheckedWelcomeRef = useRef(false);
 
   // Fetch defs once on mount
   useEffect(() => {
@@ -58,6 +175,32 @@ export function useGameState() {
           }
           if (ups.length > 0) setLevelUps(ups);
         }
+
+        // Welcome-back check (once per page load)
+        if (!hasCheckedWelcomeRef.current) {
+          hasCheckedWelcomeRef.current = true;
+          try {
+            const raw = localStorage.getItem(LS_STATE_KEY);
+            const tsRaw = localStorage.getItem(LS_TS_KEY);
+            if (raw && tsRaw) {
+              const elapsed = Date.now() - Number(tsRaw);
+              if (elapsed >= MIN_AWAY_MS) {
+                const oldSnapshot: SavedSnapshot = JSON.parse(raw);
+                const summary = computeWelcomeBack(oldSnapshot, s, elapsed);
+                if (hasMeaningfulChanges(summary)) {
+                  setWelcomeBack(summary);
+                }
+              }
+            }
+          } catch { /* corrupted localStorage, skip */ }
+        }
+
+        // Save snapshot for next session
+        try {
+          localStorage.setItem(LS_STATE_KEY, JSON.stringify(snapshotFromState(s)));
+          localStorage.setItem(LS_TS_KEY, String(Date.now()));
+        } catch { /* quota error, silently degrade */ }
+
         lastPolledRef.current = s;
         setState(s);
       }).catch(() => { /* silently retry next tick */ });
@@ -70,6 +213,7 @@ export function useGameState() {
   }, [defs]);
 
   const clearLevelUps = useCallback(() => setLevelUps([]), []);
+  const clearWelcomeBack = useCallback(() => setWelcomeBack(null), []);
 
   const addPendingXP = useCallback((skill: SkillId, xp: number) => {
     pendingXPRef.current[skill] = (pendingXPRef.current[skill] || 0) + xp;
@@ -108,5 +252,7 @@ export function useGameState() {
     addPendingItems,
     getDisplaySkill,
     getDisplayBank,
+    welcomeBack,
+    clearWelcomeBack,
   };
 }

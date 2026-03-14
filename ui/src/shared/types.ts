@@ -342,6 +342,20 @@ export interface GameDefs {
   capes: Record<ItemId, CapeDef>;
 }
 
+export interface WelcomeBackSummary {
+  elapsedMs: number;
+  gpGained: number;
+  gpEarned: number;
+  gpSpent: number;
+  xpEarned: number;
+  skillChanges: { skillId: SkillId; xpGained: number; oldLevel: number; newLevel: number }[];
+  itemChanges: { itemId: ItemId; delta: number }[];
+  monstersKilled: { monsterId: MonsterId; count: number }[];
+  dungeonsCompleted: { dungeonId: DungeonId; count: number }[];
+  actionsCompleted: number;
+  petsFound: PetId[];
+}
+
 export interface DisplaySkill {
   xp: number;
   level: number;

@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { ToastContainer } from '../ui/ToastContainer';
 import { XpDropContainer } from '../XpDrop';
+import { WelcomeBackModal } from '../WelcomeBackModal';
 
 export function AppShell() {
   return (
@@ -18,6 +19,7 @@ export function AppShell() {
       <MobileNav />
       <XpDropContainer />
       <ToastContainer />
+      <WelcomeBackModal />
     </div>
   );
 }
