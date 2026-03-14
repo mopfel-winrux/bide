@@ -16,27 +16,27 @@
   ^-  (map item-id farm-seed-def)
   %-  ~(gas by *(map item-id farm-seed-def))
   :~  ::  allotment seeds
-      [%potato-seed [level=1 growth-time=120.000 xp=80 crop=%potato min-yield=3 max-yield=5]]
-      [%onion-seed [level=5 growth-time=300.000 xp=150 crop=%onion min-yield=3 max-yield=5]]
-      [%tomato-seed [level=12 growth-time=600.000 xp=280 crop=%tomato min-yield=3 max-yield=5]]
-      [%sweetcorn-seed [level=20 growth-time=900.000 xp=450 crop=%sweetcorn min-yield=3 max-yield=5]]
-      [%strawberry-seed [level=31 growth-time=1.500.000 xp=700 crop=%strawberry min-yield=3 max-yield=5]]
-      [%watermelon-seed [level=47 growth-time=2.400.000 xp=1.100 crop=%watermelon min-yield=3 max-yield=5]]
-      [%snape-grass-seed [level=61 growth-time=3.600.000 xp=1.600 crop=%snape-grass min-yield=3 max-yield=5]]
+      [%potato-seed [level=1 growth-time=120.000 xp=8 crop=%potato min-yield=3 max-yield=5]]
+      [%onion-seed [level=5 growth-time=300.000 xp=10 crop=%onion min-yield=3 max-yield=5]]
+      [%tomato-seed [level=12 growth-time=600.000 xp=14 crop=%tomato min-yield=3 max-yield=5]]
+      [%sweetcorn-seed [level=20 growth-time=900.000 xp=21 crop=%sweetcorn min-yield=3 max-yield=5]]
+      [%strawberry-seed [level=31 growth-time=1.500.000 xp=39 crop=%strawberry min-yield=3 max-yield=5]]
+      [%watermelon-seed [level=47 growth-time=2.400.000 xp=78 crop=%watermelon min-yield=3 max-yield=5]]
+      [%snape-grass-seed [level=61 growth-time=3.600.000 xp=92 crop=%snape-grass min-yield=3 max-yield=5]]
       ::  herb seeds
-      [%guam-seed [level=9 growth-time=180.000 xp=110 crop=%grimy-guam min-yield=1 max-yield=3]]
-      [%marrentill-seed [level=14 growth-time=480.000 xp=250 crop=%grimy-marrentill min-yield=1 max-yield=3]]
-      [%tarromin-seed [level=19 growth-time=900.000 xp=400 crop=%grimy-tarromin min-yield=1 max-yield=3]]
-      [%harralander-seed [level=26 growth-time=1.500.000 xp=650 crop=%grimy-harralander min-yield=1 max-yield=3]]
-      [%ranarr-seed [level=32 growth-time=2.400.000 xp=1.000 crop=%grimy-ranarr min-yield=1 max-yield=3]]
-      [%irit-seed [level=44 growth-time=3.600.000 xp=1.500 crop=%grimy-irit min-yield=1 max-yield=3]]
-      [%kwuarm-seed [level=56 growth-time=5.400.000 xp=2.200 crop=%grimy-kwuarm min-yield=1 max-yield=3]]
-      [%torstol-seed [level=73 growth-time=7.200.000 xp=3.500 crop=%grimy-torstol min-yield=1 max-yield=3]]
+      [%guam-seed [level=9 growth-time=180.000 xp=9 crop=%grimy-guam min-yield=1 max-yield=3]]
+      [%marrentill-seed [level=14 growth-time=480.000 xp=12 crop=%grimy-marrentill min-yield=1 max-yield=3]]
+      [%tarromin-seed [level=19 growth-time=900.000 xp=16 crop=%grimy-tarromin min-yield=1 max-yield=3]]
+      [%harralander-seed [level=26 growth-time=1.500.000 xp=28 crop=%grimy-harralander min-yield=1 max-yield=3]]
+      [%ranarr-seed [level=32 growth-time=2.400.000 xp=35 crop=%grimy-ranarr min-yield=1 max-yield=3]]
+      [%irit-seed [level=44 growth-time=3.600.000 xp=48 crop=%grimy-irit min-yield=1 max-yield=3]]
+      [%kwuarm-seed [level=56 growth-time=5.400.000 xp=69 crop=%grimy-kwuarm min-yield=1 max-yield=3]]
+      [%torstol-seed [level=73 growth-time=7.200.000 xp=92 crop=%grimy-torstol min-yield=1 max-yield=3]]
       ::  new herb seeds (phase 10)
-      [%avantoe-seed [level=35 growth-time=2.700.000 xp=850 crop=%grimy-avantoe min-yield=1 max-yield=3]]
-      [%lantadyme-seed [level=45 growth-time=3.600.000 xp=1.200 crop=%grimy-lantadyme min-yield=1 max-yield=3]]
-      [%cadantine-seed [level=65 growth-time=5.400.000 xp=2.000 crop=%grimy-cadantine min-yield=1 max-yield=3]]
-      [%snapdragon-seed [level=80 growth-time=7.200.000 xp=3.200 crop=%grimy-snapdragon min-yield=1 max-yield=3]]
+      [%avantoe-seed [level=35 growth-time=2.700.000 xp=35 crop=%grimy-avantoe min-yield=1 max-yield=3]]
+      [%lantadyme-seed [level=45 growth-time=3.600.000 xp=48 crop=%grimy-lantadyme min-yield=1 max-yield=3]]
+      [%cadantine-seed [level=65 growth-time=5.400.000 xp=69 crop=%grimy-cadantine min-yield=1 max-yield=3]]
+      [%snapdragon-seed [level=80 growth-time=7.200.000 xp=92 crop=%grimy-snapdragon min-yield=1 max-yield=3]]
   ==
 ::
 ++  max-plots

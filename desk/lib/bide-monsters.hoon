@@ -25,7 +25,7 @@
           ==
           gp-min=1
           gp-max=5
-          combat-xp=100
+          combat-xp=10
           slayer-req=0
       ==
       :-  %goblin
@@ -46,7 +46,7 @@
           ==
           gp-min=5
           gp-max=15
-          combat-xp=160
+          combat-xp=16
           slayer-req=0
       ==
       :-  %rat
@@ -66,7 +66,7 @@
           ==
           gp-min=8
           gp-max=25
-          combat-xp=240
+          combat-xp=24
           slayer-req=0
       ==
       :-  %zombie
@@ -87,7 +87,7 @@
           ==
           gp-min=15
           gp-max=50
-          combat-xp=400
+          combat-xp=40
           slayer-req=0
       ==
       :-  %skeleton
@@ -109,7 +109,7 @@
           ==
           gp-min=25
           gp-max=80
-          combat-xp=600
+          combat-xp=60
           slayer-req=0
       ==
       :-  %giant-spider
@@ -131,7 +131,7 @@
           ==
           gp-min=35
           gp-max=120
-          combat-xp=800
+          combat-xp=80
           slayer-req=0
       ==
       :-  %bandit
@@ -153,7 +153,7 @@
           ==
           gp-min=50
           gp-max=175
-          combat-xp=1.200
+          combat-xp=120
           slayer-req=0
       ==
       :-  %dark-knight
@@ -175,7 +175,7 @@
           ==
           gp-min=80
           gp-max=250
-          combat-xp=1.800
+          combat-xp=180
           slayer-req=0
       ==
       :-  %cave-troll
@@ -197,7 +197,7 @@
           ==
           gp-min=120
           gp-max=400
-          combat-xp=2.400
+          combat-xp=240
           slayer-req=0
       ==
       :-  %ogre
@@ -219,7 +219,7 @@
           ==
           gp-min=175
           gp-max=600
-          combat-xp=3.000
+          combat-xp=300
           slayer-req=0
       ==
       :-  %demon
@@ -241,7 +241,7 @@
           ==
           gp-min=250
           gp-max=850
-          combat-xp=3.600
+          combat-xp=360
           slayer-req=0
       ==
       :-  %fire-giant
@@ -263,7 +263,7 @@
           ==
           gp-min=350
           gp-max=1.100
-          combat-xp=4.200
+          combat-xp=420
           slayer-req=0
       ==
       :-  %dragon
@@ -286,7 +286,7 @@
           ==
           gp-min=500
           gp-max=1.500
-          combat-xp=4.800
+          combat-xp=480
           slayer-req=0
       ==
   ==

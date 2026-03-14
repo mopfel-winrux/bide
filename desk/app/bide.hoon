@@ -1620,14 +1620,34 @@
   =.  pool-xp.mastery.ss  (add pool-xp.mastery.ss pool-gain)
   =.  skills.gs  (~(put by skills.gs) skill.act ss)
   =/  outputs=(list output-def)  outputs.u.adef
-  =.  bank.gs
+  ::  roll outputs respecting chance field
+  =/  rolled
+    ^-  [(list [item-id @ud]) @uvJ]
+    =/  outs  outputs
+    =/  s=@uvJ  rng-seed.gs
+    =/  acc=(list [item-id @ud])  ~
     |-
-    ?~  outputs  bank.gs
-    =/  cur-qty=@ud  (fall (~(get by items.bank.gs) item.i.outputs) 0)
-    =/  add-qty=@ud  (mul num-actions max-qty.i.outputs)
-    =.  items.bank.gs
-      (~(put by items.bank.gs) item.i.outputs (add cur-qty add-qty))
-    $(outputs t.outputs)
+    ?~  outs  [acc s]
+    ?:  =(chance.i.outs 100)
+      $(outs t.outs, acc [[item.i.outs (mul num-actions max-qty.i.outs)] acc])
+    =/  total=@ud  (mul num-actions chance.i.outs)
+    =/  full-drops=@ud  (div total 100)
+    =/  remainder=@ud  (mod total 100)
+    =/  roll=@ud  (mod (mug s) 100)
+    =.  s  `@uvJ`(mug s)
+    =/  drops=@ud  ?:((lth roll remainder) (add full-drops 1) full-drops)
+    ?:  =(drops 0)  $(outs t.outs)
+    $(outs t.outs, acc [[item.i.outs (mul drops max-qty.i.outs)] acc])
+  =/  produced=(list [item-id @ud])  -.rolled
+  =.  rng-seed.gs  +.rolled
+  ::  add produced items to bank
+  =.  items.bank.gs
+    =/  prod  produced
+    |-
+    ?~  prod  items.bank.gs
+    =/  cur=@ud  (fall (~(get by items.bank.gs) -.i.prod) 0)
+    =.  items.bank.gs  (~(put by items.bank.gs) -.i.prod (add cur +.i.prod))
+    $(prod t.prod)
   ::  GP per action (alt magic alchemy)
   =?  gp.player.gs  (gth gp-per-action.u.adef 0)
     (add gp.player.gs (mul gp-per-action.u.adef num-actions))
@@ -1640,13 +1660,13 @@
     (~(put by actions-completed.stats.gs) target.act (add prev-count num-actions))
   ::  stats: items produced
   =.  items-produced.stats.gs
-    =/  outs=(list output-def)  outputs.u.adef
+    =/  prod  produced
     |-
-    ?~  outs  items-produced.stats.gs
-    =/  prev=@ud  (fall (~(get by items-produced.stats.gs) item.i.outs) 0)
+    ?~  prod  items-produced.stats.gs
+    =/  prev=@ud  (fall (~(get by items-produced.stats.gs) -.i.prod) 0)
     =.  items-produced.stats.gs
-      (~(put by items-produced.stats.gs) item.i.outs (add prev (mul num-actions max-qty.i.outs)))
-    $(outs t.outs)
+      (~(put by items-produced.stats.gs) -.i.prod (add prev +.i.prod))
+    $(prod t.prod)
   ::  stats: total XP earned
   =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs total-xp)
   ::  pet drop roll
