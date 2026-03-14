@@ -35,7 +35,7 @@ export function OverviewPage() {
         <StatCard label="Total Level" value={fmt(totalLevel)} sub={`/ ${fmt(maxTotalLevel)}`} color="#e5e7eb" />
         <StatCard label="Gold" value={fmtGP(state.gp)} sub="GP" color="#eab308" />
         <StatCard label="Hitpoints" value={`${fmt(state.hp)} / ${fmt(state.hpMax)}`} sub="HP" color="#ef4444" />
-        <StatCard label="Bank" value={`${itemCount}`} sub="items" color="#6b7280" />
+        <StatCard label="Bank" value={`${itemCount}`} sub={`/ ${state.slotsMax} slots`} color="#6b7280" />
       </div>
 
       {/* Skills by type */}

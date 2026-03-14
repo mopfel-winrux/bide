@@ -54,8 +54,16 @@ export function BankPage() {
         <div className="text-[13px] text-gray-400">
           <span className="text-yellow-500 font-semibold">{fmt(state.gp)} GP</span>
           {' | '}
-          {itemCount} items
+          {itemCount} / {state.slotsMax} slots
         </div>
+      </div>
+
+      {/* Slots progress */}
+      <div className="relative h-2 bg-[#0d1117] rounded-full overflow-hidden mb-6 border border-[#1e293b]">
+        <div
+          className="h-full bg-gradient-to-r from-amber-700 to-amber-500 rounded-full transition-[width] duration-300"
+          style={{ width: `${(itemCount / state.slotsMax) * 100}%` }}
+        />
       </div>
 
       {/* Filters */}
