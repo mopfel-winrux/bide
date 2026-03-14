@@ -38,11 +38,20 @@ Combat magic system allowing spellcasting without a magic weapon. 12 combat spel
 
 ---
 
-## Planned
+### Phase 10 — Balance & Polish
+XP rebalance to match Melvor Idle values across all skills (~10x reduction in XP per action, action times adjusted to Melvor standards). Smithing/fletching/crafting/runecrafting/herblore/summoning standardized to uniform action times (2-5s). Mining times scaled to Melvor (5s copper through 120s dragonite). Combat XP scaled to monster HP × 0.4 (10-480 XP range). Farming XP scaled down (8-92 XP) and now multiplied by harvest yield.
 
-### Phase 10 — Content Population
-- Full item/monster/action data to match content depth
-- Balance tuning: XP rates, sell prices, drop rates, combat stats
+Output chance system wired — skill outputs with `chance < 100` are now properly rolled using the `og` PRNG door with `eny.bowl` kernel entropy. All game RNG (`rng-next` in combat, pet drops, farming yield, output rolls) migrated from `mug`-based hashing to stdlib `og` door. Combat seeds mixed with `eny.bowl` at each event for fresh entropy.
+
+Welcome Back modal — frontend localStorage diff shows GP earned, XP/levels gained, monsters killed, items gained/consumed, dungeons completed, and new pets found when returning after >30s away.
+
+Farming fixes: `plantedAt` timestamp converted to Unix epoch (was Urbit epoch, breaking client-side countdown); harvest button shows live countdown timer. Alt Magic sidebar entry now shows magic skill icon.
+
+Frontend optimistic updates fixed to only show guaranteed drops (chance=100) in XP drop animations.
+
+---
+
+## Planned
 
 ### Phase 11 — Graphics
 - Use MCP skill to generate assets for the game

@@ -6,15 +6,24 @@ Train skills, gather resources, craft equipment, and fight monsters — all runn
 
 ## Features
 
-**17 skills** across four categories:
+**22 skills** across four categories:
 
-- **Gathering** — Woodcutting, Fishing, Mining, Thieving
-- **Artisan** — Firemaking, Cooking, Smithing, Fletching, Crafting, Runecrafting, Herblore
-- **Combat** — Attack, Strength, Defence, Hitpoints, Ranged, Magic
+- **Gathering** — Woodcutting, Fishing, Mining, Thieving, Agility, Astrology
+- **Artisan** — Firemaking, Cooking, Smithing, Fletching, Crafting, Runecrafting, Herblore, Summoning
+- **Combat** — Attack, Strength, Defence, Hitpoints, Ranged, Magic, Prayer, Slayer
+- **Passive** — Farming (real-time growth plots)
 
-**~120 items** — raw materials, processed goods, equipment, food, runes, potions, gems
+**~170 items** — raw materials, processed goods, equipment, food, runes, potions, gems, seeds, tablets
 
-**Combat system** — 13 monsters across 6 areas, equipment with stat bonuses, auto-eat, and loot tables
+**Combat system** — 13 monsters across 6 areas, 3 dungeons, equipment with stat bonuses, auto-eat, potions, prayers, special attacks, 12 combat spells, slayer tasks
+
+**Alt Magic** — 11 utility spells (alchemy, superheat, enchant)
+
+**Economy** — GP shop (~43 items), 12 pets with passive bonuses, completion log
+
+**Idle features** — Welcome Back summary modal shows what happened while you were away
+
+**XP balanced to Melvor Idle** — action XP values and times match Melvor's pacing
 
 **Mastery** — per-action mastery XP tracking with a mastery pool
 

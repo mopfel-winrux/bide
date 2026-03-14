@@ -72,8 +72,8 @@ Append to the skill's action list in `lib/bide-skills.hoon`:
 :*  id=%catch-minnow
     name='Minnow'
     level-req=95
-    xp=4.500
-    base-time=9.000
+    xp=400
+    base-time=17.000
     inputs=~                                   ::  gathering: no inputs
     outputs=~[[item=%raw-minnow min-qty=1 max-qty=1 chance=100]]
     mastery-xp=450
@@ -107,7 +107,7 @@ inputs=~[[item=%gold-bar qty=1] [item=%onyx qty=1]]
 | `item` | `@tas` | Item ID produced |
 | `min-qty` | `@ud` | Minimum quantity (currently always 1) |
 | `max-qty` | `@ud` | Maximum quantity (used for production calc) |
-| `chance` | `@ud` | Drop chance 0-100 (currently always 100, RNG not yet wired) |
+| `chance` | `@ud` | Drop chance 0-100 (100 = guaranteed; lower values rolled per action using `og` PRNG seeded from `eny.bowl`) |
 
 ## Adding a Monster
 

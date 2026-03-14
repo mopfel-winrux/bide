@@ -6,6 +6,8 @@ Bide uses the standard RuneScape XP curve. The table in `lib/bide-xp.hoon` maps 
 
 The same table is duplicated client-side in `ui/src/shared/xp.ts` so the frontend can compute levels for optimistic display without waiting for a server poll.
 
+**XP per action is calibrated to Melvor Idle values.** For example, cutting a normal tree gives 10 XP (not 100), fishing shrimp gives 5 XP (6s), mining copper gives 7 XP (5s). Action times also match Melvor where applicable (e.g., high-tier mining is very slow: runite 60s, dragonite 120s). Combat XP per kill ≈ monster HP × 0.4.
+
 ## Skills
 
 There are four skill types implemented:
@@ -77,11 +79,21 @@ The frontend shows XP drops and item gains immediately without waiting for the n
 
 The poll loop in `useGameState.ts` compares previous and current skill levels. When `curSkill.level > prevSkill.level`, a toast notification is queued via `setLevelUps`. The UI displays and auto-dismisses these.
 
+## Welcome Back Summary
+
+When the player returns after being away >30 seconds, a modal shows what happened while they were offline: GP earned, XP gained per skill, level-ups, monsters killed, items gained/consumed, dungeons completed, and new pets found.
+
+**Implementation:** Frontend-only, zero backend changes. On every state poll, `useGameState.ts` saves a lightweight snapshot (GP, skills, bank, stats, pets) to localStorage. On fresh page load, it compares the stored snapshot to the first polled state. If away >30s and something meaningful changed (xpEarned > 0, etc.), the diff is shown in `WelcomeBackModal`. Negative XP delta (state nuked) is treated as no meaningful change.
+
+## Output Chance Rolls
+
+Skill action outputs have a `chance` field (0-100). The `process-skill-tick` engine rolls each output using the `og` PRNG door seeded with `eny.bowl` (kernel entropy). For batch processing (multiple actions completed while idle), the engine computes `(num_actions × chance) / 100` guaranteed drops plus a random roll for the fractional remainder. Only guaranteed drops (chance=100) are shown in the frontend's optimistic XP drop animation; chance-based items appear when the next server poll confirms them.
+
 ## Combat
 
 Combat uses two independent Behn timers — one for the player attack and one for the enemy attack. Each timer fires on its own wire (`/timer/player-atk`, `/timer/enemy-atk`), and `++on-arvo` dispatches to `process-combat-events` or `process-dungeon-events` accordingly.
 
-**Hit calculation.** `lib/bide-combat.hoon` computes effective attack/strength/defence levels from base skill level + potion boosts + prayer boosts. Hit chance uses an attack roll vs defence roll comparison. Damage is rolled 0 to max hit (based on effective strength). PRNG uses a seed stored in `game-state` and advanced each roll.
+**Hit calculation.** `lib/bide-combat.hoon` computes effective attack/strength/defence levels from base skill level + potion boosts + prayer boosts. Hit chance uses an attack roll vs defence roll comparison. Damage is rolled 0 to max hit (based on effective strength). PRNG uses the `og` door from Hoon stdlib, seeded by mixing the stored `rng-seed` with `eny.bowl` (kernel entropy) at the start of each combat event.
 
 **Combat styles.** Three weapon types (melee, ranged, magic) with sub-styles. Melee has attack/strength/defence variants that direct XP to different skills. The frontend auto-selects a valid style when the equipped weapon type changes. Magic is always available as a combat style — with a magic weapon it uses equipment stats; with a spell selected it uses spell-based combat (fixed max hit from spell, accuracy from magic level, runes consumed per attack).
 
@@ -159,11 +171,11 @@ Players plant seeds in farm plots. Each seed has a level requirement, growth tim
 
 **Seed types:**
 - **Allotment** (7 seeds): potato through snape-grass, levels 1-61, growth 2-60 min, yield 3-5 food items
-- **Herb** (8 seeds): guam through torstol, levels 9-73, growth 3-120 min, yield 1-3 grimy herbs
+- **Herb** (8+4 seeds): guam through torstol plus avantoe/lantadyme/cadantine/snapdragon, levels 9-80, growth 3-120 min, yield 1-3 grimy herbs
 
 Seeds are obtained from thieving NPC drops (10-15% chance). Crops harvested from allotments double as food with healing values 20-200 HP.
 
-Farming XP includes bonuses from agility (farming yield at level 70), astrology (constellation mastery), and active familiar effects. Yield is computed with RNG between min/max, plus percentage bonuses from agility and familiar.
+**XP = base XP per seed × final yield.** Harvesting 3 potatoes at 8 XP each gives 24 XP. Yield is computed with RNG (using the `og` door) between min/max, plus percentage bonuses from agility (farming yield at level 70), astrology (constellation mastery), and active familiar effects.
 
 ## Agility
 
@@ -280,27 +292,27 @@ Managed on the Equipment page alongside gear and familiars.
 
 | Spell | Level | Runes | Input | GP | XP | Time |
 |-------|-------|-------|-------|-----|-----|------|
-| Alch Gold Bar | 21 | 5 fire, 1 mind | gold-bar | 225 | 80 | 3s |
-| Alch Onyx | 40 | 5 fire, 1 death | onyx | 2,250 | 150 | 3s |
-| Alch Dragonite Bar | 55 | 5 fire, 2 death | dragonite-bar | 5,000 | 250 | 3s |
+| Alch Gold Bar | 21 | 5 fire, 1 mind | gold-bar | 225 | 8 | 3s |
+| Alch Onyx | 40 | 5 fire, 1 death | onyx | 2,250 | 15 | 3s |
+| Alch Dragonite Bar | 55 | 5 fire, 2 death | dragonite-bar | 5,000 | 25 | 3s |
 
 **Superheat** (smelt without furnace):
 
 | Spell | Level | Runes | Input | Output | XP | Time |
 |-------|-------|-------|-------|--------|-----|------|
-| Superheat Iron | 33 | 4 fire, 1 mind | iron-ore | iron-bar | 100 | 3s |
-| Superheat Steel | 43 | 6 fire, 1 chaos | iron-ore | steel-bar | 180 | 4s |
-| Superheat Mithril | 53 | 8 fire, 1 death | mithril-ore | mithril-bar | 280 | 5s |
-| Superheat Runite | 75 | 12 fire, 2 death | runite-ore | runite-bar | 500 | 6s |
+| Superheat Iron | 33 | 4 fire, 1 mind | iron-ore | iron-bar | 10 | 3s |
+| Superheat Steel | 43 | 6 fire, 1 chaos | iron-ore | steel-bar | 18 | 4s |
+| Superheat Mithril | 53 | 8 fire, 1 death | mithril-ore | mithril-bar | 28 | 5s |
+| Superheat Runite | 75 | 12 fire, 2 death | runite-ore | runite-bar | 50 | 6s |
 
 **Enchant** (upgrade bars to enchanted versions):
 
 | Spell | Level | Runes | Input | Output | XP | Time |
 |-------|-------|-------|-------|--------|-----|------|
-| Enchant Steel | 35 | 5 water, 5 earth | steel-bar | enchanted-steel-bar | 200 | 5s |
-| Enchant Mithril | 50 | 5 water, 5 earth, 2 mind | mithril-bar | enchanted-mithril-bar | 300 | 5s |
-| Enchant Adamantite | 65 | 5 water, 5 earth, 3 chaos | adamantite-bar | enchanted-adamantite-bar | 450 | 6s |
-| Enchant Runite | 80 | 10 water, 10 earth, 5 death | runite-bar | enchanted-runite-bar | 650 | 6s |
+| Enchant Steel | 35 | 5 water, 5 earth | steel-bar | enchanted-steel-bar | 20 | 5s |
+| Enchant Mithril | 50 | 5 water, 5 earth, 2 mind | mithril-bar | enchanted-mithril-bar | 30 | 5s |
+| Enchant Adamantite | 65 | 5 water, 5 earth, 3 chaos | adamantite-bar | enchanted-adamantite-bar | 45 | 6s |
+| Enchant Runite | 80 | 10 water, 10 earth, 5 death | runite-bar | enchanted-runite-bar | 65 | 6s |
 
 Enchanted bars are new items (`category=%processed`) with 3x the sell price of normal bars.
 

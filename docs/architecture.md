@@ -51,6 +51,8 @@ The UI lives in `ui/` and is a single-page app using React Router.
 
 **Level-up detection.** The poll loop compares `prev.skills[sid].level` to `cur.skills[sid].level` and fires toast notifications on change.
 
+**Welcome Back.** On every poll, a lightweight snapshot (GP, skills, bank, stats, pets) is saved to localStorage. On fresh page load, the stored snapshot is compared to the first polled state. If the player was away >30s and something meaningful changed, a `WelcomeBackModal` shows the diff (GP, XP, levels, monsters killed, items, pets).
+
 **Routing.** `App.tsx` wraps everything in `<GameProvider>` and uses:
 - `/` — OverviewPage (skill summary grid)
 - `/skill/:skillId` — SkillPage (action list, XP bar, start/stop, skill-specific bonus panels)
@@ -75,7 +77,7 @@ Skills and items are pure data — no engine changes needed to add content.
 - `lib/bide-monsters.hoon` — `++monster-registry` returns `(map monster-id monster-def)`. 13 monsters with combat stats, attack speed, loot tables.
 - `lib/bide-areas.hoon` — `++area-registry` returns `(map area-id area-def)`. 6 areas with level requirements and monster lists.
 - `lib/bide-equipment.hoon` — `++equipment-stats-registry` returns equipment stat bonuses for all gear items.
-- `lib/bide-combat.hoon` — Combat engine: hit calculations, damage rolls, effective levels with boost/prayer integration. `player-spell-attack` for spell-based magic combat.
+- `lib/bide-combat.hoon` — Combat engine: hit calculations, damage rolls, effective levels with boost/prayer integration. `player-spell-attack` for spell-based magic combat. All RNG uses the `og` door from Hoon stdlib with `eny.bowl` kernel entropy.
 - `lib/bide-spells.hoon` — `++spell-registry` returns `(map spell-id spell-def)`. 12 combat spells across 4 tiers with rune costs and max hit values.
 - `lib/bide-potions.hoon` — 8 potion definitions, boost computation, potion tick-down logic.
 - `lib/bide-prayers.hoon` — 8 prayer definitions, prayer bonus aggregation, drain calculation.
