@@ -66,6 +66,7 @@ export function useActionTimer(
         if (ad) {
           const outputs: Record<string, number> = {};
           for (const out of ad.outputs) {
+            if (out.chance < 100) continue;
             outputs[out.item] = (outputs[out.item] || 0) + out.maxQty;
           }
           onCycleRef.current({

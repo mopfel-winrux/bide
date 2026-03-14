@@ -103,23 +103,15 @@ export function FarmingPage() {
                     style={{ width: `${growthPct}%` }}
                   />
                 </div>
-                {isReady ? (
-                  <Button
-                    size="sm"
-                    variant="start"
-                    onClick={() => harvestPlot(idx)}
-                    className="w-full"
-                  >
-                    Harvest
-                  </Button>
-                ) : (
-                  <button
-                    disabled
-                    className="w-full px-2 py-1.5 rounded text-xs font-medium bg-[#0d1117] text-gray-500 cursor-not-allowed"
-                  >
-                    {formatTime(remaining)}
-                  </button>
-                )}
+                <Button
+                  size="sm"
+                  variant={isReady ? 'start' : 'default'}
+                  onClick={() => isReady && harvestPlot(idx)}
+                  disabled={!isReady}
+                  className="w-full"
+                >
+                  {isReady ? 'Harvest' : formatTime(remaining)}
+                </Button>
               </div>
             </div>
           );

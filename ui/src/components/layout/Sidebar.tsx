@@ -71,6 +71,7 @@ export function Sidebar() {
                 <NavLink to="/skill/magic" className={linkClass}>
                   {({ isActive }) => (
                     <>
+                      <GameIcon category="skill-icon" id="magic" size={18} className="shrink-0" />
                       <span className="flex-1">Alt Magic</span>
                       <Badge active={isActive}>{getDisplaySkill('magic').level}</Badge>
                     </>

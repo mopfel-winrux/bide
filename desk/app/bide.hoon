@@ -484,7 +484,7 @@
     =/  is-ready=?  (gte now ready-at)
     %-  pairs:enjs:format
     :~  ['seed' [%s seed.u.plot]]
-        ['plantedAt' (numb:enjs:format (div (sub planted-at.u.plot *@da) ms-per))]
+        ['plantedAt' (numb:enjs:format (div (sub planted-at.u.plot ~1970.1.1) ms-per))]
         ['growthTime' (numb:enjs:format growth-time.u.plot)]
         ['ready' [%b is-ready]]
     ==
@@ -1395,7 +1395,8 @@
       `gs
     ::  RNG for yield
     =/  range=@ud  (add (sub max-yield.u.sdef min-yield.u.sdef) 1)
-    =^  rng-val  rng-seed.gs  [(mod (mug rng-seed.gs) range) `@uvJ`(mug rng-seed.gs)]
+    =/  yield-rng  ~(. og eny.bowl)
+    =^  rng-val  yield-rng  (rads:yield-rng range)
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
     ::  apply yield bonuses via modifier engine
     =/  mods=modifier-set
@@ -1404,7 +1405,7 @@
     ::  award farming XP
     =/  fss=skill-state
       (fall (~(get by skills.gs) %farming) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-    =/  new-xp=@ud  (add xp.fss xp.u.sdef)
+    =/  new-xp=@ud  (add xp.fss (mul xp.u.sdef final-yield))
     =/  new-level=@ud  (level-from-xp:bide-xp new-xp)
     =.  fss  fss(xp new-xp, level new-level)
     =.  skills.gs  (~(put by skills.gs) %farming fss)
@@ -1620,26 +1621,22 @@
   =.  pool-xp.mastery.ss  (add pool-xp.mastery.ss pool-gain)
   =.  skills.gs  (~(put by skills.gs) skill.act ss)
   =/  outputs=(list output-def)  outputs.u.adef
-  ::  roll outputs respecting chance field
-  =/  rolled
-    ^-  [(list [item-id @ud]) @uvJ]
+  ::  roll outputs respecting chance field (og door + eny entropy)
+  =/  produced=(list [item-id @ud])
     =/  outs  outputs
-    =/  s=@uvJ  rng-seed.gs
+    =/  rng  ~(. og eny.bowl)
     =/  acc=(list [item-id @ud])  ~
     |-
-    ?~  outs  [acc s]
+    ?~  outs  acc
     ?:  =(chance.i.outs 100)
       $(outs t.outs, acc [[item.i.outs (mul num-actions max-qty.i.outs)] acc])
     =/  total=@ud  (mul num-actions chance.i.outs)
     =/  full-drops=@ud  (div total 100)
     =/  remainder=@ud  (mod total 100)
-    =/  roll=@ud  (mod (mug s) 100)
-    =.  s  `@uvJ`(mug s)
+    =^  roll  rng  (rads:rng 100)
     =/  drops=@ud  ?:((lth roll remainder) (add full-drops 1) full-drops)
     ?:  =(drops 0)  $(outs t.outs)
     $(outs t.outs, acc [[item.i.outs (mul drops max-qty.i.outs)] acc])
-  =/  produced=(list [item-id @ud])  -.rolled
-  =.  rng-seed.gs  +.rolled
   ::  add produced items to bank
   =.  items.bank.gs
     =/  prod  produced
@@ -1709,7 +1706,7 @@
   =/  e-last-dmg=@ud   enemy-last-dmg.act
   =/  sp-energy=@ud  special-energy.act
   =/  sp-queued=?  special-queued.act
-  =/  seed=@uvJ  rng-seed.gs
+  =/  seed=@uvJ  `@uvJ`(mix rng-seed.gs eny.bowl)
   =/  p-hp=@ud  hitpoints-current.player.gs
   =/  p-hp-max=@ud  hitpoints-max.player.gs
   =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)
@@ -1956,7 +1953,7 @@
   =/  e-last-dmg=@ud  enemy-last-dmg.act
   =/  sp-energy=@ud  special-energy.act
   =/  sp-queued=?  special-queued.act
-  =/  seed=@uvJ  rng-seed.gs
+  =/  seed=@uvJ  `@uvJ`(mix rng-seed.gs eny.bowl)
   =/  p-hp=@ud  hitpoints-current.player.gs
   =/  p-hp-max=@ud  hitpoints-max.player.gs
   =/  weapon-spd=@ud  ?~(spell.act (weapon-speed:bide-combat slots.equipment.gs) 3.000)

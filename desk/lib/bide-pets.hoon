@@ -46,8 +46,9 @@
     `[pid pdef]
   |-
   ?~  candidates  [~ seed]
-  =/  new-seed=@uvJ  `@uvJ`(mug seed)
-  =/  roll=@ud  (mod (mug new-seed) chance.pdef.i.candidates)
+  =/  rng  ~(. og seed)
+  =^  roll  rng  (rads:rng chance.pdef.i.candidates)
+  =/  new-seed=@uvJ  `@uvJ`a.rng
   ?:  =(roll 0)
     [`pid.i.candidates new-seed]
   $(candidates t.candidates, seed new-seed)

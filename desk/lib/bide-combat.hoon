@@ -13,19 +13,9 @@
 ++  rng-next
   |=  seed=@uvJ
   ^-  [@ud @uvJ]
-  =/  s0=@  (end [0 64] seed)
-  =/  s1=@  (end [0 64] (rsh [0 64] seed))
-  =/  s1  (mix s1 (lsh [0 23] s1))
-  =/  s1  (end [0 64] s1)
-  =/  s1  (mix s1 (rsh [0 17] s1))
-  =/  s1  (end [0 64] s1)
-  =/  s1  (mix s1 s0)
-  =/  s1  (end [0 64] s1)
-  =/  s1  (mix s1 (rsh [0 26] s0))
-  =/  s1  (end [0 64] s1)
-  =/  result=@  (end [0 64] (add s0 s1))
-  =/  new-seed=@uvJ  (con (lsh [0 64] s1) s0)
-  [result new-seed]
+  =/  rng  ~(. og seed)
+  =^  val  rng  (rads:rng (bex 31))
+  [val `@uvJ`a.rng]
 ::
 ++  rng-range
   |=  [seed=@uvJ min=@ud max=@ud]
