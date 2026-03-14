@@ -73,11 +73,11 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
       <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
         <div className="text-sm font-semibold text-gray-400 mb-1">You</div>
         <div className="relative">
-          <div className="flex items-center justify-between text-sm mb-1">
+          <div className="flex items-center justify-between text-[15px] mb-1">
             <span className="text-gray-400">HP</span>
             <span className="text-gray-200">{fmt(playerHp)} / {fmt(playerHpMax)}</span>
           </div>
-          <div className="h-4 bg-[#0d1117] rounded-full overflow-hidden">
+          <div className="h-5 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-300"
               style={{
@@ -94,7 +94,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Attack</span>
             <span className="text-gray-500 tabular-nums">{(weaponSpeed / 1000).toFixed(1)}s</span>
           </div>
-          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
+          <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-amber-500"
               style={{
@@ -113,7 +113,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Special</span>
             <span className="text-gray-500 tabular-nums">{combatAction.specialEnergy}%</span>
           </div>
-          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
+          <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-yellow-500 transition-all duration-300" style={{ width: combatAction.specialEnergy + '%' }} />
           </div>
           <button
@@ -131,7 +131,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
               <span className="text-gray-500">Prayer</span>
               <span className="text-gray-500 tabular-nums">{prayerPoints}/{prayerMax}</span>
             </div>
-            <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
+            <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
               <div className="h-full rounded-full bg-cyan-500 transition-all duration-300" style={{ width: prayerMax > 0 ? (prayerPoints / prayerMax * 100) + '%' : '0%' }} />
             </div>
           </div>
@@ -164,15 +164,15 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
       {/* Enemy */}
       <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
         <div className="flex items-center gap-3 mb-2">
-          <GameIcon category="monster" id={combatAction.monster} size={48} fallback={monsterDef?.name?.charAt(0) ?? '?'} />
+          <GameIcon category="monster" id={combatAction.monster} size={64} fallback={monsterDef?.name?.charAt(0) ?? '?'} />
           <div className="text-sm font-semibold text-red-400">{monsterDef?.name ?? combatAction.monster}</div>
         </div>
         <div className="relative">
-          <div className="flex items-center justify-between text-sm mb-1">
+          <div className="flex items-center justify-between text-[15px] mb-1">
             <span className="text-gray-400">HP</span>
             <span className="text-gray-200">{fmt(combatAction.enemyHp)} / {fmt(combatAction.enemyMaxHp)}</span>
           </div>
-          <div className="h-4 bg-[#0d1117] rounded-full overflow-hidden">
+          <div className="h-5 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full bg-red-500 rounded-full transition-all duration-300"
               style={{ width: enemyHpPct + '%' }}
@@ -186,7 +186,7 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
             <span className="text-gray-500">Attack</span>
             <span className="text-gray-500 tabular-nums">{(monsterDef.attackSpeed / 1000).toFixed(1)}s</span>
           </div>
-          <div className="h-2 bg-[#0d1117] rounded-full overflow-hidden">
+          <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-red-500"
               style={{

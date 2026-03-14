@@ -21,7 +21,7 @@ export function MonsterCard({ monsterId, monster, selected, onSelect, defs }: Mo
       }`}
     >
       <div className="flex items-center gap-3 mb-2">
-        <GameIcon category="monster" id={monsterId} size={48} fallback={monster.name.charAt(0)} />
+        <GameIcon category="monster" id={monsterId} size={64} fallback={monster.name.charAt(0)} />
         <div className="font-medium text-gray-200">{monster.name}</div>
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-500">

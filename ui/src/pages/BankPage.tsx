@@ -98,7 +98,7 @@ export function BankPage() {
       ) : sortedItems.length === 0 ? (
         <EmptyState>No items match this filter.</EmptyState>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
           {sortedItems.map(([iid, qty]) => (
             <BankItem key={iid} itemId={iid} qty={qty} />
           ))}

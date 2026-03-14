@@ -1,5 +1,6 @@
 import { useGame } from '../../context/GameContext';
 import { fmtGP, fmt } from '../../shared/format';
+import { GameIcon } from '../ui/GameIcon';
 
 export function TopBar() {
   const { state, defs } = useGame();
@@ -33,7 +34,16 @@ export function TopBar() {
         {/* Status */}
         <div className="flex-1 min-w-0">
           {isActive ? (
-            <div className="flex items-center gap-2 text-[13px] text-gray-400">
+            <div className="flex items-center gap-2.5 text-[13px] text-gray-400">
+              {state?.activeAction?.type === 'skilling' && (
+                <GameIcon category="skill-icon" id={state.activeAction.skill} size={22} className="shrink-0" />
+              )}
+              {state?.activeAction?.type === 'combat' && (
+                <GameIcon category="monster" id={state.activeAction.monster} size={22} className="shrink-0" />
+              )}
+              {state?.activeAction?.type === 'dungeon' && (
+                <GameIcon category="dungeon-bg" id={state.activeAction.dungeon} size={22} className="shrink-0" />
+              )}
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-[status-pulse_2s_ease-in-out_infinite] shrink-0" />
               <span className="truncate">{statusText}</span>
             </div>

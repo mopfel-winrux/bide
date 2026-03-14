@@ -24,7 +24,7 @@ export function Sidebar() {
   }
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center justify-between px-5 py-2 text-[13px] border-l-2 transition-all duration-150 cursor-pointer ${
+    `flex items-center justify-between px-5 py-2.5 text-[13px] gap-2.5 border-l-2 transition-all duration-150 cursor-pointer ${
       isActive
         ? 'bg-[#131b2e] text-gray-100 border-l-amber-500'
         : 'text-gray-500 border-l-transparent hover:bg-[#0d1117] hover:text-gray-300'
@@ -59,7 +59,7 @@ export function Sidebar() {
                   <NavLink key={sid} to={linkTo} className={linkClass}>
                     {({ isActive }) => (
                       <>
-                        <GameIcon category="skill-icon" id={sid} size={18} className="shrink-0" />
+                        <GameIcon category="skill-icon" id={sid} size={24} className="shrink-0" />
                         <span className="flex-1">{sd.name}</span>
                         <Badge active={isActive}>{ds.level}</Badge>
                       </>
@@ -71,7 +71,7 @@ export function Sidebar() {
                 <NavLink to="/skill/magic" className={linkClass}>
                   {({ isActive }) => (
                     <>
-                      <GameIcon category="skill-icon" id="magic" size={18} className="shrink-0" />
+                      <GameIcon category="skill-icon" id="magic" size={24} className="shrink-0" />
                       <span className="flex-1">Alt Magic</span>
                       <Badge active={isActive}>{getDisplaySkill('magic').level}</Badge>
                     </>

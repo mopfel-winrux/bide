@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { xpProgress } from '../shared/xp';
 import { SKILL_TYPE_COLORS } from '../shared/constants';
+import { GameIcon } from './ui/GameIcon';
 import type { SkillId, SkillType } from '../shared/types';
 
 interface Props {
@@ -26,7 +27,7 @@ export function SkillCard({ skillId }: Props) {
   const linkTo = CUSTOM_ROUTES[skillId] ?? (COMBAT_SKILLS.has(skillId) ? '/combat' : `/skill/${skillId}`);
 
   // SVG ring
-  const size = 52;
+  const size = 56;
   const stroke = 4;
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -56,14 +57,15 @@ export function SkillCard({ skillId }: Props) {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-[16px] font-bold ${isMaxed ? 'text-amber-400' : 'text-gray-100'}`}>
-              {ds.level}
-            </span>
+            <GameIcon category="skill-icon" id={skillId} size={28} className="shrink-0" />
           </div>
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-semibold text-gray-200 mb-1">{sd.name}</div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[13px] font-semibold text-gray-200">{sd.name}</span>
+            <span className={`text-[14px] font-bold tabular-nums ${isMaxed ? 'text-amber-400' : 'text-gray-300'}`}>{ds.level}</span>
+          </div>
           <div className="h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"

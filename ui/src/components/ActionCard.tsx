@@ -26,7 +26,7 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
     <Card active={isActive} locked={locked}>
       <div className="flex items-center gap-3 mb-3">
         {action.outputs.length > 0 && (
-          <GameIcon category="items" id={action.outputs[0].item} size={32} />
+          <GameIcon category="items" id={action.outputs[0].item} size={48} />
         )}
         <div className="font-semibold text-[14px] text-gray-200 flex-1">{action.name}</div>
         {isActive && (

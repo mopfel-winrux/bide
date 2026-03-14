@@ -67,10 +67,10 @@ export function OverviewPage() {
 
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
   return (
-    <div className="bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-3">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-gray-500 mb-1">{label}</div>
+    <div className="bg-[#111827] border border-[#1e293b] rounded-lg px-5 py-4">
+      <div className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-1">{label}</div>
       <div className="flex items-baseline gap-1.5">
-        <span className="text-lg font-bold tabular-nums" style={{ color }}>{value}</span>
+        <span className="text-xl font-bold tabular-nums" style={{ color }}>{value}</span>
         <span className="text-[12px] text-gray-500">{sub}</span>
       </div>
     </div>
