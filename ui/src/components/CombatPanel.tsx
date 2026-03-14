@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import type { ActiveCombatAction, ActiveDungeonAction, MonsterDef, PotionEffect, ItemId, GameDefs, PrayerId } from '../shared/types';
+import { GameIcon } from './ui/GameIcon';
 import { fmt } from '../shared/format';
 
 interface CombatPanelProps {
@@ -162,7 +163,10 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
 
       {/* Enemy */}
       <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-5">
-        <div className="text-sm font-semibold text-red-400 mb-1">{monsterDef?.name ?? combatAction.monster}</div>
+        <div className="flex items-center gap-3 mb-2">
+          <GameIcon category="monster" id={combatAction.monster} size={48} fallback={monsterDef?.name?.charAt(0) ?? '?'} />
+          <div className="text-sm font-semibold text-red-400">{monsterDef?.name ?? combatAction.monster}</div>
+        </div>
         <div className="relative">
           <div className="flex items-center justify-between text-sm mb-1">
             <span className="text-gray-400">HP</span>

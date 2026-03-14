@@ -1,6 +1,7 @@
 import { useGame } from '../context/GameContext';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
+import { GameIcon } from './ui/GameIcon';
 import { fmt, fmtTime } from '../shared/format';
 import { levelFromXp, xpForLevel, xpProgress } from '../shared/xp';
 import type { ActionDef, SkillId } from '../shared/types';
@@ -23,8 +24,11 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
 
   return (
     <Card active={isActive} locked={locked}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="font-semibold text-[14px] text-gray-200">{action.name}</div>
+      <div className="flex items-center gap-3 mb-3">
+        {action.outputs.length > 0 && (
+          <GameIcon category="items" id={action.outputs[0].item} size={32} />
+        )}
+        <div className="font-semibold text-[14px] text-gray-200 flex-1">{action.name}</div>
         {isActive && (
           <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Training</span>
         )}

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import { Badge } from '../ui/Badge';
+import { GameIcon } from '../ui/GameIcon';
 import { SKILL_TYPE_ORDER, SKILL_TYPE_LABELS, SKILL_TYPE_COLORS } from '../../shared/constants';
 import type { SkillType } from '../../shared/types';
 
@@ -58,6 +59,7 @@ export function Sidebar() {
                   <NavLink key={sid} to={linkTo} className={linkClass}>
                     {({ isActive }) => (
                       <>
+                        <GameIcon category="skill-icon" id={sid} size={18} className="shrink-0" />
                         <span className="flex-1">{sd.name}</span>
                         <Badge active={isActive}>{ds.level}</Badge>
                       </>

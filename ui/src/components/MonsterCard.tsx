@@ -1,4 +1,5 @@
 import type { MonsterId, MonsterDef, GameDefs } from '../shared/types';
+import { GameIcon } from './ui/GameIcon';
 import { fmt } from '../shared/format';
 
 interface MonsterCardProps {
@@ -9,7 +10,7 @@ interface MonsterCardProps {
   defs: GameDefs;
 }
 
-export function MonsterCard({ monster, selected, onSelect, defs }: MonsterCardProps) {
+export function MonsterCard({ monsterId, monster, selected, onSelect, defs }: MonsterCardProps) {
   return (
     <button
       onClick={onSelect}
@@ -19,7 +20,10 @@ export function MonsterCard({ monster, selected, onSelect, defs }: MonsterCardPr
           : 'bg-[#111827] border-[#1e293b] hover:border-gray-500'
       }`}
     >
-      <div className="font-medium text-gray-200 mb-2">{monster.name}</div>
+      <div className="flex items-center gap-3 mb-2">
+        <GameIcon category="monster" id={monsterId} size={48} fallback={monster.name.charAt(0)} />
+        <div className="font-medium text-gray-200">{monster.name}</div>
+      </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-500">
         <div>HP: <span className="text-gray-400">{fmt(monster.hitpoints)}</span></div>
         <div>Max Hit: <span className="text-gray-400">{fmt(monster.maxHit)}</span></div>

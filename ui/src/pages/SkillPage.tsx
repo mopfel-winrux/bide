@@ -9,6 +9,7 @@ import { useState, useMemo } from 'react';
 import { fmt } from '../shared/format';
 import { levelFromXp } from '../shared/xp';
 import { SKILL_GROUPS } from '../shared/skill-groups';
+import { GameIcon } from '../components/ui/GameIcon';
 import type { ActionDef } from '../shared/types';
 
 type Filter = 'all' | 'unlocked' | 'locked';
@@ -63,7 +64,8 @@ export function SkillPage() {
 
   return (
     <div>
-      <div className="flex items-baseline gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6">
+        <GameIcon category="skill-icon" id={skillId} size={40} />
         <h1 className="text-2xl font-bold">{sd.name}</h1>
         <div className="text-base text-gray-400">
           Level <span className="text-gray-100 font-semibold">{ds.level}</span>

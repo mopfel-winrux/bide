@@ -1,5 +1,6 @@
 import { useGame } from '../context/GameContext';
 import { Button } from './ui/Button';
+import { GameIcon } from './ui/GameIcon';
 import { fmt } from '../shared/format';
 import { CATEGORY_COLORS } from '../shared/constants';
 import type { ItemId, ItemCategory } from '../shared/types';
@@ -30,9 +31,7 @@ export function BankItem({ itemId, qty }: Props) {
       <div className="absolute top-1.5 right-1.5 min-w-[22px] h-[18px] px-1.5 text-[10px] font-bold leading-[18px] text-center bg-[#1e293b] text-gray-300 rounded-md tabular-nums">
         {fmt(qty)}
       </div>
-      <div className="w-12 h-12 mx-auto mb-2 bg-[#0d1117] rounded-md flex items-center justify-center text-[20px] text-gray-600">
-        &#x1f4e6;
-      </div>
+      <GameIcon category="items" id={itemId} size={48} className="mx-auto mb-2" />
       <div className="text-[12px] font-medium text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">
         {name}
       </div>

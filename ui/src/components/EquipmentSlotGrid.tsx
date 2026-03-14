@@ -1,4 +1,5 @@
 import type { EquipmentSlot, ItemId, GameDefs } from '../shared/types';
+import { GameIcon } from './ui/GameIcon';
 
 const SLOTS: { slot: EquipmentSlot; label: string }[] = [
   { slot: 'helmet', label: 'Helmet' },
@@ -34,6 +35,7 @@ export function EquipmentSlotGrid({ slots, defs, onUnequip }: EquipmentSlotGridP
             <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">{label}</div>
             {itemDef ? (
               <>
+                <GameIcon category="items" id={itemId!} size={36} className="mb-1" />
                 <div className="text-sm text-gray-200 flex-1">{itemDef.name}</div>
                 {stats && (
                   <div className="text-[10px] text-gray-500 mt-1">
