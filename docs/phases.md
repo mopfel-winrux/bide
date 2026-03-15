@@ -49,11 +49,14 @@ Farming fixes: `plantedAt` timestamp converted to Unix epoch (was Urbit epoch, b
 
 Frontend optimistic updates fixed to only show guaranteed drops (chance=100) in XP drop animations.
 
+### Phase 11 — Firemaking & Astrology Overhaul
+Firemaking secondary drops: coal ore (40% all tiers), topaz (5% maple+), sapphire (3% yew+), ruby (2% magic+) added to all 9 burn actions. Firemaking mastery milestone system — sum of all burn action mastery levels grants global XP% bonus (+1% at 18 through +12% at 891). Astrology dual-skill constellations — each constellation now links to two skills instead of one (e.g., Deedree → Woodcutting + Farming). Global astrology level bonuses removed. Stardust system — study actions drop stardust (5%) and golden stardust (2%), two new misc items. Star upgrade system — each constellation has 3 upgradeable stars: two XP boost stars (max level 5, stardust cost) granting +1% XP per level to both linked skills, and one interval reduction star (max level 3, golden stardust cost) granting +1% speed per level. New `star-levels` field in `game-state`, `upgrade-star` action type, POST `/upgrade-star/<constellation>/<idx>` HTTP route. Star bonuses integrated into `compute-modifiers` alongside existing modifier sources. Frontend: star upgrades displayed inline on each constellation's ActionCard, firemaking mastery milestones panel on SkillBonuses.
+
 ---
 
 ## Planned
 
-### Phase 11 — Graphics
+### Phase 12 — Graphics
 - Use MCP skill to generate assets for the game
 - Work with the user to capture consistent graphics for all assets
 

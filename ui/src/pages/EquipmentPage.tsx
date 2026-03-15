@@ -266,6 +266,106 @@ export function EquipmentPage() {
           </div>
         </div>
       </div>
+      {/* Active Modifiers */}
+      <div className="mt-8">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Active Modifiers</h2>
+        {state.modifiers && (() => {
+          const m = state.modifiers;
+          const xpLines: [string, number][] = [];
+          if (m.xpGlobal > 0) xpLines.push(['Global XP', m.xpGlobal]);
+          if (m.xpGathering > 0) xpLines.push(['Gathering XP', m.xpGathering]);
+          if (m.xpArtisan > 0) xpLines.push(['Artisan XP', m.xpArtisan]);
+          if (m.xpCombat > 0) xpLines.push(['Combat XP', m.xpCombat]);
+          for (const [sid, pct] of Object.entries(m.xpPerSkill)) {
+            if (pct > 0) {
+              const skillName = defs.skills[sid]?.name ?? sid;
+              xpLines.push([`${skillName} XP`, pct]);
+            }
+          }
+
+          const combatLines: [string, number][] = [];
+          if (m.atkBoost > 0) combatLines.push(['Melee Attack', m.atkBoost]);
+          if (m.strBoost > 0) combatLines.push(['Melee Strength', m.strBoost]);
+          if (m.defBoost > 0) combatLines.push(['Defence', m.defBoost]);
+          if (m.rangedBoost > 0) combatLines.push(['Ranged', m.rangedBoost]);
+          if (m.magicBoost > 0) combatLines.push(['Magic', m.magicBoost]);
+
+          const otherLines: [string, number][] = [];
+          if (m.speedBonus > 0) otherLines.push(['Action Speed', m.speedBonus]);
+          if (m.farmingYield > 0) otherLines.push(['Farming Yield', m.farmingYield]);
+          if (m.gpBonus > 0) otherLines.push(['GP Bonus', m.gpBonus]);
+
+          const protLines: [string, number][] = [];
+          if (m.protectMelee > 0) protLines.push(['Melee Protection', m.protectMelee]);
+          if (m.protectRanged > 0) protLines.push(['Ranged Protection', m.protectRanged]);
+          if (m.protectMagic > 0) protLines.push(['Magic Protection', m.protectMagic]);
+
+          const hasAny = xpLines.length > 0 || combatLines.length > 0 || otherLines.length > 0 || protLines.length > 0;
+
+          if (!hasAny) {
+            return <div className="text-sm text-gray-500">No active modifiers</div>;
+          }
+
+          return (
+            <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                {xpLines.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">XP Bonuses</h3>
+                    <div className="space-y-1">
+                      {xpLines.map(([label, pct]) => (
+                        <div key={label} className="flex justify-between text-sm">
+                          <span className="text-gray-400">{label}</span>
+                          <span className="text-emerald-400 font-medium">+{pct}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {combatLines.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Combat Boosts</h3>
+                    <div className="space-y-1">
+                      {combatLines.map(([label, pct]) => (
+                        <div key={label} className="flex justify-between text-sm">
+                          <span className="text-gray-400">{label}</span>
+                          <span className="text-red-400 font-medium">+{pct}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {otherLines.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Other</h3>
+                    <div className="space-y-1">
+                      {otherLines.map(([label, pct]) => (
+                        <div key={label} className="flex justify-between text-sm">
+                          <span className="text-gray-400">{label}</span>
+                          <span className="text-amber-400 font-medium">+{pct}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {protLines.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Protection</h3>
+                    <div className="space-y-1">
+                      {protLines.map(([label, pct]) => (
+                        <div key={label} className="flex justify-between text-sm">
+                          <span className="text-gray-400">{label}</span>
+                          <span className="text-blue-400 font-medium">-{pct}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
     </div>
   );
 }

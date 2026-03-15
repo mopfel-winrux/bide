@@ -4,7 +4,7 @@
 /+  bide-skills, bide-items, bide-monsters, bide-areas, bide-equipment
 /+  bide-food, bide-potions, bide-prayers, bide-dungeons, bide-farming
 /+  bide-summoning, bide-astrology, bide-specials, bide-shop, bide-pets
-/+  bide-spells, bide-capes, bide-combat, bide-bank
+/+  bide-spells, bide-capes, bide-combat, bide-bank, bide-modifiers
 ::
 |_  gs=game-state
 ::
@@ -260,6 +260,33 @@
       ^-  [@t json]
       =/  key-str=@t  (crip "{(trip -.key)}/{(a-co:co +.key)}")
       [key-str (numb:enjs:format level)]
+      :-  'modifiers'
+      =/  mods=modifier-set
+        (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+      %-  pairs:enjs:format
+      :~  ['xpGlobal' (numb:enjs:format xp-global.mods)]
+          ['xpGathering' (numb:enjs:format xp-gathering.mods)]
+          ['xpArtisan' (numb:enjs:format xp-artisan.mods)]
+          ['xpCombat' (numb:enjs:format xp-combat.mods)]
+          :-  'xpPerSkill'
+          :-  %o
+          %-  ~(gas by *(map @t json))
+          %+  turn  ~(tap by xp-per-skill.mods)
+          |=  [sid=skill-id pct=@ud]
+          ^-  [@t json]
+          [sid (numb:enjs:format pct)]
+          ['speedBonus' (numb:enjs:format speed-bonus.mods)]
+          ['atkBoost' (numb:enjs:format atk-boost.mods)]
+          ['strBoost' (numb:enjs:format str-boost.mods)]
+          ['defBoost' (numb:enjs:format def-boost.mods)]
+          ['rangedBoost' (numb:enjs:format ranged-boost.mods)]
+          ['magicBoost' (numb:enjs:format magic-boost.mods)]
+          ['protectMelee' (numb:enjs:format protect-melee.mods)]
+          ['protectRanged' (numb:enjs:format protect-ranged.mods)]
+          ['protectMagic' (numb:enjs:format protect-magic.mods)]
+          ['farmingYield' (numb:enjs:format farming-yield.mods)]
+          ['gpBonus' (numb:enjs:format gp-bonus.mods)]
+      ==
   ==
 ::
 ++  defs-to-json

@@ -4,7 +4,7 @@ import { Button } from './ui/Button';
 import { GameIcon } from './ui/GameIcon';
 import { fmt, fmtTime } from '../shared/format';
 import { levelFromXp, xpForLevel, xpProgress } from '../shared/xp';
-import type { ActionDef, SkillId } from '../shared/types';
+import type { ActionDef, ActionId, SkillId } from '../shared/types';
 
 interface Props {
   action: ActionDef;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function ActionCard({ action, skillId, playerLevel }: Props) {
-  const { state, defs, startAction, stopAction, getDisplayBank } = useGame();
+  const { state, defs, startAction, stopAction, getDisplayBank, upgradeStar } = useGame();
   const locked = action.levelReq > playerLevel;
   const aa = state?.activeAction;
   const isActive = aa?.type === 'skilling' && aa.skill === skillId && aa.target === action.id;
@@ -25,8 +25,12 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
   return (
     <Card active={isActive} locked={locked}>
       <div className="flex items-center gap-3 mb-3">
-        {action.outputs.length > 0 && (
+        {action.outputs.length > 0 ? (
           <GameIcon category="items" id={action.outputs[0].item} size={48} />
+        ) : action.id.startsWith('study-') ? (
+          <GameIcon category="constellation" id={action.id} size={48} />
+        ) : (
+          <GameIcon category="skill-icon" id={skillId} size={48} />
         )}
         <div className="font-semibold text-[14px] text-gray-200 flex-1">{action.name}</div>
         {isActive && (
@@ -116,6 +120,59 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
                 className="h-full bg-purple-500 rounded-full transition-[width] duration-300"
                 style={{ width: `${mpct}%` }}
               />
+            </div>
+          </div>
+        );
+      })()}
+
+      {skillId === 'astrology' && defs?.constellations[action.id] && state && defs.starDefs && (() => {
+        const linkedSkills = defs.constellations[action.id];
+        const [s1, s2] = linkedSkills;
+        const name1 = defs.skills[s1]?.name ?? s1;
+        const name2 = defs.skills[s2]?.name ?? s2;
+        return (
+          <div className="mb-4">
+            <div className="text-[11px] text-gray-500 mb-2">
+              Linked: <span className="text-blue-400">{name1}</span> / <span className="text-blue-400">{name2}</span>
+            </div>
+            <div className="flex gap-1.5">
+              {defs.starDefs.stars.map((star, idx) => {
+                const key = `${action.id}/${idx}`;
+                const level = state.starLevels?.[key] ?? 0;
+                const isMax = level >= star.maxLevel;
+                const cost = isMax ? null : star.costs[level];
+                const currencyName = defs.items[star.currency]?.name ?? star.currency;
+                const have = state.bank[star.currency] ?? 0;
+                const canAfford = cost !== null && have >= cost;
+                const typeLabel = star.type === 'xp-boost' ? 'XP' : 'Speed';
+                const bonusLabel = star.type === 'xp-boost'
+                  ? `+${level}%`
+                  : `+${level}%`;
+
+                return (
+                  <button
+                    key={idx}
+                    disabled={isMax || !canAfford || locked}
+                    onClick={() => upgradeStar(action.id as ActionId, idx)}
+                    className={`flex-1 rounded p-1.5 text-[10px] text-center border transition-colors ${
+                      isMax
+                        ? 'border-amber-700/50 bg-amber-900/10 text-amber-400 cursor-default'
+                        : canAfford && !locked
+                          ? 'border-blue-700/50 bg-blue-900/10 text-blue-300 hover:bg-blue-800/20 cursor-pointer'
+                          : 'border-gray-700/50 bg-gray-900/10 text-gray-600 cursor-not-allowed'
+                    }`}
+                    title={isMax ? `${typeLabel} maxed` : `Cost: ${cost} ${currencyName}`}
+                  >
+                    <div className="font-medium">{typeLabel}</div>
+                    <div className="mt-0.5">{level}/{star.maxLevel} {bonusLabel}</div>
+                    {!isMax && cost !== null && (
+                      <div className={`mt-0.5 ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
+                        {cost} {currencyName}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         );

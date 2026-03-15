@@ -70,11 +70,6 @@
   |=  [astrology-level=@ud mastery=mastery-state target=skill-id]
   ^-  @ud
   =/  pct=@ud  0
-  ::  global level bonuses
-  =?  pct  (gte astrology-level 25)  (add pct 1)
-  =?  pct  (gte astrology-level 50)  (add pct 2)
-  =?  pct  (gte astrology-level 75)  (add pct 1)
-  =?  pct  (gte astrology-level 99)  (add pct 2)
   ::  per-constellation mastery bonuses
   =/  constellations=(list [action-id [skill-id skill-id]])  ~(tap by constellation-registry)
   |-

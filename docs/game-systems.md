@@ -19,7 +19,7 @@ There are four skill types implemented:
 - Thieving (9 NPCs, level 1-90, produces GP pouches + herbs)
 
 **Artisan** — consume input items to produce output items. If the bank runs out of inputs, the action stops automatically.
-- Firemaking (9 log types → charcoal, level 1-90)
+- Firemaking (9 log types → charcoal + secondary drops: coal ore 40%, topaz 5% maple+, sapphire 3% yew+, ruby 2% magic+; mastery milestone grants global XP bonus)
 - Cooking (11 raw fish → cooked fish, level 1-90)
 - Smithing (9 smelting recipes, ores + coal → bars, level 1-80)
 - Fletching (14 recipes, logs → shortbows/longbows, level 1-95)
@@ -40,7 +40,7 @@ There are four skill types implemented:
 - Slayer (unlocks slayer-only monsters, leveled via task kills)
 - Farming (plant seeds in plots, harvest crops after growth timer; 15 seeds, 2-8 plots by level)
 - Agility (10 obstacle courses; milestones grant XP bonuses, speed bonuses, farming yield)
-- Astrology (12 constellations linked to skills; mastery-based XP bonuses per constellation, global level bonuses)
+- Astrology (12 constellations each linked to 2 skills; mastery-based XP bonuses, stardust/golden stardust drops, star upgrade system)
 - Summoning (craft 8 tablet types from charcoal + materials; summon familiars for XP/combat/farming bonuses)
 
 ## Action Timing
@@ -65,7 +65,7 @@ Items are tagged with one of 10 categories defined in `sur/bide.hoon`:
 - `%potion` — brewed potions
 - `%seed` — farming seeds
 - `%tablet` — summoning tablets
-- `%misc` — GP pouches, vials
+- `%misc` — GP pouches, vials, stardust, golden stardust
 
 ## Mastery
 
@@ -195,15 +195,56 @@ A gathering-type skill with 10 obstacle courses (pure XP actions, no items). Pro
 
 Bonuses are applied in `process-skill-tick` (speed and XP) and `process-combat-events` (combat XP on kill).
 
+## Firemaking Mastery Bonus
+
+The sum of all 9 burn action mastery levels grants a global XP% bonus to all skills:
+
+| Mastery Sum | Bonus |
+|-------------|-------|
+| 18+ (avg lv2) | +1% |
+| 45+ | +2% |
+| 90+ | +3% |
+| 270+ | +5% |
+| 450+ | +8% |
+| 891 (all 99) | +12% |
+
+Computed in `bide-modifiers.hoon` using `level-from-xp` on each action's mastery XP.
+
 ## Astrology
 
-A gathering-type skill with 12 constellations, each linked to a different skill (woodcutting, mining, fishing, firemaking, cooking, thieving, smithing, herblore, farming, fletching, attack, defence).
+A gathering-type skill with 12 constellations, each linked to **two** skills:
 
-**Global level bonuses** (applied to all XP):
-- Level 25: +1%, Level 50: +3%, Level 75: +4%, Level 99: +6%
+| Constellation | Skill 1 | Skill 2 |
+|---|---|---|
+| Deedree | Woodcutting | Farming |
+| Iridan | Mining | Smithing |
+| Ameria | Fishing | Cooking |
+| Ko | Firemaking | Herblore |
+| Vale | Cooking | Thieving |
+| Arach | Thieving | Agility |
+| Hyden | Smithing | Crafting |
+| Qimican | Herblore | Summoning |
+| Terra | Farming | Runecrafting |
+| Sylvan | Fletching | Woodcutting |
+| Murtia | Attack | Strength |
+| Cerberus | Defence | Ranged |
 
-**Per-constellation mastery bonuses** (applied to the linked skill's XP):
+**Per-constellation mastery bonuses** (applied to both linked skills' XP):
 - 100 mastery XP: +1%, 500 mastery XP: +3%, 2,000 mastery XP: +6%
+
+**Stardust drops:** All study actions have a 5% chance to drop stardust and 2% chance to drop golden stardust.
+
+### Star Upgrades
+
+Each constellation has 3 upgradeable stars:
+
+| Star | Type | Max Level | Cost per Level | Bonus per Level |
+|------|------|-----------|----------------|-----------------|
+| Star 1 | XP Boost | 5 | 5/10/20/40/80 stardust | +1% XP to both linked skills |
+| Star 2 | XP Boost | 5 | 5/10/20/40/80 stardust | +1% XP to both linked skills |
+| Star 3 | Interval Reduction | 3 | 10/20/40 golden stardust | +1% speed bonus |
+
+Stars are upgraded via POST `/upgrade-star/<constellation>/<idx>`. The handler validates the constellation, checks level < max, verifies stardust in bank, consumes cost, and increments level. Star bonuses feed into the modifier engine.
 
 ## Summoning
 
@@ -229,12 +270,15 @@ Charges decrement per completed skill action or per player attack in combat. Whe
 All passive bonuses flow through a unified modifier engine in `lib/bide-modifiers.hoon`. The `++compute-modifiers` gate collects bonuses from all sources into a single `modifier-set`:
 
 **Sources:**
+- Firemaking mastery (global XP bonus from sum of burn action mastery levels)
 - Agility milestones (XP bonuses, speed reduction, farming yield, combat XP)
-- Astrology constellations (per-skill and global XP bonuses from mastery/level)
+- Astrology constellations (per-skill XP bonuses from mastery)
+- Astrology star upgrades (per-skill XP bonuses, speed bonus)
 - Summoning familiars (XP bonuses, combat stat boosts, farming yield)
 - Potions (combat stat boosts)
 - Prayers (combat stat boosts, damage reduction)
 - Active pet (skill XP, global XP, GP bonus, speed bonus, farming yield)
+- Skill capes (skill XP, global XP, combat boosts, speed, farming yield, GP, protection)
 
 **`modifier-set` fields:** `xp-global`, `xp-gathering`, `xp-artisan`, `xp-combat`, `xp-per-skill` (map), `speed-bonus`, `atk-boost`, `str-boost`, `def-boost`, `protect-melee`, `protect-ranged`, `protect-magic`, `farming-yield`, `gp-bonus`.
 

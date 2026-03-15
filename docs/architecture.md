@@ -34,6 +34,7 @@ POST endpoints:
 - `/eat-food/<item>` — eat food from bank to heal HP
 - `/buy/<item>/<qty>` — buy items from the shop with GP
 - `/set-pet/<pet>` — set active pet (use `none` to clear)
+- `/upgrade-star/<constellation>/<idx>` — upgrade a constellation star (0, 1, or 2)
 
 **Scry.** The same data is available via scry at `/x/state` and `/x/defs`.
 
@@ -87,9 +88,9 @@ Skills and items are pure data — no engine changes needed to add content.
 - `lib/bide-food.hoon` — Food healing values for auto-eat and eat-from-bank.
 - `lib/bide-farming.hoon` — Seed registry, max-plots calculation, plot helpers.
 - `lib/bide-agility.hoon` — Agility milestone bonuses (XP, speed, farming yield, combat XP).
-- `lib/bide-astrology.hoon` — Constellation registry, mastery-based and global level XP bonuses.
+- `lib/bide-astrology.hoon` — Dual-skill constellation registry, mastery-based XP bonuses, star upgrade definitions (types, costs, max levels), star bonus computation.
 - `lib/bide-summoning.hoon` — Familiar registry, XP/combat/farming bonuses, charge management.
-- `lib/bide-modifiers.hoon` — Unified modifier engine. `++compute-modifiers` collects bonuses from agility, astrology, summoning, potions, prayers, and pets into a single `modifier-set`. Helper arms: `++apply-xp-bonus`, `++apply-speed-bonus`, `++get-combat-boosts`, `++get-protection`.
+- `lib/bide-modifiers.hoon` — Unified modifier engine. `++compute-modifiers` collects bonuses from agility, astrology (mastery + star upgrades), summoning, potions, prayers, pets, capes, and firemaking mastery into a single `modifier-set`. Helper arms: `++apply-xp-bonus`, `++apply-speed-bonus`, `++get-combat-boosts`, `++get-protection`.
 - `lib/bide-shop.hoon` — `++shop-registry` returns `(map item-id @ud)` — item to buy price. ~43 items across raw materials, runes, seeds, food, and starter gear.
 - `lib/bide-pets.hoon` — `++pet-registry` returns 12 pet definitions. `++roll-pet-drop` handles RNG-based pet drops from skilling/combat. `++pet-modifiers` computes modifier contributions from active pet.
 - `lib/bide-state.hoon` — Agent state types (`state-0`, `versioned-state`).
@@ -112,14 +113,14 @@ Skills and items are pure data — no engine changes needed to add content.
 | `lib/bide-food.hoon` | Food healing values (auto-eat + bank eating) |
 | `lib/bide-farming.hoon` | Seed registry, plot helpers (15 seeds) |
 | `lib/bide-agility.hoon` | Agility milestone bonus functions |
-| `lib/bide-astrology.hoon` | Constellation registry, mastery XP bonuses |
+| `lib/bide-astrology.hoon` | Dual-skill constellation registry, mastery XP bonuses, star upgrades |
 | `lib/bide-summoning.hoon` | Familiar registry, charge management (8 familiars) |
 | `lib/bide-potions.hoon` | Potion effect registry (8 potions) |
 | `lib/bide-prayers.hoon` | Prayer definitions and bonus computation (8 prayers) |
 | `lib/bide-specials.hoon` | Special attack registry (4 weapon specials) |
 | `lib/bide-slayer.hoon` | Slayer task assignment tables |
 | `lib/bide-dungeons.hoon` | Dungeon definitions (3 dungeons) |
-| `lib/bide-modifiers.hoon` | Unified modifier engine — compute-modifiers, apply-xp-bonus, apply-speed-bonus |
+| `lib/bide-modifiers.hoon` | Unified modifier engine — compute-modifiers (incl. firemaking mastery + star bonuses), apply-xp-bonus, apply-speed-bonus |
 | `lib/bide-shop.hoon` | Shop item registry (~43 items with buy prices) |
 | `lib/bide-pets.hoon` | Pet registry (12 pets), drop rolling, pet modifier computation |
 | `ui/src/App.tsx` | React router and layout shell |
@@ -132,7 +133,7 @@ Skills and items are pure data — no engine changes needed to add content.
 | `ui/src/pages/FarmingPage.tsx` | Farm plot grid, seed selection, growth timers |
 | `ui/src/pages/ShopPage.tsx` | Shop interface — buy items with GP, category tabs, quantity selector |
 | `ui/src/pages/CompletionPage.tsx` | Completion log — skills, mastery, monsters, dungeons, pets, statistics |
-| `ui/src/components/SkillBonuses.tsx` | Agility milestones, astrology bonuses, summoning familiar effects |
+| `ui/src/components/SkillBonuses.tsx` | Agility milestones, firemaking mastery milestones, astrology mastery info, summoning familiar effects |
 | `ui/src/components/CombatPanel.tsx` | Active combat UI — HP bars, timers, potions, prayers, specials |
 | `ui/src/components/MonsterCard.tsx` | Monster stat display card |
 | `ui/src/components/CombatStyleSelector.tsx` | Melee/ranged/magic style picker |

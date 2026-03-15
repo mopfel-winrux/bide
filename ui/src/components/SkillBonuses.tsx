@@ -1,5 +1,5 @@
 import { useGame } from '../context/GameContext';
-import type { SkillId, ActionId } from '../shared/types';
+import type { SkillId } from '../shared/types';
 
 const AGILITY_MILESTONES = [
   { level: 10, desc: '+2% Woodcutting XP' },
@@ -20,13 +20,6 @@ const FIREMAKING_MILESTONES = [
   { sum: 270, pct: 5, desc: '+5% Global XP' },
   { sum: 450, pct: 8, desc: '+8% Global XP' },
   { sum: 891, pct: 12, desc: '+12% Global XP (all 99)' },
-];
-
-const ASTROLOGY_GLOBAL = [
-  { level: 25, desc: '+1% All XP' },
-  { level: 50, desc: '+2% More All XP (+3% total)' },
-  { level: 75, desc: '+1% More All XP (+4% total)' },
-  { level: 99, desc: '+2% More All XP (+6% total)' },
 ];
 
 const ASTROLOGY_MASTERY = [
@@ -58,7 +51,7 @@ interface Props {
 }
 
 export function SkillBonuses({ skillId }: Props) {
-  const { defs, state, getDisplaySkill, upgradeStar } = useGame();
+  const { defs, state, getDisplaySkill } = useGame();
 
   if (skillId === 'agility') {
     const ds = getDisplaySkill('agility');
@@ -118,26 +111,10 @@ export function SkillBonuses({ skillId }: Props) {
   }
 
   if (skillId === 'astrology') {
-    const ds = getDisplaySkill('astrology');
     return (
       <div className="mb-6 bg-[#111827] border border-[#1e293b] rounded-lg p-4">
-        <h3 className="text-sm font-semibold text-gray-400 mb-3">Level Bonuses</h3>
-        <div className="space-y-1.5 mb-4">
-          {ASTROLOGY_GLOBAL.map((m) => {
-            const unlocked = ds.level >= m.level;
-            return (
-              <div key={m.level} className={`flex items-center gap-3 text-sm ${unlocked ? 'text-gray-200' : 'text-gray-600'}`}>
-                <span className={`w-12 text-right font-medium ${unlocked ? 'text-amber-500' : 'text-gray-600'}`}>
-                  Lv {m.level}
-                </span>
-                <span>{m.desc}</span>
-                {unlocked && <span className="text-green-500 text-xs">Active</span>}
-              </div>
-            );
-          })}
-        </div>
         <h3 className="text-sm font-semibold text-gray-400 mb-3">Mastery Bonuses (per constellation)</h3>
-        <div className="space-y-1.5 mb-4">
+        <div className="space-y-1.5">
           {ASTROLOGY_MASTERY.map((m) => (
             <div key={m.xp} className="flex items-center gap-3 text-sm text-gray-400">
               <span className="w-16 text-right font-medium text-purple-400">{m.xp} XP</span>
@@ -145,76 +122,6 @@ export function SkillBonuses({ skillId }: Props) {
             </div>
           ))}
         </div>
-        {defs && state && (
-          <>
-            <h3 className="text-sm font-semibold text-gray-400 mb-3">Constellations</h3>
-            <div className="space-y-3">
-              {Object.entries(defs.constellations).map(([actionId, linkedSkills]) => {
-                const [s1, s2] = linkedSkills;
-                const name1 = defs.skills[s1]?.name ?? s1;
-                const name2 = defs.skills[s2]?.name ?? s2;
-                const constellationName = actionId.replace('study-', '').charAt(0).toUpperCase() + actionId.replace('study-', '').slice(1);
-
-                return (
-                  <div key={actionId} className="bg-[#0d1117] border border-[#1e293b] rounded p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-300 font-medium">{constellationName}</span>
-                      <span className="text-xs text-gray-500">
-                        <span className="text-blue-400">{name1}</span>
-                        {' / '}
-                        <span className="text-blue-400">{name2}</span>
-                      </span>
-                    </div>
-                    {defs.starDefs && (
-                      <div className="flex gap-2">
-                        {defs.starDefs.stars.map((star, idx) => {
-                          const key = `${actionId}/${idx}`;
-                          const level = state.starLevels?.[key] ?? 0;
-                          const isMax = level >= star.maxLevel;
-                          const cost = isMax ? null : star.costs[level];
-                          const currencyName = defs.items[star.currency]?.name ?? star.currency;
-                          const have = state.bank[star.currency] ?? 0;
-                          const canAfford = cost !== null && have >= cost;
-                          const typeLabel = star.type === 'xp-boost' ? 'XP' : 'Speed';
-                          const bonusLabel = star.type === 'xp-boost'
-                            ? `+${level}% XP`
-                            : `+${level}% Speed`;
-
-                          return (
-                            <button
-                              key={idx}
-                              disabled={isMax || !canAfford}
-                              onClick={() => upgradeStar(actionId as ActionId, idx)}
-                              className={`flex-1 rounded p-2 text-xs text-center border transition-colors ${
-                                isMax
-                                  ? 'border-amber-700 bg-amber-900/20 text-amber-400 cursor-default'
-                                  : canAfford
-                                    ? 'border-blue-700 bg-blue-900/20 text-blue-300 hover:bg-blue-800/30 cursor-pointer'
-                                    : 'border-gray-700 bg-gray-900/20 text-gray-600 cursor-not-allowed'
-                              }`}
-                              title={isMax ? `${typeLabel} star maxed` : `Cost: ${cost} ${currencyName}`}
-                            >
-                              <div className="font-medium">{typeLabel} {idx + 1}</div>
-                              <div className="text-[10px] mt-0.5">
-                                Lv {level}/{star.maxLevel}
-                              </div>
-                              <div className="text-[10px] mt-0.5">{bonusLabel}</div>
-                              {!isMax && cost !== null && (
-                                <div className={`text-[10px] mt-1 ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
-                                  {cost} {currencyName.split(' ')[0]}
-                                </div>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
       </div>
     );
   }

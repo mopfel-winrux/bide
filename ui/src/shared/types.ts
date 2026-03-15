@@ -250,6 +250,26 @@ export interface GameState {
   activePet: PetId | null;
   stats: GameStats;
   starLevels: Record<string, number>;
+  modifiers: ModifierSet;
+}
+
+export interface ModifierSet {
+  xpGlobal: number;
+  xpGathering: number;
+  xpArtisan: number;
+  xpCombat: number;
+  xpPerSkill: Record<SkillId, number>;
+  speedBonus: number;
+  atkBoost: number;
+  strBoost: number;
+  defBoost: number;
+  rangedBoost: number;
+  magicBoost: number;
+  protectMelee: number;
+  protectRanged: number;
+  protectMagic: number;
+  farmingYield: number;
+  gpBonus: number;
 }
 
 export interface FarmSeedDef {
