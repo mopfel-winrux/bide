@@ -55,4 +55,5 @@ export const api = {
   eatFood: (item: ItemId) => post(`eat-food/${item}`),
   buy: (item: ItemId, qty: number) => post(`buy/${item}/${qty}`),
   setPet: (pet: PetId | null) => post(`set-pet/${pet ?? 'none'}`),
+  upgradeStar: (constellation: ActionId, idx: number) => post(`upgrade-star/${constellation}/${idx}`),
 };

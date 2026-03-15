@@ -586,7 +586,7 @@
           xp=19
           base-time=2.000
           inputs=~[[item=%normal-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40]]
           mastery-xp=2
           gp-per-action=0
       ==
@@ -596,7 +596,7 @@
           xp=39
           base-time=2.000
           inputs=~[[item=%oak-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40]]
           mastery-xp=4
           gp-per-action=0
       ==
@@ -606,7 +606,7 @@
           xp=52
           base-time=3.000
           inputs=~[[item=%willow-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40]]
           mastery-xp=5
           gp-per-action=0
       ==
@@ -616,7 +616,7 @@
           xp=84
           base-time=4.000
           inputs=~[[item=%teak-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40]]
           mastery-xp=8
           gp-per-action=0
       ==
@@ -626,7 +626,7 @@
           xp=104
           base-time=5.000
           inputs=~[[item=%maple-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40] [item=%topaz min-qty=1 max-qty=1 chance=5]]
           mastery-xp=10
           gp-per-action=0
       ==
@@ -636,7 +636,7 @@
           xp=130
           base-time=6.000
           inputs=~[[item=%mahogany-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40] [item=%topaz min-qty=1 max-qty=1 chance=5]]
           mastery-xp=13
           gp-per-action=0
       ==
@@ -646,7 +646,7 @@
           xp=195
           base-time=7.000
           inputs=~[[item=%yew-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40] [item=%topaz min-qty=1 max-qty=1 chance=5] [item=%sapphire min-qty=1 max-qty=1 chance=3]]
           mastery-xp=20
           gp-per-action=0
       ==
@@ -656,7 +656,7 @@
           xp=292
           base-time=10.000
           inputs=~[[item=%magic-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40] [item=%topaz min-qty=1 max-qty=1 chance=5] [item=%sapphire min-qty=1 max-qty=1 chance=3] [item=%ruby min-qty=1 max-qty=1 chance=2]]
           mastery-xp=29
           gp-per-action=0
       ==
@@ -666,7 +666,7 @@
           xp=364
           base-time=15.000
           inputs=~[[item=%redwood-logs qty=1]]
-          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100]]
+          outputs=~[[item=%charcoal min-qty=1 max-qty=1 chance=100] [item=%coal-ore min-qty=1 max-qty=1 chance=40] [item=%topaz min-qty=1 max-qty=1 chance=5] [item=%sapphire min-qty=1 max-qty=1 chance=3] [item=%ruby min-qty=1 max-qty=1 chance=2]]
           mastery-xp=36
           gp-per-action=0
       ==
@@ -2318,7 +2318,7 @@
           xp=5
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=1
           gp-per-action=0
       ==
@@ -2328,7 +2328,7 @@
           xp=9
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=1
           gp-per-action=0
       ==
@@ -2338,7 +2338,7 @@
           xp=17
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=2
           gp-per-action=0
       ==
@@ -2348,7 +2348,7 @@
           xp=21
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=2
           gp-per-action=0
       ==
@@ -2358,7 +2358,7 @@
           xp=25
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=3
           gp-per-action=0
       ==
@@ -2368,7 +2368,7 @@
           xp=29
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=3
           gp-per-action=0
       ==
@@ -2378,7 +2378,7 @@
           xp=37
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=4
           gp-per-action=0
       ==
@@ -2388,7 +2388,7 @@
           xp=45
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=5
           gp-per-action=0
       ==
@@ -2398,7 +2398,7 @@
           xp=49
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=5
           gp-per-action=0
       ==
@@ -2408,7 +2408,7 @@
           xp=53
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=5
           gp-per-action=0
       ==
@@ -2418,7 +2418,7 @@
           xp=61
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=6
           gp-per-action=0
       ==
@@ -2428,7 +2428,7 @@
           xp=69
           base-time=3.000
           inputs=~
-          outputs=~
+          outputs=~[[item=%stardust min-qty=1 max-qty=1 chance=5] [item=%golden-stardust min-qty=1 max-qty=1 chance=2]]
           mastery-xp=7
           gp-per-action=0
       ==

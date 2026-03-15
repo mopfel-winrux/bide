@@ -200,6 +200,9 @@
       [%ruby ruby-def]
       [%emerald emerald-def]
       [%diamond diamond-def]
+      ::  astrology materials
+      [%stardust stardust-def]
+      [%golden-stardust golden-stardust-def]
       ::  new potions
       [%ranged-potion ranged-potion-def]
       [%magic-potion magic-potion-def]
@@ -1333,4 +1336,11 @@
 ++  slayer-cape-def
   ^-  item-def
   [id=%slayer-cape name='Slayer Cape' description='A cape awarded for mastery of slayer.' category=%equipment sell-price=500.000]
+::
+++  stardust-def
+  ^-  item-def
+  [id=%stardust name='Stardust' description='Glittering dust from the stars. Used to upgrade constellations.' category=%misc sell-price=0]
+++  golden-stardust-def
+  ^-  item-def
+  [id=%golden-stardust name='Golden Stardust' description='Rare golden stardust with immense cosmic power.' category=%misc sell-price=0]
 --

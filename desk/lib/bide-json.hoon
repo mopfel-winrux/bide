@@ -252,6 +252,14 @@
       ['petsFound' pets-found-json]
       ['activePet' active-pet-json]
       ['stats' stats-json]
+      :-  'starLevels'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by star-levels.gs)
+      |=  [key=[action-id @ud] level=@ud]
+      ^-  [@t json]
+      =/  key-str=@t  (crip "{(trip -.key)}/{(a-co:co +.key)}")
+      [key-str (numb:enjs:format level)]
   ==
 ::
 ++  defs-to-json
@@ -403,12 +411,12 @@
         ['defBoost' (numb:enjs:format def-boost.fd)]
         ['farmingYield' (numb:enjs:format farming-yield.fd)]
     ==
-  ::  astrology constellation defs
+  ::  astrology constellation defs (dual-skill)
   =/  constellation-defs=(list [@t json])
     %+  turn  ~(tap by constellation-registry:bide-astrology)
-    |=  [aid=action-id sid=skill-id]
+    |=  [aid=action-id skills=[skill-id skill-id]]
     ^-  [@t json]
-    [aid [%s sid]]
+    [aid [%a ~[[%s -.skills] [%s +.skills]]]]
   %-  pairs:enjs:format
   :~  ['skills' [%o (~(gas by *(map @t json)) skill-defs)]]
       ['items' [%o (~(gas by *(map @t json)) item-defs)]]
@@ -422,6 +430,30 @@
       ['farmSeeds' [%o (~(gas by *(map @t json)) farm-seed-defs)]]
       ['familiars' [%o (~(gas by *(map @t json)) fam-defs)]]
       ['constellations' [%o (~(gas by *(map @t json)) constellation-defs)]]
+      :-  'starDefs'
+      %-  pairs:enjs:format
+      :~  :-  'stars'
+          :-  %a
+          :~  %-  pairs:enjs:format
+              :~  ['type' [%s 'xp-boost']]
+                  ['maxLevel' (numb:enjs:format 5)]
+                  ['costs' [%a ~[(numb:enjs:format 5) (numb:enjs:format 10) (numb:enjs:format 20) (numb:enjs:format 40) (numb:enjs:format 80)]]]
+                  ['currency' [%s 'stardust']]
+              ==
+              %-  pairs:enjs:format
+              :~  ['type' [%s 'xp-boost']]
+                  ['maxLevel' (numb:enjs:format 5)]
+                  ['costs' [%a ~[(numb:enjs:format 5) (numb:enjs:format 10) (numb:enjs:format 20) (numb:enjs:format 40) (numb:enjs:format 80)]]]
+                  ['currency' [%s 'stardust']]
+              ==
+              %-  pairs:enjs:format
+              :~  ['type' [%s 'interval-reduction']]
+                  ['maxLevel' (numb:enjs:format 3)]
+                  ['costs' [%a ~[(numb:enjs:format 10) (numb:enjs:format 20) (numb:enjs:format 40)]]]
+                  ['currency' [%s 'golden-stardust']]
+              ==
+          ==
+      ==
       :-  'specials'
       :-  %o
       %-  ~(gas by *(map @t json))

@@ -77,6 +77,7 @@
         ~                                      ::  active-familiar
         *(set pet-id)                          ::  pets-found
         ~                                      ::  active-pet
+        *(map [action-id @ud] @ud)             ::  star-levels
     ==
   :_  this
   :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/bide/api] dap.bowl]
@@ -399,6 +400,11 @@
     =/  pet-str=@tas  i.t.site
     =/  pet=(unit pet-id)  ?:(=(pet-str 'none') ~ `pet-str)
     (handle-action [%set-pet pet] bowl)
+  ::
+      [%upgrade-star @ @ ~]
+    =/  constellation=@tas  i.t.site
+    =/  idx=@ud  (slav %ud i.t.t.site)
+    (handle-action [%upgrade-star constellation idx] bowl)
   ==
 ::
 ++  handle-action
@@ -873,7 +879,7 @@
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
     ::  apply yield bonuses via modifier engine
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
     =/  final-yield=@ud  (add base-yield (div (mul base-yield farming-yield.mods) 100))
     ::  award farming XP
     =/  fss=skill-state
@@ -956,6 +962,33 @@
       ~&  [%bide %pet-not-found u.pet.act]
       `gs
     =.  active-pet.gs  pet.act
+    `gs
+  ::
+      %upgrade-star
+    ::  validate constellation exists
+    =/  cdef=(unit [skill-id skill-id])  (~(get by constellation-registry:bide-astrology) constellation.act)
+    ?~  cdef
+      ~&  [%bide %unknown-constellation constellation.act]
+      `gs
+    ::  validate star index (0, 1, or 2)
+    ?.  (lth star-idx.act 3)
+      ~&  [%bide %invalid-star-idx star-idx.act]
+      `gs
+    ::  check current level < max
+    =/  current-level=@ud  (fall (~(get by star-levels.gs) [constellation.act star-idx.act]) 0)
+    =/  max-level=@ud  (star-max-level:bide-astrology star-idx.act)
+    ?.  (lth current-level max-level)
+      ~&  [%bide %star-already-max]
+      `gs
+    ::  check cost and consume
+    =/  cost=[item-id @ud]  (star-cost:bide-astrology star-idx.act current-level)
+    =/  have=@ud  (fall (~(get by items.bank.gs) -.cost) 0)
+    ?.  (gte have +.cost)
+      ~&  [%bide %not-enough-stardust need=+.cost have=have]
+      `gs
+    =.  items.bank.gs  (consume:bide-bank items.bank.gs -.cost +.cost)
+    ::  increment star level
+    =.  star-levels.gs  (~(put by star-levels.gs) [constellation.act star-idx.act] (add current-level 1))
     `gs
   ::
       %start-dungeon

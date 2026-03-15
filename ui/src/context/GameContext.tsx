@@ -40,6 +40,7 @@ interface GameContextValue {
   eatFood: (item: ItemId) => void;
   buyItem: (item: ItemId, qty: number) => void;
   setPet: (pet: PetId | null) => void;
+  upgradeStar: (constellation: ActionId, idx: number) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -210,6 +211,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.setPet(pet);
   }, []);
 
+  const upgradeStar = useCallback((constellation: ActionId, idx: number) => {
+    api.upgradeStar(constellation, idx);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
@@ -219,7 +224,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, changeSpell, startDungeon,
       plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
-      buyItem, setPet,
+      buyItem, setPet, upgradeStar,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

@@ -40,7 +40,7 @@
   ?~  adef  `gs
   ::  compute unified modifiers
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
   =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods base-time.u.adef)
   =/  base-dr=@dr  (div (mul ~s1 (max adjusted-time 500)) 1.000)
   ?:  =(base-dr *@dr)  `gs
@@ -221,7 +221,7 @@
       `gs
     ::  compute unified modifiers
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -349,7 +349,7 @@
   ::  enemy attacks next
   ::
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
@@ -457,7 +457,7 @@
       =.  hitpoints-current.player.gs  p-hp
       `gs
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -581,7 +581,7 @@
     $(iterations (add iterations 1), mdef `u.nmdef)
   ::  enemy attacks
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)

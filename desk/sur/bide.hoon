@@ -37,6 +37,7 @@
       active-familiar=(unit familiar-state)    ::  summoned familiar
       pets-found=(set pet-id)                  ::  discovered pets
       active-pet=(unit pet-id)                 ::  equipped pet
+      star-levels=(map [action-id @ud] @ud)    ::  constellation star upgrade levels
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -216,6 +217,7 @@
       [%dismiss-familiar ~]
       [%eat-food item=item-id]
       [%set-pet pet=(unit pet-id)]
+      [%upgrade-star constellation=action-id star-idx=@ud]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐

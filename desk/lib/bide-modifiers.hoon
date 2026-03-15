@@ -4,7 +4,7 @@
 ::  potions, prayers, pets, and capes into a single modifier-set.
 ::
 /-  *bide
-/+  bide-agility, bide-astrology, bide-summoning, bide-potions, bide-prayers, bide-pets, bide-capes
+/+  bide-agility, bide-astrology, bide-summoning, bide-potions, bide-prayers, bide-pets, bide-capes, bide-xp
 |%
 ::
 ::  Compute all modifiers from all bonus sources
@@ -16,6 +16,7 @@
           active-potions=(list potion-effect)
           active-prayers=(set prayer-id)
           active-pet=(unit pet-id)
+          star-levels=(map [action-id @ud] @ud)
       ==
   ^-  modifier-set
   ::  agility level
@@ -39,10 +40,27 @@
   =/  fam-def=(unit familiar-def:bide-summoning)
     ?~  active-familiar  ~
     (~(get by familiar-registry:bide-summoning) tablet.u.active-familiar)
-  ::  xp-global: agility combat bonus + pet global + familiar all-xp + cape
+  ::  firemaking mastery bonus → global XP%
+  =/  fm-mastery-sum=@ud
+    =/  fm-ss=skill-state
+      (fall (~(get by skills) %firemaking) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  acts=(list [action-id @ud])  ~(tap by actions.mastery.fm-ss)
+    =/  total=@ud  0
+    |-
+    ?~  acts  total
+    $(acts t.acts, total (add total (level-from-xp:bide-xp +.i.acts)))
+  =/  fm-global-bonus=@ud
+    ?:  (gte fm-mastery-sum 891)  12
+    ?:  (gte fm-mastery-sum 450)  8
+    ?:  (gte fm-mastery-sum 270)  5
+    ?:  (gte fm-mastery-sum 90)   3
+    ?:  (gte fm-mastery-sum 45)   2
+    ?:  (gte fm-mastery-sum 18)   1
+    0
+  ::  xp-global: agility combat bonus + pet global + familiar all-xp + cape + firemaking mastery
   =/  fam-all-xp=@ud  ?~(fam-def 0 all-xp.u.fam-def)
   =/  res-xp-global=@ud
-    (add (combat-xp-bonus:bide-agility agility-level) (add xp-global.pet-mods (add fam-all-xp xp-global.cape-mods)))
+    (add fm-global-bonus (add (combat-xp-bonus:bide-agility agility-level) (add xp-global.pet-mods (add fam-all-xp xp-global.cape-mods))))
   ::  xp-gathering: familiar gathering bonus
   =/  res-xp-gathering=@ud  ?~(fam-def 0 gathering-xp.u.fam-def)
   ::  xp-artisan: familiar artisan bonus
@@ -61,16 +79,21 @@
       =/  cur=@ud  (fall (~(get by skill-map) i.sids) 0)
       (~(put by skill-map) i.sids (add cur bonus))
     $(sids t.sids)
-  ::  astrology bonuses
+  ::  astrology bonuses (dual-skill constellations)
   =.  skill-map
-    =/  consts=(list [action-id skill-id])  ~(tap by constellation-registry:bide-astrology)
+    =/  consts=(list [action-id [skill-id skill-id]])  ~(tap by constellation-registry:bide-astrology)
     |-
     ?~  consts  skill-map
-    =/  target=skill-id  +.i.consts
-    =/  bonus=@ud  (xp-bonus:bide-astrology level.astrology-ss mastery.astrology-ss target)
-    =?  skill-map  (gth bonus 0)
-      =/  cur=@ud  (fall (~(get by skill-map) target) 0)
-      (~(put by skill-map) target (add cur bonus))
+    =/  s1=skill-id  -.+.i.consts
+    =/  s2=skill-id  +.+.i.consts
+    =/  bonus1=@ud  (xp-bonus:bide-astrology level.astrology-ss mastery.astrology-ss s1)
+    =?  skill-map  (gth bonus1 0)
+      =/  cur=@ud  (fall (~(get by skill-map) s1) 0)
+      (~(put by skill-map) s1 (add cur bonus1))
+    =/  bonus2=@ud  (xp-bonus:bide-astrology level.astrology-ss mastery.astrology-ss s2)
+    =?  skill-map  (gth bonus2 0)
+      =/  cur=@ud  (fall (~(get by skill-map) s2) 0)
+      (~(put by skill-map) s2 (add cur bonus2))
     $(consts t.consts)
   ::  pet per-skill bonuses
   =.  skill-map
@@ -97,8 +120,17 @@
   =?  skill-map  (gth herblore-extra 0)
     =/  cur=@ud  (fall (~(get by skill-map) %herblore) 0)
     (~(put by skill-map) %herblore (add cur herblore-extra))
+  ::  star upgrade bonuses
+  =/  star-mods  (star-bonuses:bide-astrology star-levels)
+  =.  skill-map
+    =/  star-skills=(list [skill-id @ud])  ~(tap by xp-per-skill.star-mods)
+    |-
+    ?~  star-skills  skill-map
+    =/  cur=@ud  (fall (~(get by skill-map) -.i.star-skills) 0)
+    =.  skill-map  (~(put by skill-map) -.i.star-skills (add cur +.i.star-skills))
+    $(star-skills t.star-skills)
   ::  speed-bonus
-  =/  res-speed=@ud  (add (speed-bonus:bide-agility agility-level) (add speed-bonus.pet-mods speed-bonus.cape-mods))
+  =/  res-speed=@ud  (add speed-bonus.star-mods (add (speed-bonus:bide-agility agility-level) (add speed-bonus.pet-mods speed-bonus.cape-mods)))
   ::  combat boosts
   =/  res-atk=@ud  (add atk-boost.pot-boosts (add atk.pra-boosts (add atk.fam-boosts atk-boost.cape-mods)))
   =/  res-str=@ud  (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts))

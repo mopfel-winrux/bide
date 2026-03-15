@@ -249,6 +249,7 @@ export interface GameState {
   petsFound: PetId[];
   activePet: PetId | null;
   stats: GameStats;
+  starLevels: Record<string, number>;
 }
 
 export interface FarmSeedDef {
@@ -322,6 +323,17 @@ export interface CapeDef {
   bonuses: CapeBonus[];
 }
 
+export interface StarDefEntry {
+  type: 'xp-boost' | 'interval-reduction';
+  maxLevel: number;
+  costs: number[];
+  currency: ItemId;
+}
+
+export interface StarDefs {
+  stars: StarDefEntry[];
+}
+
 export interface GameDefs {
   skills: Record<SkillId, SkillDef>;
   items: Record<ItemId, ItemDef>;
@@ -335,7 +347,8 @@ export interface GameDefs {
   dungeons: Record<DungeonId, DungeonDef>;
   farmSeeds: Record<ItemId, FarmSeedDef>;
   familiars: Record<ItemId, FamiliarDef>;
-  constellations: Record<ActionId, SkillId>;
+  constellations: Record<ActionId, [SkillId, SkillId]>;
+  starDefs: StarDefs;
   shop: Record<ItemId, number>;
   pets: Record<PetId, PetDef>;
   spells: Record<SpellId, SpellDef>;
