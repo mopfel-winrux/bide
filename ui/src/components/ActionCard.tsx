@@ -25,10 +25,12 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
   return (
     <Card active={isActive} locked={locked}>
       <div className="flex items-center gap-3 mb-3">
-        {action.outputs.length > 0 ? (
-          <GameIcon category="items" id={action.outputs[0].item} size={48} />
-        ) : action.id.startsWith('study-') ? (
+        {action.id.startsWith('study-') ? (
           <GameIcon category="constellation" id={action.id} size={48} />
+        ) : action.inputs.length > 0 && skillId === 'firemaking' ? (
+          <GameIcon category="items" id={action.inputs[0].item} size={48} />
+        ) : action.outputs.length > 0 ? (
+          <GameIcon category="items" id={action.outputs[0].item} size={48} />
         ) : (
           <GameIcon category="skill-icon" id={skillId} size={48} />
         )}

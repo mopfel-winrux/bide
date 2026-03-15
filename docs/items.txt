@@ -424,3 +424,8 @@ green-dhide | Green Dragonhide | Hide from a green dragon. | Flat piece of green
 blue-dhide | Blue Dragonhide | Hide from a blue dragon. | Flat piece of blue dragon skin, visible scales/texture, sapphire blue, tough and flexible
 red-dhide | Red Dragonhide | Hide from a red dragon. | Flat piece of red dragon skin, visible scales/texture, crimson red, tough and flexible
 black-dhide | Black Dragonhide | Hide from a black dragon. | Flat piece of black dragon skin, visible scales/texture, jet black with dark sheen, toughest dragonhide
+
+## Astrology Materials
+
+stardust | Stardust | Glittering dust from the stars. Used to upgrade constellations. | Shimmering pile of fine silvery-blue crystalline dust with tiny twinkling star-shaped sparkles, faint cosmic glow, magical ethereal particles
+golden-stardust | Golden Stardust | Rare golden stardust with immense cosmic power. | Radiant pile of golden glittering dust with brilliant star-shaped sparkles, warm golden cosmic glow, rare magical particles, shining and luminous
