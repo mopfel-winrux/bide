@@ -240,96 +240,100 @@ export function EquipmentPage() {
         <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Active Modifiers</h2>
         {state.modifiers && (() => {
           const m = state.modifiers;
-          const xpLines: [string, number][] = [];
-          if (m.xpGlobal > 0) xpLines.push(['Global XP', m.xpGlobal]);
-          if (m.xpGathering > 0) xpLines.push(['Gathering XP', m.xpGathering]);
-          if (m.xpArtisan > 0) xpLines.push(['Artisan XP', m.xpArtisan]);
-          if (m.xpCombat > 0) xpLines.push(['Combat XP', m.xpCombat]);
-          for (const [sid, pct] of Object.entries(m.xpPerSkill)) {
-            if (pct > 0) {
-              const skillName = defs.skills[sid]?.name ?? sid;
-              xpLines.push([`${skillName} XP`, pct]);
+
+          // Compute agility penalties from obstacle defs (backend uses unsigned so can't send negatives)
+          const pen: Record<string, number> = {};
+          const course = state.agilityCourse ?? {};
+          const obstacles = defs.obstacles ?? {};
+          let chain = 0;
+          for (let s = 1; s <= 10; s++) {
+            if (course[String(s)]) chain = s; else break;
+          }
+          for (let s = 1; s <= chain; s++) {
+            const od = obstacles[course[String(s)] ?? ''];
+            if (!od) continue;
+            for (const p of od.penalties) {
+              const key = p.type === 'xp-skill' ? `xp-${p.skill}` : p.type;
+              pen[key] = (pen[key] ?? 0) + p.pct;
             }
           }
 
-          const combatLines: [string, number][] = [];
-          if (m.atkBoost > 0) combatLines.push(['Melee Attack', m.atkBoost]);
-          if (m.strBoost > 0) combatLines.push(['Melee Strength', m.strBoost]);
-          if (m.defBoost > 0) combatLines.push(['Defence', m.defBoost]);
-          if (m.rangedBoost > 0) combatLines.push(['Ranged', m.rangedBoost]);
-          if (m.magicBoost > 0) combatLines.push(['Magic', m.magicBoost]);
+          // Build combined net modifier map: backend value minus agility penalties
+          const net: Record<string, number> = {};
+          const add = (label: string, category: string, val: number, penKey?: string) => {
+            const netVal = val - (penKey ? (pen[penKey] ?? 0) : 0);
+            if (netVal !== 0) net[`${category}|${label}`] = netVal;
+            // If penalty exists but backend value is 0, show the negative
+            if (val === 0 && penKey && (pen[penKey] ?? 0) > 0) {
+              net[`${category}|${label}`] = -(pen[penKey]);
+            }
+          };
 
-          const otherLines: [string, number][] = [];
-          if (m.speedBonus > 0) otherLines.push(['Action Speed', m.speedBonus]);
-          if (m.farmingYield > 0) otherLines.push(['Farming Yield', m.farmingYield]);
-          if (m.gpBonus > 0) otherLines.push(['GP Bonus', m.gpBonus]);
-
-          const protLines: [string, number][] = [];
-          if (m.protectMelee > 0) protLines.push(['Melee Protection', m.protectMelee]);
-          if (m.protectRanged > 0) protLines.push(['Ranged Protection', m.protectRanged]);
-          if (m.protectMagic > 0) protLines.push(['Magic Protection', m.protectMagic]);
-
-          const hasAny = xpLines.length > 0 || combatLines.length > 0 || otherLines.length > 0 || protLines.length > 0;
-
-          if (!hasAny) {
-            return <div className="text-sm text-gray-500">No active modifiers</div>;
+          // XP
+          add('Global XP', 'xp', m.xpGlobal, 'xp-global');
+          add('Gathering XP', 'xp', m.xpGathering);
+          add('Artisan XP', 'xp', m.xpArtisan);
+          add('Combat XP', 'xp', m.xpCombat);
+          // Per-skill XP: merge backend values + penalty keys
+          const allXpSkills = new Set([
+            ...Object.keys(m.xpPerSkill),
+            ...Object.keys(pen).filter(k => k.startsWith('xp-')).map(k => k.slice(3)),
+          ]);
+          for (const sid of allXpSkills) {
+            if (sid === 'global') continue;
+            const skillName = defs.skills[sid]?.name ?? sid;
+            add(`${skillName} XP`, 'xp', m.xpPerSkill[sid] ?? 0, `xp-${sid}`);
           }
+
+          // Combat
+          add('Melee Attack', 'combat', m.atkBoost, 'atk-boost');
+          add('Melee Strength', 'combat', m.strBoost, 'str-boost');
+          add('Defence', 'combat', m.defBoost, 'def-boost');
+          add('Ranged', 'combat', m.rangedBoost, 'ranged-boost');
+          add('Magic', 'combat', m.magicBoost, 'magic-boost');
+
+          // Other
+          add('Action Speed', 'other', m.speedBonus, 'speed-bonus');
+          add('Farming Yield', 'other', m.farmingYield, 'farming-yield');
+          add('GP Bonus', 'other', m.gpBonus, 'gp-bonus');
+          add('Preservation', 'other', 0, 'preservation');
+          add('HP Bonus', 'other', 0, 'hp-bonus');
+
+          // Protection (no penalties apply)
+          if (m.protectMelee > 0) net['prot|Melee Protection'] = m.protectMelee;
+          if (m.protectRanged > 0) net['prot|Ranged Protection'] = m.protectRanged;
+          if (m.protectMagic > 0) net['prot|Magic Protection'] = m.protectMagic;
+
+          const categories = ['xp', 'combat', 'other', 'prot'] as const;
+          const catLabels: Record<string, string> = { xp: 'XP', combat: 'Combat', other: 'Other', prot: 'Protection' };
+          const entries = Object.entries(net);
+          if (entries.length === 0) return <div className="text-sm text-gray-500">No active modifiers</div>;
 
           return (
             <div className="bg-[#111827] border border-[#1e293b] rounded-lg p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                {xpLines.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">XP Bonuses</h3>
-                    <div className="space-y-1">
-                      {xpLines.map(([label, pct]) => (
-                        <div key={label} className="flex justify-between text-sm">
-                          <span className="text-gray-400">{label}</span>
-                          <span className="text-emerald-400 font-medium">+{pct}%</span>
-                        </div>
-                      ))}
+                {categories.map(cat => {
+                  const lines = entries.filter(([k]) => k.startsWith(cat + '|'));
+                  if (lines.length === 0) return null;
+                  return (
+                    <div key={cat}>
+                      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{catLabels[cat]}</h3>
+                      <div className="space-y-1">
+                        {lines.map(([key, val]) => {
+                          const label = key.split('|')[1];
+                          return (
+                            <div key={key} className="flex justify-between text-sm">
+                              <span className="text-gray-400">{label}</span>
+                              <span className={`font-medium ${val > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                {val > 0 ? '+' : ''}{val}%
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {combatLines.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Combat Boosts</h3>
-                    <div className="space-y-1">
-                      {combatLines.map(([label, pct]) => (
-                        <div key={label} className="flex justify-between text-sm">
-                          <span className="text-gray-400">{label}</span>
-                          <span className="text-red-400 font-medium">+{pct}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {otherLines.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Other</h3>
-                    <div className="space-y-1">
-                      {otherLines.map(([label, pct]) => (
-                        <div key={label} className="flex justify-between text-sm">
-                          <span className="text-gray-400">{label}</span>
-                          <span className="text-amber-400 font-medium">+{pct}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {protLines.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Protection</h3>
-                    <div className="space-y-1">
-                      {protLines.map(([label, pct]) => (
-                        <div key={label} className="flex justify-between text-sm">
-                          <span className="text-gray-400">{label}</span>
-                          <span className="text-blue-400 font-medium">-{pct}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  );
+                })}
               </div>
             </div>
           );

@@ -7,7 +7,7 @@
 /+  bide-skills, bide-combat, bide-monsters, bide-modifiers
 /+  bide-xp, bide-potions, bide-prayers, bide-specials
 /+  bide-spells, bide-pets, bide-food, bide-farming
-/+  bide-dungeons, bide-bank, bide-equipment, bide-slayer
+/+  bide-dungeons, bide-bank, bide-equipment, bide-slayer, bide-agility
 |%
 +$  card  card:agent:gall
 --
@@ -48,8 +48,13 @@
     $(acts t.acts)
   ::  compute unified modifiers
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `skill.act)
-  =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods base-time.u.adef)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `skill.act agility-course.gs active-pillar.gs)
+  ::  agility: use course interval instead of action base-time
+  =/  raw-time=@ud
+    ?:  =(skill.act %agility)
+      (course-interval:bide-agility agility-course.gs)
+    base-time.u.adef
+  =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods raw-time)
   ::  multitree: use max of both action times
   =?  adjusted-time  ?=(^ adef2)
     (max adjusted-time (apply-speed-bonus:bide-modifiers mods base-time.u.adef2))
@@ -83,7 +88,11 @@
     $(inputs t.inputs)
   =/  ss=skill-state
     (fall (~(get by skills.gs) skill.act) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
-  =/  base-xp=@ud  (mul xp.u.adef num-actions)
+  ::  agility: use course XP instead of action XP
+  =/  base-xp=@ud
+    ?:  =(skill.act %agility)
+      (mul (course-xp:bide-agility agility-course.gs) num-actions)
+    (mul xp.u.adef num-actions)
   ::  apply XP bonuses via modifier engine
   =/  total-xp=@ud  (apply-xp-bonus:bide-modifiers mods skill.act skill-type.u.sdef base-xp)
   ::  decrement familiar charges per action
@@ -130,11 +139,15 @@
     =/  cur=@ud  (fall (~(get by items.bank.gs) -.i.prod) 0)
     =.  items.bank.gs  (~(put by items.bank.gs) -.i.prod (add cur +.i.prod))
     $(prod t.prod)
-  ::  GP per action (alt magic alchemy)
-  =?  gp.player.gs  (gth gp-per-action.u.adef 0)
-    (add gp.player.gs (mul gp-per-action.u.adef num-actions))
-  =?  total-gp-earned.stats.gs  (gth gp-per-action.u.adef 0)
-    (add total-gp-earned.stats.gs (mul gp-per-action.u.adef num-actions))
+  ::  GP per action (alt magic alchemy + agility course GP)
+  =/  gp-per=@ud
+    ?:  =(skill.act %agility)
+      (course-gp:bide-agility agility-course.gs)
+    gp-per-action.u.adef
+  =?  gp.player.gs  (gth gp-per 0)
+    (add gp.player.gs (mul gp-per num-actions))
+  =?  total-gp-earned.stats.gs  (gth gp-per 0)
+    (add total-gp-earned.stats.gs (mul gp-per num-actions))
   ::  stats: actions completed
   =/  prev-count=@ud
     (fall (~(get by actions-completed.stats.gs) target.act) 0)
@@ -286,7 +299,7 @@
       `gs
     ::  compute unified modifiers
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~ agility-course.gs active-pillar.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -427,7 +440,7 @@
   ::  enemy attacks next
   ::
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~ agility-course.gs active-pillar.gs)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
@@ -548,7 +561,7 @@
       =.  hitpoints-current.player.gs  p-hp
       `gs
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~ agility-course.gs active-pillar.gs)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -682,7 +695,7 @@
     $(iterations (add iterations 1), mdef `u.nmdef)
   ::  enemy attacks
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~ agility-course.gs active-pillar.gs)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)

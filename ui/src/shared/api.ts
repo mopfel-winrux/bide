@@ -59,4 +59,7 @@ export const api = {
   upgradeStar: (constellation: ActionId, idx: number) => post(`upgrade-star/${constellation}/${idx}`),
   buySkillUpgrade: (skill: SkillId, type: string) => post(`buy-skill-upgrade/${skill}/${type}`),
   buyMultitree: () => post('buy-multitree'),
+  buildObstacle: (slot: number, obstacle: string) => post(`build-obstacle/${slot}/${obstacle}`),
+  destroyObstacle: (slot: number) => post(`destroy-obstacle/${slot}`),
+  setPillar: (pillar: string | null) => post(`set-pillar/${pillar ?? 'none'}`),
 };

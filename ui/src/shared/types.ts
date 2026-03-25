@@ -253,6 +253,11 @@ export interface GameState {
   starLevels: Record<string, number>;
   skillUpgrades: Record<string, number>;
   multitreeUnlocked: boolean;
+  agilityCourse: Record<string, string>;
+  activePillar: string | null;
+  agilityCourseInterval: number;
+  agilityCourseXp: number;
+  agilityCourseGp: number;
   modifiers: ModifierSet;
 }
 
@@ -357,6 +362,33 @@ export interface StarDefs {
   stars: StarDefEntry[];
 }
 
+export interface AgilityModifier {
+  type: string;
+  skill?: SkillId;
+  pct: number;
+}
+
+export interface ObstacleDef {
+  id: string;
+  name: string;
+  slot: number;
+  levelReq: number;
+  xp: number;
+  gp: number;
+  interval: number;
+  gpCost: number;
+  itemCosts: { item: ItemId; qty: number }[];
+  bonuses: AgilityModifier[];
+  penalties: AgilityModifier[];
+}
+
+export interface PillarDef {
+  id: string;
+  name: string;
+  gpCost: number;
+  bonuses: AgilityModifier[];
+}
+
 export interface GameDefs {
   skills: Record<SkillId, SkillDef>;
   items: Record<ItemId, ItemDef>;
@@ -376,6 +408,8 @@ export interface GameDefs {
   pets: Record<PetId, PetDef>;
   spells: Record<SpellId, SpellDef>;
   capes: Record<ItemId, CapeDef>;
+  obstacles: Record<string, ObstacleDef>;
+  pillars: Record<string, PillarDef>;
 }
 
 export interface WelcomeBackSummary {

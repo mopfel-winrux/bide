@@ -7,6 +7,7 @@ import { BankPage } from './pages/BankPage';
 import { CombatPage } from './pages/CombatPage';
 import { EquipmentPage } from './pages/EquipmentPage';
 import { FarmingPage } from './pages/FarmingPage';
+import { AgilityPage } from './pages/AgilityPage';
 import { ShopPage } from './pages/ShopPage';
 import { CompletionPage } from './pages/CompletionPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="combat" element={<CombatPage />} />
         <Route path="equipment" element={<EquipmentPage />} />
         <Route path="farming" element={<FarmingPage />} />
+        <Route path="agility" element={<AgilityPage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="completion" element={<CompletionPage />} />
         <Route path="*" element={<NotFoundPage />} />

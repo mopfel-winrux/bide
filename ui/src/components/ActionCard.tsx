@@ -60,11 +60,11 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
             {(() => {
               const mods = state?.modifiers;
               const skillType = defs?.skills[skillId]?.type;
-              let pct = mods?.xpGlobal ?? 0;
-              if (skillType === 'gathering') pct += mods?.xpGathering ?? 0;
-              if (skillType === 'artisan') pct += mods?.xpArtisan ?? 0;
-              if (skillType === 'combat') pct += mods?.xpCombat ?? 0;
-              pct += mods?.xpPerSkill?.[skillId] ?? 0;
+              let pct = Number(mods?.xpGlobal) || 0;
+              if (skillType === 'gathering') pct += Number(mods?.xpGathering) || 0;
+              if (skillType === 'artisan') pct += Number(mods?.xpArtisan) || 0;
+              if (skillType === 'combat') pct += Number(mods?.xpCombat) || 0;
+              pct += Number(mods?.xpPerSkill?.[skillId]) || 0;
               const modifiedXp = pct > 0
                 ? action.xp + Math.floor(action.xp * pct / 100)
                 : action.xp;
@@ -88,6 +88,28 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
             })()}
           </span>
         </div>
+        {action.baseTime > 0 && (
+        <div className="flex justify-between">
+          <span className="text-gray-500">XP/hr</span>
+          <span className="font-medium text-amber-400 tabular-nums">
+            {(() => {
+              const mods = state?.modifiers;
+              const skillType = defs?.skills[skillId]?.type;
+              let pct = Number(mods?.xpGlobal) || 0;
+              if (skillType === 'gathering') pct += Number(mods?.xpGathering) || 0;
+              if (skillType === 'artisan') pct += Number(mods?.xpArtisan) || 0;
+              if (skillType === 'combat') pct += Number(mods?.xpCombat) || 0;
+              pct += Number(mods?.xpPerSkill?.[skillId]) || 0;
+              const modXp = action.xp + Math.floor(action.xp * pct / 100);
+              const speedBonus = Number(mods?.speedBonus) || 0;
+              const modTime = speedBonus > 0
+                ? Math.max(500, action.baseTime - Math.floor(action.baseTime * speedBonus / 100))
+                : action.baseTime;
+              return modTime > 0 ? fmt(Math.round((modXp / modTime) * 3_600_000)) : '0';
+            })()}
+          </span>
+        </div>
+        )}
         {action.masteryXp > 0 && (
           <div className="flex justify-between">
             <span className="text-gray-500">Mastery</span>

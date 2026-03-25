@@ -43,9 +43,13 @@ interface GameContextValue {
   upgradeStar: (constellation: ActionId, idx: number) => void;
   buySkillUpgrade: (skill: SkillId, type: string) => void;
   buyMultitree: () => void;
+  buildObstacle: (slot: number, obstacle: string) => void;
+  destroyObstacle: (slot: number) => void;
+  setAgilityPillar: (pillar: string | null) => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
+  agilitySlot: number;
   actionDuration: number;
   progressBarRef: React.RefObject<HTMLDivElement | null>;
   timeTextRef: React.RefObject<HTMLSpanElement | null>;
@@ -226,6 +230,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.buyMultitree();
   }, []);
 
+  const buildObstacle = useCallback((slot: number, obstacle: string) => {
+    api.buildObstacle(slot, obstacle);
+  }, []);
+
+  const destroyObstacle = useCallback((slot: number) => {
+    api.destroyObstacle(slot);
+  }, []);
+
+  const setAgilityPillar = useCallback((pillar: string | null) => {
+    api.setPillar(pillar);
+  }, []);
+
   return (
     <GameContext.Provider value={{
       defs, state, error,
@@ -235,10 +251,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, changeSpell, startDungeon,
       plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
-      buyItem, upgradeStar, buySkillUpgrade, buyMultitree,
+      buyItem, upgradeStar, buySkillUpgrade, buyMultitree, buildObstacle, destroyObstacle, setAgilityPillar,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,
+      agilitySlot: timer.agilitySlot,
       actionDuration: timer.duration,
       progressBarRef: timer.progressBarRef,
       timeTextRef: timer.timeTextRef,

@@ -21,6 +21,7 @@ export function SkillPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   if (skillId === 'farming') return <Navigate to="/farming" replace />;
+  if (skillId === 'agility') return <Navigate to="/agility" replace />;
 
   if (!skillId || !defs?.skills[skillId]) {
     return <EmptyState>Unknown skill.</EmptyState>;

@@ -16,6 +16,8 @@
 +$  dungeon-id   @tas
 +$  pet-id       @tas
 +$  spell-id     @tas
++$  obstacle-id  @tas
++$  pillar-id    @tas
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Top-level game state                                    │
@@ -40,6 +42,8 @@
       star-levels=(map [action-id @ud] @ud)    ::  constellation star upgrade levels
       skill-upgrades=(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  shop skill upgrades (tier 1-3)
       multitree-unlocked=?                    ::  woodcutting multi-tree purchased
+      agility-course=(map @ud obstacle-id)    ::  slot → built obstacle
+      active-pillar=(unit pillar-id)          ::  level 99 passive pillar
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -221,6 +225,9 @@
       [%upgrade-star constellation=action-id star-idx=@ud]
       [%buy-skill-upgrade skill=skill-id type=?(%xp %speed %preservation)]
       [%buy-multitree ~]
+      [%build-obstacle slot=@ud obstacle=obstacle-id]
+      [%destroy-obstacle slot=@ud]
+      [%set-pillar pillar=(unit pillar-id)]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -463,5 +470,45 @@
 +$  cape-def
   $:  skill=skill-id
       bonuses=(list cape-bonus)
+  ==
+::
+::  ┌──────────────────────────────────────────────────────────┐
+::  │  Agility course definitions                              │
+::  └──────────────────────────────────────────────────────────┘
+::
++$  agility-modifier
+  $%  [%xp-skill skill=skill-id pct=@ud]
+      [%xp-global pct=@ud]
+      [%speed-bonus pct=@ud]
+      [%gp-bonus pct=@ud]
+      [%farming-yield pct=@ud]
+      [%preservation pct=@ud]
+      [%atk-boost pct=@ud]
+      [%str-boost pct=@ud]
+      [%def-boost pct=@ud]
+      [%ranged-boost pct=@ud]
+      [%magic-boost pct=@ud]
+      [%hp-bonus pct=@ud]
+  ==
+::
++$  obstacle-def
+  $:  id=obstacle-id
+      name=@t
+      slot=@ud
+      level-req=@ud
+      xp=@ud
+      gp=@ud
+      interval=@ud
+      gp-cost=@ud
+      item-costs=(list [item=item-id qty=@ud])
+      bonuses=(list agility-modifier)
+      penalties=(list agility-modifier)
+  ==
+::
++$  pillar-def
+  $:  id=pillar-id
+      name=@t
+      gp-cost=@ud
+      bonuses=(list agility-modifier)
   ==
 --

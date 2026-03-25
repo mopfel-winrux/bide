@@ -4,7 +4,7 @@
 /+  bide-skills, bide-items, bide-monsters, bide-areas, bide-equipment
 /+  bide-food, bide-potions, bide-prayers, bide-dungeons, bide-farming
 /+  bide-summoning, bide-astrology, bide-specials, bide-shop, bide-pets
-/+  bide-spells, bide-capes, bide-combat, bide-bank, bide-modifiers
+/+  bide-spells, bide-capes, bide-combat, bide-bank, bide-modifiers, bide-agility
 ::
 |_  gs=game-state
 ::
@@ -270,9 +270,20 @@
       =/  key-str=@t  (crip "{(trip -.key)}-{(trip +.key)}")
       [key-str (numb:enjs:format tier)]
       ['multitreeUnlocked' [%b multitree-unlocked.gs]]
+      :-  'agilityCourse'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by agility-course.gs)
+      |=  [slot=@ud oid=obstacle-id]
+      ^-  [@t json]
+      [(crip (a-co:co slot)) [%s oid]]
+      ['activePillar' ?~(active-pillar.gs ~ [%s u.active-pillar.gs])]
+      ['agilityCourseInterval' (numb:enjs:format (course-interval:bide-agility agility-course.gs))]
+      ['agilityCourseXp' (numb:enjs:format (course-xp:bide-agility agility-course.gs))]
+      ['agilityCourseGp' (numb:enjs:format (course-gp:bide-agility agility-course.gs))]
       :-  'modifiers'
       =/  mods=modifier-set
-        (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
+        (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~ agility-course.gs active-pillar.gs)
       %-  pairs:enjs:format
       :~  ['xpGlobal' (numb:enjs:format xp-global.mods)]
           ['xpGathering' (numb:enjs:format xp-gathering.mods)]
@@ -586,6 +597,62 @@
             %protect-all    (pairs:enjs:format ~[['type' [%s 'protect-all']] ['pct' (numb:enjs:format pct.cb)]])
           ==
       ==
+      :-  'obstacles'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by obstacle-registry:bide-agility)
+      |=  [oid=obstacle-id od=obstacle-def]
+      ^-  [@t json]
+      :-  oid
+      %-  pairs:enjs:format
+      :~  ['id' [%s id.od]]
+          ['name' [%s name.od]]
+          ['slot' (numb:enjs:format slot.od)]
+          ['levelReq' (numb:enjs:format level-req.od)]
+          ['xp' (numb:enjs:format xp.od)]
+          ['gp' (numb:enjs:format gp.od)]
+          ['interval' (numb:enjs:format interval.od)]
+          ['gpCost' (numb:enjs:format gp-cost.od)]
+          :-  'itemCosts'
+          [%a (turn item-costs.od |=([item=item-id qty=@ud] (pairs:enjs:format ~[['item' [%s item]] ['qty' (numb:enjs:format qty)]])))]
+          :-  'bonuses'
+          [%a (turn bonuses.od agility-modifier-to-json)]
+          :-  'penalties'
+          [%a (turn penalties.od agility-modifier-to-json)]
+      ==
+      :-  'pillars'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by pillar-registry:bide-agility)
+      |=  [pid=pillar-id pd=pillar-def]
+      ^-  [@t json]
+      :-  pid
+      %-  pairs:enjs:format
+      :~  ['id' [%s id.pd]]
+          ['name' [%s name.pd]]
+          ['gpCost' (numb:enjs:format gp-cost.pd)]
+          :-  'bonuses'
+          [%a (turn bonuses.pd agility-modifier-to-json)]
+      ==
+  ==
+::
+++  agility-modifier-to-json
+  |=  mod=agility-modifier
+  ^-  json
+  ?-  -.mod
+    %xp-skill      (pairs:enjs:format ~[['type' [%s 'xp-skill']] ['skill' [%s skill.mod]] ['pct' (numb:enjs:format pct.mod)]])
+    %xp-global     (pairs:enjs:format ~[['type' [%s 'xp-global']] ['pct' (numb:enjs:format pct.mod)]])
+    %speed-bonus   (pairs:enjs:format ~[['type' [%s 'speed-bonus']] ['pct' (numb:enjs:format pct.mod)]])
+    %gp-bonus      (pairs:enjs:format ~[['type' [%s 'gp-bonus']] ['pct' (numb:enjs:format pct.mod)]])
+    %preservation  (pairs:enjs:format ~[['type' [%s 'preservation']] ['pct' (numb:enjs:format pct.mod)]])
+    %atk-boost     (pairs:enjs:format ~[['type' [%s 'atk-boost']] ['pct' (numb:enjs:format pct.mod)]])
+    %str-boost     (pairs:enjs:format ~[['type' [%s 'str-boost']] ['pct' (numb:enjs:format pct.mod)]])
+    %def-boost     (pairs:enjs:format ~[['type' [%s 'def-boost']] ['pct' (numb:enjs:format pct.mod)]])
+    %ranged-boost  (pairs:enjs:format ~[['type' [%s 'ranged-boost']] ['pct' (numb:enjs:format pct.mod)]])
+    %magic-boost   (pairs:enjs:format ~[['type' [%s 'magic-boost']] ['pct' (numb:enjs:format pct.mod)]])
+    %hp-bonus      (pairs:enjs:format ~[['type' [%s 'hp-bonus']] ['pct' (numb:enjs:format pct.mod)]])
+      %farming-yield
+    (pairs:enjs:format ~[['type' [%s 'farming-yield']] ['pct' (numb:enjs:format pct.mod)]])
   ==
 ::
 ++  dungeon-defs-to-json

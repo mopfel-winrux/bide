@@ -17,7 +17,7 @@
 ::
 %-  agent:dbug
 %+  verb  |
-=|  state-1:bide-state
+=|  state-2:bide-state
 =*  state  -
 ^-  agent:gall
 =<
@@ -80,22 +80,50 @@
         *(map [action-id @ud] @ud)             ::  star-levels
         *(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  skill-upgrades
         %.n                                    ::  multitree-unlocked
+        *(map @ud obstacle-id)                 ::  agility-course
+        ~                                      ::  active-pillar
     ==
   :_  this
   :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/bide/api] dap.bowl]
       [%pass /timer/tick %arvo %b [%wait (add now.bowl ~s1)]]
   ==
 ::
-++  on-save  !>([%1 gs])
+++  on-save  !>([%2 gs])
 ::
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
   =/  old  !<(versioned-state:bide-state old-vase)
   ?-  -.old
-      %1  `this(state old)
+      %2  `this(state old)
+      %1
+    ::  migrate v1 → v2: add agility-course, active-pillar
+    =/  og  gs.old
+    =/  new-gs=game-state
+      :*  player.og
+          skills.og
+          bank.og
+          equipment.og
+          active-action.og
+          stats.og
+          last-tick.og
+          rng-seed.og
+          active-potions.og
+          active-prayers.og
+          slayer-task.og
+          farm-plots.og
+          active-familiar.og
+          pets-found.og
+          active-pet.og
+          star-levels.og
+          skill-upgrades.og
+          multitree-unlocked.og
+          *(map @ud obstacle-id)
+          ~
+      ==
+    `this(state [%2 new-gs])
       %0
-    ::  migrate v0 → v1: add skill-upgrades, multitree-unlocked, clear active-action
+    ::  migrate v0 → v2: add all new fields, clear active-action
     =/  og  gs.old
     =/  new-act=(unit active-action)
       ?~  active-action.og  ~
@@ -122,8 +150,10 @@
           star-levels.og
           *(map [skill-id ?(%xp %speed %preservation)] @ud)
           %.n
+          *(map @ud obstacle-id)
+          ~
       ==
-    `this(state [%1 new-gs])
+    `this(state [%2 new-gs])
   ==
 ::
 ++  on-poke
@@ -471,6 +501,20 @@
   ::
       [%buy-multitree ~]
     (handle-action [%buy-multitree ~] bowl)
+  ::
+      [%build-obstacle @ @ ~]
+    =/  slot=@ud  (slav %ud i.t.site)
+    =/  obstacle=@tas  i.t.t.site
+    (handle-action [%build-obstacle slot obstacle] bowl)
+  ::
+      [%destroy-obstacle @ ~]
+    =/  slot=@ud  (slav %ud i.t.site)
+    (handle-action [%destroy-obstacle slot] bowl)
+  ::
+      [%set-pillar @ ~]
+    =/  pillar-str=@tas  i.t.site
+    =/  pillar=(unit pillar-id)  ?:(=(pillar-str 'none') ~ `pillar-str)
+    (handle-action [%set-pillar pillar] bowl)
   ==
 ::
 ++  handle-action
@@ -945,7 +989,7 @@
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
     ::  apply yield bonuses via modifier engine
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `%farming)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `%farming agility-course.gs active-pillar.gs)
     =/  final-yield=@ud  (add base-yield (div (mul base-yield farming-yield.mods) 100))
     ::  award farming XP
     =/  fss=skill-state
@@ -1121,6 +1165,82 @@
     =.  gp.player.gs  (sub gp.player.gs price)
     =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs price)
     =.  multitree-unlocked.gs  %.y
+    `gs
+  ::
+      %build-obstacle
+    ::  validate obstacle exists in registry
+    =/  odef=(unit obstacle-def)  (~(get by obstacle-registry:bide-agility) obstacle.act)
+    ?~  odef
+      ~&  [%bide %unknown-obstacle obstacle.act]
+      `gs
+    ::  validate slot matches
+    ?.  =(slot.u.odef slot.act)
+      ~&  [%bide %wrong-slot obstacle.act slot.act]
+      `gs
+    ::  validate agility level
+    =/  ag-ss=skill-state
+      (fall (~(get by skills.gs) %agility) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    ?.  (gte level.ag-ss level-req.u.odef)
+      ~&  [%bide %agility-level-too-low need=level-req.u.odef have=level.ag-ss]
+      `gs
+    ::  check GP cost
+    ?.  (gte gp.player.gs gp-cost.u.odef)
+      ~&  [%bide %not-enough-gp]
+      `gs
+    ::  check item costs
+    =/  has-items=?
+      =/  costs=(list [item=item-id qty=@ud])  item-costs.u.odef
+      |-
+      ?~  costs  %.y
+      =/  have=@ud  (fall (~(get by items.bank.gs) item.i.costs) 0)
+      ?.  (gte have qty.i.costs)  %.n
+      $(costs t.costs)
+    ?.  has-items
+      ~&  [%bide %missing-items]
+      `gs
+    ::  consume GP
+    =.  gp.player.gs  (sub gp.player.gs gp-cost.u.odef)
+    =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs gp-cost.u.odef)
+    ::  consume items
+    =.  bank.gs
+      =/  costs=(list [item=item-id qty=@ud])  item-costs.u.odef
+      |-
+      ?~  costs  bank.gs
+      =.  items.bank.gs  (consume:bide-bank items.bank.gs item.i.costs qty.i.costs)
+      $(costs t.costs)
+    ::  set obstacle in course
+    =.  agility-course.gs  (~(put by agility-course.gs) slot.act obstacle.act)
+    `gs
+  ::
+      %destroy-obstacle
+    =.  agility-course.gs  (~(del by agility-course.gs) slot.act)
+    `gs
+  ::
+      %set-pillar
+    ::  validate level 99
+    =/  ag-ss=skill-state
+      (fall (~(get by skills.gs) %agility) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    ?.  (gte level.ag-ss 99)
+      ~&  [%bide %need-agility-99]
+      `gs
+    ?~  pillar.act
+      =.  active-pillar.gs  ~
+      `gs
+    ::  validate pillar exists
+    =/  pdef=(unit pillar-def)  (~(get by pillar-registry:bide-agility) u.pillar.act)
+    ?~  pdef
+      ~&  [%bide %unknown-pillar u.pillar.act]
+      `gs
+    ::  check GP (only if not already set to this pillar)
+    =/  already=?  ?&(?=(^ active-pillar.gs) =(u.active-pillar.gs u.pillar.act))
+    ?.  ?|(already (gte gp.player.gs gp-cost.u.pdef))
+      ~&  [%bide %not-enough-gp]
+      `gs
+    =?  gp.player.gs  !already
+      (sub gp.player.gs gp-cost.u.pdef)
+    =?  total-gp-spent.stats.gs  !already
+      (add total-gp-spent.stats.gs gp-cost.u.pdef)
+    =.  active-pillar.gs  pillar.act
     `gs
   ==
 --

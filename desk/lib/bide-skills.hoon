@@ -2191,111 +2191,7 @@
       name='Agility'
       skill-type=%gathering
       max-level=99
-      actions=agility-actions
-  ==
-::
-++  agility-actions
-  ^-  (list action-def)
-  :~  :*  id=%jog-trail
-          name='Jog Trail'
-          level-req=1
-          xp=8
-          base-time=4.000
-          inputs=~
-          outputs=~
-          mastery-xp=1
-          gp-per-action=0
-      ==
-      :*  id=%balance-beam
-          name='Balance Beam'
-          level-req=10
-          xp=12
-          base-time=4.000
-          inputs=~
-          outputs=~
-          mastery-xp=1
-          gp-per-action=0
-      ==
-      :*  id=%rope-swing
-          name='Rope Swing'
-          level-req=20
-          xp=37
-          base-time=4.000
-          inputs=~
-          outputs=~
-          mastery-xp=4
-          gp-per-action=0
-      ==
-      :*  id=%wall-climb
-          name='Wall Climb'
-          level-req=30
-          xp=48
-          base-time=6.000
-          inputs=~
-          outputs=~
-          mastery-xp=5
-          gp-per-action=0
-      ==
-      :*  id=%pipe-balance
-          name='Pipe Balance'
-          level-req=40
-          xp=60
-          base-time=5.000
-          inputs=~
-          outputs=~
-          mastery-xp=6
-          gp-per-action=0
-      ==
-      :*  id=%rooftop-run
-          name='Rooftop Run'
-          level-req=50
-          xp=88
-          base-time=7.000
-          inputs=~
-          outputs=~
-          mastery-xp=9
-          gp-per-action=0
-      ==
-      :*  id=%cliff-scramble
-          name='Cliff Scramble'
-          level-req=60
-          xp=134
-          base-time=5.000
-          inputs=~
-          outputs=~
-          mastery-xp=13
-          gp-per-action=0
-      ==
-      :*  id=%tower-climb
-          name='Tower Climb'
-          level-req=70
-          xp=205
-          base-time=8.000
-          inputs=~
-          outputs=~
-          mastery-xp=21
-          gp-per-action=0
-      ==
-      :*  id=%canyon-leap
-          name='Canyon Leap'
-          level-req=80
-          xp=315
-          base-time=6.000
-          inputs=~
-          outputs=~
-          mastery-xp=32
-          gp-per-action=0
-      ==
-      :*  id=%dragon-gauntlet
-          name='Dragon Gauntlet'
-          level-req=90
-          xp=560
-          base-time=14.000
-          inputs=~
-          outputs=~
-          mastery-xp=56
-          gp-per-action=0
-      ==
+      actions=~[[id=%run-course name='Run Course' level-req=1 xp=0 base-time=0 inputs=~ outputs=~ mastery-xp=0 gp-per-action=0]]
   ==
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Astrology                                               │
@@ -2564,7 +2460,7 @@
   ^-  skill-def
   :*  id=%hitpoints
       name='Hitpoints'
-      skill-type=%passive
+      skill-type=%combat
       max-level=99
       actions=~
   ==

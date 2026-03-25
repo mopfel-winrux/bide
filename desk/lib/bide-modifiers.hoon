@@ -19,12 +19,12 @@
           star-levels=(map [action-id @ud] @ud)
           skill-upgrades=(map [skill-id ?(%xp %speed %preservation)] @ud)
           active-skill=(unit skill-id)
+          agility-course=(map @ud obstacle-id)
+          active-pillar=(unit pillar-id)
       ==
   ^-  modifier-set
-  ::  agility level
-  =/  agility-level=@ud
-    =/  ss  (~(get by skills) %agility)
-    ?~(ss 1 level.u.ss)
+  ::  agility course modifiers
+  =/  agi-mods  (course-modifiers:bide-agility agility-course active-pillar)
   ::  astrology state
   =/  astrology-ss=skill-state
     (fall (~(get by skills) %astrology) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
@@ -62,7 +62,7 @@
   ::  xp-global: agility combat bonus + pet global + familiar all-xp + cape + firemaking mastery
   =/  fam-all-xp=@ud  ?~(fam-def 0 all-xp.u.fam-def)
   =/  res-xp-global=@ud
-    (add fm-global-bonus (add (combat-xp-bonus:bide-agility agility-level) (add xp-global.pet-mods (add fam-all-xp xp-global.cape-mods))))
+    (add fm-global-bonus (add xp-global.agi-mods (add xp-global.pet-mods (add fam-all-xp xp-global.cape-mods))))
   ::  xp-gathering: familiar gathering bonus
   =/  res-xp-gathering=@ud  ?~(fam-def 0 gathering-xp.u.fam-def)
   ::  xp-artisan: familiar artisan bonus
@@ -71,16 +71,14 @@
   =/  res-xp-combat=@ud  ?~(fam-def 0 combat-xp.u.fam-def)
   ::  xp-per-skill: agility milestones + astrology + pet + familiar thieving/herblore + cape
   =/  skill-map=(map skill-id @ud)  *(map skill-id @ud)
-  ::  agility per-skill bonuses
+  ::  agility course per-skill bonuses
   =.  skill-map
-    =/  sids=(list skill-id)  ~[%woodcutting %mining %fishing %thieving]
+    =/  agi-skills=(list [skill-id @ud])  ~(tap by xp-per-skill.agi-mods)
     |-
-    ?~  sids  skill-map
-    =/  bonus=@ud  (xp-bonus:bide-agility agility-level i.sids)
-    =?  skill-map  (gth bonus 0)
-      =/  cur=@ud  (fall (~(get by skill-map) i.sids) 0)
-      (~(put by skill-map) i.sids (add cur bonus))
-    $(sids t.sids)
+    ?~  agi-skills  skill-map
+    =/  cur=@ud  (fall (~(get by skill-map) -.i.agi-skills) 0)
+    =.  skill-map  (~(put by skill-map) -.i.agi-skills (add cur +.i.agi-skills))
+    $(agi-skills t.agi-skills)
   ::  astrology bonuses (dual-skill constellations)
   =.  skill-map
     =/  consts=(list [action-id [skill-id skill-id]])  ~(tap by constellation-registry:bide-astrology)
@@ -150,17 +148,17 @@
     ?:  =(tier 0)  0
     (skill-upgrade-bonus:bide-shop %speed tier)
   ::  speed-bonus
-  =/  res-speed=@ud  (add shop-speed (add speed-bonus.star-mods (add (speed-bonus:bide-agility agility-level) (add speed-bonus.pet-mods speed-bonus.cape-mods))))
-  ::  combat boosts
-  =/  res-atk=@ud  (add atk-boost.pot-boosts (add atk.pra-boosts (add atk.fam-boosts atk-boost.cape-mods)))
-  =/  res-str=@ud  (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts))
-  =/  res-def=@ud  (add def-boost.pot-boosts (add def.pra-boosts (add def.fam-boosts def-boost.cape-mods)))
-  =/  res-ranged=@ud  (add ranged-boost.pot-boosts ranged-boost.cape-mods)
-  =/  res-magic=@ud  (add magic-boost.pot-boosts magic-boost.cape-mods)
+  =/  res-speed=@ud  (add shop-speed (add speed-bonus.star-mods (add speed-bonus.agi-mods (add speed-bonus.pet-mods speed-bonus.cape-mods))))
+  ::  combat boosts (include agility course boosts)
+  =/  res-atk=@ud  (add atk-boost.agi-mods (add atk-boost.pot-boosts (add atk.pra-boosts (add atk.fam-boosts atk-boost.cape-mods))))
+  =/  res-str=@ud  (add str-boost.agi-mods (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts)))
+  =/  res-def=@ud  (add def-boost.agi-mods (add def-boost.pot-boosts (add def.pra-boosts (add def.fam-boosts def-boost.cape-mods))))
+  =/  res-ranged=@ud  (add ranged-boost.agi-mods (add ranged-boost.pot-boosts ranged-boost.cape-mods))
+  =/  res-magic=@ud  (add magic-boost.agi-mods (add magic-boost.pot-boosts magic-boost.cape-mods))
   ::  farming yield
-  =/  res-fy=@ud  (add (farming-yield-bonus:bide-agility agility-level) (add (familiar-farming-yield:bide-summoning active-familiar) (add farming-yield.pet-mods farming-yield.cape-mods)))
+  =/  res-fy=@ud  (add farming-yield.agi-mods (add (familiar-farming-yield:bide-summoning active-familiar) (add farming-yield.pet-mods farming-yield.cape-mods)))
   ::  gp bonus
-  =/  res-gp=@ud  (add gp-bonus.pet-mods gp-bonus.cape-mods)
+  =/  res-gp=@ud  (add gp-bonus.agi-mods (add gp-bonus.pet-mods gp-bonus.cape-mods))
   ::  protection: prayers + cape protect-all
   =/  res-pro-melee=@ud  (add pro-melee.pra-boosts protect-all.cape-mods)
   =/  res-pro-ranged=@ud  (add pro-ranged.pra-boosts protect-all.cape-mods)
