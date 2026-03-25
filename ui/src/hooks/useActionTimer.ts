@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
 import type { GameState, GameDefs, SkillId, ActionDef } from '../shared/types';
+import { getXpBonusPct, getSpeedBonusPct, applyXpBonus, applySpeedBonus } from '../shared/modifiers';
 
 interface ActionTimerState {
   progress: number; // 0-100
@@ -70,27 +71,20 @@ export function useActionTimer(
         const skillId = s.activeAction.skill;
         const mods = s.modifiers;
         const skillType = defsRef.current?.skills[skillId]?.type;
-        let pct = mods?.xpGlobal ?? 0;
-        if (skillType === 'gathering') pct += mods?.xpGathering ?? 0;
-        if (skillType === 'artisan') pct += mods?.xpArtisan ?? 0;
-        if (skillType === 'combat') pct += mods?.xpCombat ?? 0;
-        pct += mods?.xpPerSkill?.[skillId] ?? 0;
+        const pct = getXpBonusPct(mods, skillId, skillType);
 
         // Agility: per-obstacle XP drops
         if (skillId === 'agility' && agilityObstacles.current.length > 0) {
           const obs = agilityObstacles.current;
           const idx = agilityObstacleIdx.current % obs.length;
           const o = obs[idx];
-          const modXp = o.xp + Math.floor(o.xp * pct / 100);
+          const modXp = applyXpBonus(o.xp, pct);
           onCycleRef.current({ skill: skillId, xp: modXp, outputs: {}, gp: 0 });
           // Advance to next obstacle
           agilityObstacleIdx.current = (idx + 1) % obs.length;
           // Set duration for next obstacle
           const nextObs = obs[agilityObstacleIdx.current];
-          const speedBonus = mods?.speedBonus ?? 0;
-          let nextDur = nextObs.interval;
-          if (speedBonus > 0) nextDur = Math.max(500, nextDur - Math.floor(nextDur * speedBonus / 100));
-          actionDurationRef.current = nextDur;
+          actionDurationRef.current = applySpeedBonus(nextObs.interval, getSpeedBonusPct(mods));
         } else {
           // Normal skill cycle
           const ad = getActionDef(s.activeAction.skill, s.activeAction.target);
@@ -108,8 +102,7 @@ export function useActionTimer(
                 outputs[out.item] = (outputs[out.item] || 0) + out.maxQty;
               }
             }
-            const baseXp = ad.xp + (ad2?.xp ?? 0);
-            const modifiedXp = baseXp + Math.floor(baseXp * pct / 100);
+            const modifiedXp = applyXpBonus(ad.xp + (ad2?.xp ?? 0), pct);
             onCycleRef.current({
               skill: skillId,
               xp: modifiedXp,
@@ -197,10 +190,7 @@ export function useActionTimer(
       }
     }
     // Apply speed bonus
-    const speedBonus = state?.modifiers?.speedBonus ?? 0;
-    if (speedBonus > 0) {
-      duration = Math.max(500, duration - Math.floor(duration * speedBonus / 100));
-    }
+    duration = applySpeedBonus(duration, getSpeedBonusPct(state?.modifiers));
 
     actionKeyRef.current = key;
     actionDurationRef.current = duration;

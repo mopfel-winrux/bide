@@ -248,7 +248,6 @@ export interface GameState {
   farmPlots: (FarmPlot | null)[];
   activeFamiliar: FamiliarState | null;
   petsFound: PetId[];
-  activePet: PetId | null;
   stats: GameStats;
   starLevels: Record<string, number>;
   skillUpgrades: Record<string, number>;

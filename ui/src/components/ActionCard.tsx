@@ -3,6 +3,7 @@ import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { GameIcon } from './ui/GameIcon';
 import { fmt, fmtTime } from '../shared/format';
+import { getXpBonusPct, getSpeedBonusPct, applyXpBonus, applySpeedBonus } from '../shared/modifiers';
 import { levelFromXp, xpForLevel, xpProgress } from '../shared/xp';
 import type { ActionDef, ActionId, SkillId } from '../shared/types';
 
@@ -20,8 +21,12 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
   const isPrimary = aa?.type === 'skilling' && aa.skill === skillId && aa.target === action.id;
   const isSecondary = aa?.type === 'skilling' && aa.skill === skillId && aa.secondary === action.id;
   const isActive = isPrimary || isSecondary;
-  const otherTreeActive = multitree && aa?.type === 'skilling' && aa.skill === skillId && !isActive;
+  const aaSkilling = aa?.type === 'skilling' ? aa : null;
+  const otherTreeActive = multitree && aaSkilling?.skill === skillId && !isActive;
   const bank = getDisplayBank();
+
+  const xpPct = getXpBonusPct(state?.modifiers, skillId, defs?.skills[skillId]?.type);
+  const speedPct = getSpeedBonusPct(state?.modifiers);
 
   const hasInputs = action.inputs.every(inp => (bank[inp.item] || 0) >= inp.qty);
   const canStart = !locked && hasInputs;
@@ -58,16 +63,7 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
           <span className="text-gray-500">XP</span>
           <span className="font-medium text-emerald-400 tabular-nums">
             {(() => {
-              const mods = state?.modifiers;
-              const skillType = defs?.skills[skillId]?.type;
-              let pct = Number(mods?.xpGlobal) || 0;
-              if (skillType === 'gathering') pct += Number(mods?.xpGathering) || 0;
-              if (skillType === 'artisan') pct += Number(mods?.xpArtisan) || 0;
-              if (skillType === 'combat') pct += Number(mods?.xpCombat) || 0;
-              pct += Number(mods?.xpPerSkill?.[skillId]) || 0;
-              const modifiedXp = pct > 0
-                ? action.xp + Math.floor(action.xp * pct / 100)
-                : action.xp;
+              const modifiedXp = applyXpBonus(action.xp, xpPct);
               return modifiedXp !== action.xp
                 ? <>{fmt(modifiedXp)} <span className="line-through text-gray-600">{fmt(action.xp)}</span></>
                 : fmt(action.xp);
@@ -78,10 +74,7 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
           <span className="text-gray-500">Time</span>
           <span className="font-medium text-gray-300 tabular-nums">
             {(() => {
-              const speedBonus = state?.modifiers?.speedBonus ?? 0;
-              const modifiedTime = speedBonus > 0
-                ? Math.max(500, action.baseTime - Math.floor(action.baseTime * speedBonus / 100))
-                : action.baseTime;
+              const modifiedTime = applySpeedBonus(action.baseTime, speedPct);
               return modifiedTime !== action.baseTime
                 ? <>{fmtTime(modifiedTime)} <span className="line-through text-gray-600">{fmtTime(action.baseTime)}</span></>
                 : fmtTime(action.baseTime);
@@ -93,18 +86,8 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
           <span className="text-gray-500">XP/hr</span>
           <span className="font-medium text-amber-400 tabular-nums">
             {(() => {
-              const mods = state?.modifiers;
-              const skillType = defs?.skills[skillId]?.type;
-              let pct = Number(mods?.xpGlobal) || 0;
-              if (skillType === 'gathering') pct += Number(mods?.xpGathering) || 0;
-              if (skillType === 'artisan') pct += Number(mods?.xpArtisan) || 0;
-              if (skillType === 'combat') pct += Number(mods?.xpCombat) || 0;
-              pct += Number(mods?.xpPerSkill?.[skillId]) || 0;
-              const modXp = action.xp + Math.floor(action.xp * pct / 100);
-              const speedBonus = Number(mods?.speedBonus) || 0;
-              const modTime = speedBonus > 0
-                ? Math.max(500, action.baseTime - Math.floor(action.baseTime * speedBonus / 100))
-                : action.baseTime;
+              const modXp = applyXpBonus(action.xp, xpPct);
+              const modTime = applySpeedBonus(action.baseTime, speedPct);
               return modTime > 0 ? fmt(Math.round((modXp / modTime) * 3_600_000)) : '0';
             })()}
           </span>
@@ -240,7 +223,7 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
           <Button disabled className="flex-1">Locked</Button>
         ) : isSecondary ? (
           <Button variant="stop" onClick={() => {
-            const primary = (aa as any).target;
+            const primary = aaSkilling!.target;
             startAction(skillId, primary);
           }}>
             Remove
@@ -249,7 +232,7 @@ export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
           <Button variant="stop" onClick={stopAction}>Stop</Button>
         ) : otherTreeActive ? (
           <Button variant="primary" disabled={!canStart} onClick={() => {
-            const primary = (aa as any).target;
+            const primary = aaSkilling!.target;
             startAction(skillId, primary, action.id);
           }}>
             {!hasInputs ? 'No Materials' : 'Add Tree'}

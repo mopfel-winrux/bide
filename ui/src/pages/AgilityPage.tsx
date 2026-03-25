@@ -5,6 +5,7 @@ import { ActiveAction } from '../components/ActiveAction';
 import { Button } from '../components/ui/Button';
 import { GameIcon } from '../components/ui/GameIcon';
 import { fmt, fmtTime } from '../shared/format';
+import { getXpBonusPct, getSpeedBonusPct, applySpeedBonus } from '../shared/modifiers';
 import type { ObstacleDef, AgilityModifier } from '../shared/types';
 
 const SLOTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -88,17 +89,10 @@ export function AgilityPage() {
   // XP/hr with modifiers
   const courseInterval = Number(state.agilityCourseInterval) || totalInterval || 0;
   const courseXp = Number(state.agilityCourseXp) || totalXp || 0;
-  const mods = state.modifiers;
-  const skillType = defs.skills['agility']?.type;
-  let xpPct = Number(mods?.xpGlobal) || 0;
-  if (skillType === 'gathering') xpPct += Number(mods?.xpGathering) || 0;
-  if (skillType === 'artisan') xpPct += Number(mods?.xpArtisan) || 0;
-  xpPct += Number(mods?.xpPerSkill?.['agility']) || 0;
+  const xpPct = getXpBonusPct(state.modifiers, 'agility', defs.skills['agility']?.type);
+  const speedPct = getSpeedBonusPct(state.modifiers);
   const modifiedXp = courseXp + Math.floor(courseXp * xpPct / 100);
-  const speedPct = Number(mods?.speedBonus) || 0;
-  const adjustedInterval = speedPct > 0
-    ? Math.max(500, courseInterval - Math.floor(courseInterval * speedPct / 100))
-    : courseInterval;
+  const adjustedInterval = applySpeedBonus(courseInterval, speedPct);
   const xpPerHour = adjustedInterval > 0 ? Math.round((modifiedXp / adjustedInterval) * 3_600_000) : 0;
 
   const canTrain = chainLength > 0;

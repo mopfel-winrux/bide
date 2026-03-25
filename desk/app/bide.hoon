@@ -76,7 +76,6 @@
         ~[~ ~]                                 ::  farm-plots (2 empty)
         ~                                      ::  active-familiar
         *(set pet-id)                          ::  pets-found
-        ~                                      ::  active-pet
         *(map [action-id @ud] @ud)             ::  star-levels
         *(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  skill-upgrades
         %.n                                    ::  multitree-unlocked
@@ -114,7 +113,6 @@
           farm-plots.og
           active-familiar.og
           pets-found.og
-          active-pet.og
           star-levels.og
           skill-upgrades.og
           multitree-unlocked.og
@@ -146,7 +144,6 @@
           farm-plots.og
           active-familiar.og
           pets-found.og
-          active-pet.og
           star-levels.og
           *(map [skill-id ?(%xp %speed %preservation)] @ud)
           %.n

@@ -38,7 +38,6 @@
       farm-plots=(list (unit farm-plot))       ::  farming plots
       active-familiar=(unit familiar-state)    ::  summoned familiar
       pets-found=(set pet-id)                  ::  discovered pets
-      active-pet=(unit pet-id)                 ::  equipped pet
       star-levels=(map [action-id @ud] @ud)    ::  constellation star upgrade levels
       skill-upgrades=(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  shop skill upgrades (tier 1-3)
       multitree-unlocked=?                    ::  woodcutting multi-tree purchased

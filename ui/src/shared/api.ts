@@ -1,4 +1,4 @@
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId } from './types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, SpellId } from './types';
 
 let onAuthFailure = () => {
   window.location.href = '/~/login?redirect=' + encodeURIComponent(window.location.pathname);
@@ -55,7 +55,6 @@ export const api = {
   dismissFamiliar: () => post('dismiss-familiar'),
   eatFood: (item: ItemId) => post(`eat-food/${item}`),
   buy: (item: ItemId, qty: number) => post(`buy/${item}/${qty}`),
-  setPet: (pet: PetId | null) => post(`set-pet/${pet ?? 'none'}`),
   upgradeStar: (constellation: ActionId, idx: number) => post(`upgrade-star/${constellation}/${idx}`),
   buySkillUpgrade: (skill: SkillId, type: string) => post(`buy-skill-upgrade/${skill}/${type}`),
   buyMultitree: () => post('buy-multitree'),

@@ -216,8 +216,6 @@
   ::  pets
   =/  pets-found-json=json
     [%a (turn ~(tap in pets-found.gs) |=(p=pet-id [%s p]))]
-  =/  active-pet-json=json
-    ?~(active-pet.gs ~ [%s u.active-pet.gs])
   ::  stats
   =/  stats-json=json
     %-  pairs:enjs:format
@@ -251,7 +249,6 @@
       ['farmPlots' farm-json]
       ['activeFamiliar' familiar-json]
       ['petsFound' pets-found-json]
-      ['activePet' active-pet-json]
       ['stats' stats-json]
       :-  'starLevels'
       :-  %o
