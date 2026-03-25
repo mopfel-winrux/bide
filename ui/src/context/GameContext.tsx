@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, PetId, SpellId, WelcomeBackSummary } from '../shared/types';
+import type { GameState, GameDefs, SkillId, ActionId, ItemId, DisplaySkill, AreaId, MonsterId, CombatStyle, EquipmentSlot, PrayerId, DungeonId, SpellId, WelcomeBackSummary } from '../shared/types';
 type TabletId = ItemId;
 import { api } from '../shared/api';
 import { useGameState } from '../hooks/useGameState';
@@ -18,7 +18,7 @@ interface GameContextValue {
   error: string | null;
   getDisplaySkill: (sid: SkillId) => DisplaySkill;
   getDisplayBank: () => Record<ItemId, number>;
-  startAction: (skill: SkillId, action: ActionId) => void;
+  startAction: (skill: SkillId, action: ActionId, secondary?: ActionId | null) => void;
   stopAction: () => void;
   sell: (item: ItemId, qty: number) => void;
   sellAll: (item: ItemId) => void;
@@ -40,8 +40,9 @@ interface GameContextValue {
   dismissFamiliar: () => void;
   eatFood: (item: ItemId) => void;
   buyItem: (item: ItemId, qty: number) => void;
-  setPet: (pet: PetId | null) => void;
   upgradeStar: (constellation: ActionId, idx: number) => void;
+  buySkillUpgrade: (skill: SkillId, type: string) => void;
+  buyMultitree: () => void;
   actionProgress: number;
   actionRemaining: number;
   actionIsActive: boolean;
@@ -124,8 +125,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPrevPetCount(currentCount);
   }, [state?.petsFound?.length, defs, addToast]);
 
-  const startAction = useCallback((skill: SkillId, action: ActionId) => {
-    api.startAction(skill, action);
+  const startAction = useCallback((skill: SkillId, action: ActionId, secondary?: ActionId | null) => {
+    api.startAction(skill, action, secondary);
   }, []);
 
   const stopAction = useCallback(() => {
@@ -212,12 +213,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.buy(item, qty);
   }, []);
 
-  const setPet = useCallback((pet: PetId | null) => {
-    api.setPet(pet);
-  }, []);
 
   const upgradeStar = useCallback((constellation: ActionId, idx: number) => {
     api.upgradeStar(constellation, idx);
+  }, []);
+
+  const buySkillUpgrade = useCallback((skill: SkillId, type: string) => {
+    api.buySkillUpgrade(skill, type);
+  }, []);
+
+  const buyMultitree = useCallback(() => {
+    api.buyMultitree();
   }, []);
 
   return (
@@ -229,7 +235,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, changeSpell, startDungeon,
       plantSeed, harvestPlot, summonFamiliar, dismissFamiliar, eatFood,
-      buyItem, setPet, upgradeStar,
+      buyItem, upgradeStar, buySkillUpgrade, buyMultitree,
       actionProgress: timer.progress,
       actionRemaining: timer.remaining,
       actionIsActive: timer.isActive,

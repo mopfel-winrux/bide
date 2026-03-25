@@ -38,6 +38,8 @@
       pets-found=(set pet-id)                  ::  discovered pets
       active-pet=(unit pet-id)                 ::  equipped pet
       star-levels=(map [action-id @ud] @ud)    ::  constellation star upgrade levels
+      skill-upgrades=(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  shop skill upgrades (tier 1-3)
+      multitree-unlocked=?                    ::  woodcutting multi-tree purchased
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
@@ -91,7 +93,7 @@
 ::  │  Equipment & combat style                                │
 ::  └──────────────────────────────────────────────────────────┘
 ::
-+$  equipment-slot  $?(%helmet %platebody %weapon %shield %cape)
++$  equipment-slot  $?(%helmet %platebody %weapon %shield %cape %ammo)
 ::
 +$  combat-style
   $?  %melee-attack
@@ -125,7 +127,7 @@
 ::  └──────────────────────────────────────────────────────────┘
 ::
 +$  active-action
-  $%  [%skilling skill=skill-id target=action-id started=@da]
+  $%  [%skilling skill=skill-id target=action-id secondary=(unit action-id) started=@da]
       $:  %combat
           area=area-id
           monster=monster-id
@@ -195,7 +197,7 @@
 ::  └──────────────────────────────────────────────────────────┘
 ::
 +$  action
-  $%  [%start-skill skill=skill-id target=action-id]
+  $%  [%start-skill skill=skill-id target=action-id secondary=(unit action-id)]
       [%stop-skill ~]
       [%sell item=item-id qty=@ud]
       [%sell-all item=item-id]
@@ -216,8 +218,9 @@
       [%summon-familiar tablet=item-id]
       [%dismiss-familiar ~]
       [%eat-food item=item-id]
-      [%set-pet pet=(unit pet-id)]
       [%upgrade-star constellation=action-id star-idx=@ud]
+      [%buy-skill-upgrade skill=skill-id type=?(%xp %speed %preservation)]
+      [%buy-multitree ~]
   ==
 ::
 ::  ┌──────────────────────────────────────────────────────────┐

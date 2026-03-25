@@ -53,27 +53,32 @@
     [`pid.i.candidates new-seed]
   $(candidates t.candidates, seed new-seed)
 ::
-::  Compute modifier contributions from active pet
+::  Compute modifier contributions from ALL found pets
 ::
 ++  pet-modifiers
-  |=  active-pet=(unit pet-id)
+  |=  found=(set pet-id)
   ^-  $:  xp-global=@ud
           xp-per-skill=(map skill-id @ud)
           speed-bonus=@ud
           farming-yield=@ud
           gp-bonus=@ud
       ==
-  ?~  active-pet
-    [0 *(map skill-id @ud) 0 0 0]
-  =/  pdef=(unit pet-def)  (~(get by pet-registry) u.active-pet)
-  ?~  pdef
-    [0 *(map skill-id @ud) 0 0 0]
+  ::  collect all effects from all found pets
+  =/  all-effs=(list pet-bonus)
+    =/  pids=(list pet-id)  ~(tap in found)
+    =/  acc=(list pet-bonus)  ~
+    |-
+    ?~  pids  acc
+    =/  pdef=(unit pet-def)  (~(get by pet-registry) i.pids)
+    ?~  pdef  $(pids t.pids)
+    $(pids t.pids, acc (weld effects.u.pdef acc))
+  ::  process all effects
   =/  xp-g=@ud  0
   =/  xp-s=(map skill-id @ud)  *(map skill-id @ud)
   =/  spd=@ud  0
   =/  fy=@ud  0
   =/  gpb=@ud  0
-  =/  effs=(list pet-bonus)  effects.u.pdef
+  =/  effs=(list pet-bonus)  all-effs
   |-
   ?~  effs  [xp-g xp-s spd fy gpb]
   ?-  -.i.effs

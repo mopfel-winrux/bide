@@ -25,7 +25,7 @@ export type ItemCategory =
 
 export type SkillType = 'gathering' | 'artisan' | 'combat' | 'passive';
 
-export type EquipmentSlot = 'helmet' | 'platebody' | 'weapon' | 'shield' | 'cape';
+export type EquipmentSlot = 'helmet' | 'platebody' | 'weapon' | 'shield' | 'cape' | 'ammo';
 
 export type CombatStyle =
   | 'melee-attack'
@@ -124,6 +124,7 @@ export interface ActiveSkillingAction {
   type: 'skilling';
   skill: SkillId;
   target: ActionId;
+  secondary?: ActionId | null;
 }
 
 export interface ActiveCombatAction {
@@ -250,6 +251,8 @@ export interface GameState {
   activePet: PetId | null;
   stats: GameStats;
   starLevels: Record<string, number>;
+  skillUpgrades: Record<string, number>;
+  multitreeUnlocked: boolean;
   modifiers: ModifierSet;
 }
 

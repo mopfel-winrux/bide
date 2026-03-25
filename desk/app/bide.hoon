@@ -17,7 +17,7 @@
 ::
 %-  agent:dbug
 %+  verb  |
-=|  state-0:bide-state
+=|  state-1:bide-state
 =*  state  -
 ^-  agent:gall
 =<
@@ -36,8 +36,8 @@
     :*  :*  gp=0
             hitpoints-current=100
             hitpoints-max=100
-            prayer-points=10
-            prayer-max=10
+            prayer-points=1
+            prayer-max=1
             created=now.bowl
         ==
         ^-  (map skill-id skill-state)
@@ -78,20 +78,52 @@
         *(set pet-id)                          ::  pets-found
         ~                                      ::  active-pet
         *(map [action-id @ud] @ud)             ::  star-levels
+        *(map [skill-id ?(%xp %speed %preservation)] @ud)  ::  skill-upgrades
+        %.n                                    ::  multitree-unlocked
     ==
   :_  this
   :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/bide/api] dap.bowl]
       [%pass /timer/tick %arvo %b [%wait (add now.bowl ~s1)]]
   ==
 ::
-++  on-save  !>(state)
+++  on-save  !>([%1 gs])
 ::
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
   =/  old  !<(versioned-state:bide-state old-vase)
   ?-  -.old
-    %0  `this(state old)
+      %1  `this(state old)
+      %0
+    ::  migrate v0 → v1: add skill-upgrades, multitree-unlocked, clear active-action
+    =/  og  gs.old
+    =/  new-act=(unit active-action)
+      ?~  active-action.og  ~
+      =/  oa  u.active-action.og
+      ?+  -.oa  ~
+        %skilling  `[%skilling skill.oa target.oa ~ started.oa]
+      ==
+    =/  new-gs=game-state
+      :*  player.og
+          skills.og
+          bank.og
+          equipment.og
+          new-act
+          stats.og
+          last-tick.og
+          rng-seed.og
+          active-potions.og
+          active-prayers.og
+          slayer-task.og
+          farm-plots.og
+          active-familiar.og
+          pets-found.og
+          active-pet.og
+          star-levels.og
+          *(map [skill-id ?(%xp %speed %preservation)] @ud)
+          %.n
+      ==
+    `this(state [%1 new-gs])
   ==
 ::
 ++  on-poke
@@ -113,32 +145,56 @@
     ?:  =(q.vase %test-setup)
       =.  skills.gs
         %-  ~(gas by skills.gs)
-        :~  [%attack [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+        :~  [%woodcutting [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%fishing [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%mining [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%fletching [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%cooking [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%smithing [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%attack [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%strength [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%defence [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%hitpoints [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
+            [%ranged [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
+            [%prayer [xp=500.000 level=40 mastery=[pool-xp=0 actions=~]]]
+            [%slayer [xp=100.000 level=20 mastery=[pool-xp=0 actions=~]]]
             [%farming [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%agility [xp=5.000.000 level=70 mastery=[pool-xp=0 actions=~]]]
             [%astrology [xp=1.000.000 level=50 mastery=[pool-xp=0 actions=~]]]
             [%summoning [xp=2.000.000 level=60 mastery=[pool-xp=0 actions=~]]]
             [%magic [xp=10.000.000 level=80 mastery=[pool-xp=0 actions=~]]]
         ==
-      =.  gp.player.gs  50.000
+      =.  gp.player.gs  10.000.000
+      =.  prayer-max.player.gs  40
+      =.  prayer-points.player.gs  40
       =.  items.bank.gs
         %-  ~(gas by items.bank.gs)
-        :~  [%potato-seed 50]
-            [%onion-seed 30]
-            [%tomato-seed 20]
+        :~  ::  arrows for ranged testing
+            [%bronze-arrows 500]
+            [%iron-arrows 200]
+            [%steel-arrows 100]
+            [%mithril-arrows 50]
+            ::  bows for ranged testing
+            [%oak-shortbow 1]
+            [%maple-shortbow 1]
+            ::  bones for prayer testing
+            [%bones 100]
+            [%big-bones 50]
+            ::  slayer gear
+            [%bronze-sword 1]
+            [%iron-sword 1]
+            ::  fletching mats
+            [%bronze-bar 100]
+            [%iron-bar 100]
+            [%steel-bar 50]
+            [%mithril-bar 30]
+            ::  general materials
+            [%potato-seed 50]
             [%guam-seed 40]
-            [%marrentill-seed 25]
             [%wolf-tablet 5]
-            [%hawk-tablet 5]
-            [%bear-tablet 3]
-            [%dragon-tablet 2]
             [%charcoal 100]
             [%raw-shrimp 100]
             [%iron-ore 50]
-            [%steel-bar 30]
             [%fire-rune 500]
             [%mind-rune 100]
             [%death-rune 100]
@@ -146,17 +202,16 @@
             [%earth-rune 200]
             [%chaos-rune 100]
             [%gold-bar 50]
-            [%onyx 10]
-            [%dragonite-bar 5]
-            [%mithril-bar 20]
-            [%adamantite-bar 10]
-            [%runite-bar 5]
-            [%bronze-sword 1]
+            [%normal-logs 200]
+            [%oak-logs 100]
         ==
       =.  slots.equipment.gs
-        (~(gas by *(map equipment-slot item-id)) ~[[%weapon %bronze-sword]])
+        (~(gas by *(map equipment-slot item-id)) ~[[%weapon %oak-shortbow] [%ammo %iron-arrows]])
       =.  hitpoints-max.player.gs  600
       =.  hitpoints-current.player.gs  600
+      =.  pets-found.gs
+        (~(gas in *(set pet-id)) ~[%rocky %beaver %heron %nibbles %goblin-runt])
+      =.  slayer-task.gs  `[monster=%chicken qty-remaining=10 qty-total=10]
       `this
     =.  gs  (game-state q.vase)
     `this
@@ -298,10 +353,16 @@
   ^-  (quip card game-state)
   ?+  site  `gs
   ::
+      [%start @ @ @ ~]
+    =/  skill=@tas  i.t.site
+    =/  target=@tas  i.t.t.site
+    =/  sec=@tas  i.t.t.t.site
+    (handle-action [%start-skill skill target `sec] bowl)
+  ::
       [%start @ @ ~]
     =/  skill=@tas  i.t.site
     =/  target=@tas  i.t.t.site
-    (handle-action [%start-skill skill target] bowl)
+    (handle-action [%start-skill skill target ~] bowl)
   ::
       [%stop ~]
     (handle-action [%stop-skill ~] bowl)
@@ -396,15 +457,20 @@
     =/  qty=@ud  (slav %ud i.t.t.site)
     (handle-action [%buy item qty] bowl)
   ::
-      [%set-pet @ ~]
-    =/  pet-str=@tas  i.t.site
-    =/  pet=(unit pet-id)  ?:(=(pet-str 'none') ~ `pet-str)
-    (handle-action [%set-pet pet] bowl)
   ::
       [%upgrade-star @ @ ~]
     =/  constellation=@tas  i.t.site
     =/  idx=@ud  (slav %ud i.t.t.site)
     (handle-action [%upgrade-star constellation idx] bowl)
+  ::
+      [%buy-skill-upgrade @ @ ~]
+    =/  skill=@tas  i.t.site
+    =/  type=@tas  i.t.t.site
+    ?>  ?=(?(%xp %speed %preservation) type)
+    (handle-action [%buy-skill-upgrade skill type] bowl)
+  ::
+      [%buy-multitree ~]
+    (handle-action [%buy-multitree ~] bowl)
   ==
 ::
 ++  handle-action
@@ -442,7 +508,7 @@
     ?.  has-inputs
       ~&  [%bide %missing-inputs target.act]
       `gs
-    =.  active-action.gs  `[%skilling skill.act target.act now.bowl]
+    =.  active-action.gs  `[%skilling skill.act target.act secondary.act now.bowl]
     `gs
   ::
       %stop-skill
@@ -879,7 +945,7 @@
     =/  base-yield=@ud  (add min-yield.u.sdef rng-val)
     ::  apply yield bonuses via modifier engine
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `%farming)
     =/  final-yield=@ud  (add base-yield (div (mul base-yield farming-yield.mods) 100))
     ::  award farming XP
     =/  fss=skill-state
@@ -950,18 +1016,6 @@
     ::  heal
     =.  hitpoints-current.player.gs
       (min hitpoints-max.player.gs (add hitpoints-current.player.gs u.heal))
-    `gs
-  ::
-      %set-pet
-    ?~  pet.act
-      ::  clear active pet
-      =.  active-pet.gs  ~
-      `gs
-    ::  validate pet is in pets-found
-    ?.  (~(has in pets-found.gs) u.pet.act)
-      ~&  [%bide %pet-not-found u.pet.act]
-      `gs
-    =.  active-pet.gs  pet.act
     `gs
   ::
       %upgrade-star
@@ -1037,5 +1091,36 @@
     :~  [%pass /combat/player/(scot %da p-next) %arvo %b [%wait p-next]]
         [%pass /combat/enemy/(scot %da e-next) %arvo %b [%wait e-next]]
     ==
+  ::
+      %buy-skill-upgrade
+    ?.  (valid-skill-upgrade:bide-shop skill.act type.act)
+      ~&  [%bide %invalid-skill-upgrade skill.act type.act]
+      `gs
+    =/  cur-tier=@ud  (fall (~(get by skill-upgrades.gs) [skill.act type.act]) 0)
+    ?.  (lth cur-tier 3)
+      ~&  [%bide %already-max-tier]
+      `gs
+    =/  next-tier=@ud  (add cur-tier 1)
+    =/  price=@ud  (skill-upgrade-price:bide-shop type.act next-tier)
+    ?.  (gte gp.player.gs price)
+      ~&  [%bide %not-enough-gp]
+      `gs
+    =.  gp.player.gs  (sub gp.player.gs price)
+    =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs price)
+    =.  skill-upgrades.gs  (~(put by skill-upgrades.gs) [skill.act type.act] next-tier)
+    `gs
+  ::
+      %buy-multitree
+    ?:  multitree-unlocked.gs
+      ~&  [%bide %already-unlocked]
+      `gs
+    =/  price=@ud  multitree-price:bide-shop
+    ?.  (gte gp.player.gs price)
+      ~&  [%bide %not-enough-gp]
+      `gs
+    =.  gp.player.gs  (sub gp.player.gs price)
+    =.  total-gp-spent.stats.gs  (add total-gp-spent.stats.gs price)
+    =.  multitree-unlocked.gs  %.y
+    `gs
   ==
 --

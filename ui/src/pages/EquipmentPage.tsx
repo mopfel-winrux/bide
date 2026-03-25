@@ -3,17 +3,18 @@ import { EquipmentSlotGrid } from '../components/EquipmentSlotGrid';
 import { AutoEatConfig } from '../components/AutoEatConfig';
 import type { EquipmentSlot, ItemId } from '../shared/types';
 
-const EQUIPPABLE_SLOTS: EquipmentSlot[] = ['helmet', 'platebody', 'weapon', 'shield', 'cape'];
+const EQUIPPABLE_SLOTS: EquipmentSlot[] = ['helmet', 'platebody', 'weapon', 'shield', 'cape', 'ammo'];
 const SLOT_LABELS: Record<EquipmentSlot, string> = {
   helmet: 'Helmet',
   platebody: 'Platebody',
   weapon: 'Weapon',
   shield: 'Shield',
   cape: 'Cape',
+  ammo: 'Ammo',
 };
 
 export function EquipmentPage() {
-  const { defs, state, equip, unequip, summonFamiliar, dismissFamiliar, setPet } = useGame();
+  const { defs, state, equip, unequip, summonFamiliar, dismissFamiliar } = useGame();
 
   if (!defs || !state) return null;
 
@@ -189,59 +190,27 @@ export function EquipmentPage() {
             )}
           </div>
 
-          {/* Pets */}
+          {/* Pets — all found pets are always active */}
           <div className="mt-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3">Pets</h2>
             {defs.pets && Object.keys(defs.pets).length > 0 ? (
               <div className="space-y-2">
-                {state.activePet && defs.pets[state.activePet] && (
-                  <div className="bg-[#111827] border border-amber-600/50 rounded-lg p-4 mb-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="text-sm text-gray-200 font-medium">
-                        {defs.pets[state.activePet].name}
-                        <span className="text-amber-500 text-xs ml-2">Active</span>
-                      </div>
-                      <button
-                        onClick={() => setPet(null)}
-                        className="px-3 py-1 rounded text-xs font-medium bg-red-900/50 hover:bg-red-800/50 text-red-300 cursor-pointer transition-colors"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="text-xs text-green-400">
-                      {defs.pets[state.activePet].effects.map((e) => {
-                        if (e.type === 'xp-skill') return `+${e.pct}% ${e.skill} XP`;
-                        if (e.type === 'xp-global') return `+${e.pct}% All XP`;
-                        if (e.type === 'gp-bonus') return `+${e.pct}% GP`;
-                        if (e.type === 'speed-bonus') return `+${e.pct}% Speed`;
-                        if (e.type === 'farming-yield') return `+${e.pct}% Farming Yield`;
-                        return '';
-                      }).filter(Boolean).join(' | ')}
-                    </div>
-                  </div>
-                )}
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(defs.pets).map(([pid, pdef]) => {
                     const found = state.petsFound?.includes(pid);
-                    const isActive = state.activePet === pid;
                     return (
                       <div
                         key={pid}
                         className={`bg-[#111827] border rounded-lg px-3 py-2 ${
-                          found ? 'border-[#1e293b]' : 'border-[#1e293b] opacity-40'
-                        } ${isActive ? 'ring-1 ring-amber-600' : ''}`}
+                          found ? 'border-green-800/50' : 'border-[#1e293b] opacity-40'
+                        }`}
                       >
-                        <div className="text-sm text-gray-200">{found ? pdef.name : '???'}</div>
-                        {found && !isActive && (
-                          <button
-                            onClick={() => setPet(pid)}
-                            className="mt-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-600 hover:bg-amber-500 text-gray-100 cursor-pointer transition-colors"
-                          >
-                            Set Active
-                          </button>
-                        )}
+                        <div className="text-sm text-gray-200">
+                          {found ? pdef.name : '???'}
+                          {found && <span className="text-green-500 text-xs ml-2">Active</span>}
+                        </div>
                         {found && (
-                          <div className="text-[11px] text-gray-500 mt-1">
+                          <div className="text-[11px] text-green-400/70 mt-1">
                             {pdef.effects.map((e) => {
                               if (e.type === 'xp-skill') return `+${e.pct}% ${e.skill} XP`;
                               if (e.type === 'xp-global') return `+${e.pct}% All XP`;

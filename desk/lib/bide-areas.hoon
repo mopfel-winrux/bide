@@ -44,5 +44,11 @@
           monsters=~[%demon %fire-giant %dragon]
           level-req=70
       ==
+      :-  %slayer-cave
+      :*  id=%slayer-cave
+          name='Slayer Cave'
+          monsters=~[%crawling-hand %cave-bug %basilisk %gargoyle %abyssal-demon %hydra]
+          level-req=75
+      ==
   ==
 --

@@ -289,5 +289,130 @@
           combat-xp=480
           slayer-req=0
       ==
+      ::  ┌─────────────────────────────────┐
+      ::  │  Slayer-only monsters            │
+      ::  └─────────────────────────────────┘
+      ::
+      :-  %crawling-hand
+      :*  id=%crawling-hand
+          name='Crawling Hand'
+          hitpoints=30
+          max-hit=2
+          attack-level=5
+          strength-level=5
+          defence-level=5
+          attack-speed=3.000
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%bones min-qty=1 max-qty=1 chance=100]
+              [item=%leather min-qty=1 max-qty=1 chance=50]
+          ==
+          gp-min=5
+          gp-max=15
+          combat-xp=16
+          slayer-req=5
+      ==
+      :-  %cave-bug
+      :*  id=%cave-bug
+          name='Cave Bug'
+          hitpoints=50
+          max-hit=3
+          attack-level=8
+          strength-level=8
+          defence-level=6
+          attack-speed=2.800
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%bones min-qty=1 max-qty=1 chance=100]
+              [item=%iron-ore min-qty=1 max-qty=2 chance=40]
+          ==
+          gp-min=10
+          gp-max=30
+          combat-xp=24
+          slayer-req=7
+      ==
+      :-  %basilisk
+      :*  id=%basilisk
+          name='Basilisk'
+          hitpoints=250
+          max-hit=10
+          attack-level=35
+          strength-level=30
+          defence-level=40
+          attack-speed=3.000
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%big-bones min-qty=1 max-qty=1 chance=100]
+              [item=%mithril-bar min-qty=1 max-qty=2 chance=25]
+              [item=%diamond min-qty=1 max-qty=1 chance=8]
+          ==
+          gp-min=80
+          gp-max=250
+          combat-xp=120
+          slayer-req=40
+      ==
+      :-  %gargoyle
+      :*  id=%gargoyle
+          name='Gargoyle'
+          hitpoints=400
+          max-hit=14
+          attack-level=55
+          strength-level=55
+          defence-level=50
+          attack-speed=2.800
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%big-bones min-qty=1 max-qty=1 chance=100]
+              [item=%adamantite-bar min-qty=1 max-qty=1 chance=20]
+              [item=%gold-bar min-qty=3 max-qty=5 chance=30]
+              [item=%onyx min-qty=1 max-qty=1 chance=5]
+          ==
+          gp-min=200
+          gp-max=600
+          combat-xp=210
+          slayer-req=75
+      ==
+      :-  %abyssal-demon
+      :*  id=%abyssal-demon
+          name='Abyssal Demon'
+          hitpoints=600
+          max-hit=18
+          attack-level=70
+          strength-level=70
+          defence-level=65
+          attack-speed=2.600
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%big-bones min-qty=1 max-qty=1 chance=100]
+              [item=%runite-bar min-qty=1 max-qty=1 chance=15]
+              [item=%death-rune min-qty=5 max-qty=10 chance=40]
+              [item=%diamond min-qty=1 max-qty=2 chance=10]
+          ==
+          gp-min=300
+          gp-max=900
+          combat-xp=300
+          slayer-req=85
+      ==
+      :-  %hydra
+      :*  id=%hydra
+          name='Hydra'
+          hitpoints=1.000
+          max-hit=25
+          attack-level=85
+          strength-level=85
+          defence-level=80
+          attack-speed=3.000
+          attack-style=%melee-attack
+          ^-  (list loot-entry)
+          :~  [item=%dragon-bones min-qty=1 max-qty=1 chance=100]
+              [item=%dragonite-bar min-qty=1 max-qty=2 chance=20]
+              [item=%onyx min-qty=1 max-qty=1 chance=8]
+              [item=%ancient-rune min-qty=2 max-qty=5 chance=25]
+          ==
+          gp-min=600
+          gp-max=2.000
+          combat-xp=500
+          slayer-req=95
+      ==
   ==
 --

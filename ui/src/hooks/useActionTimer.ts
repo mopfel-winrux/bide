@@ -69,6 +69,15 @@ export function useActionTimer(
             if (out.chance < 100) continue;
             outputs[out.item] = (outputs[out.item] || 0) + out.maxQty;
           }
+          // Include secondary action outputs (multitree)
+          const sec = s.activeAction.secondary;
+          const ad2 = sec ? getActionDef(s.activeAction.skill, sec) : null;
+          if (ad2) {
+            for (const out of ad2.outputs) {
+              if (out.chance < 100) continue;
+              outputs[out.item] = (outputs[out.item] || 0) + out.maxQty;
+            }
+          }
           const skillId = s.activeAction.skill;
           const mods = s.modifiers;
           const skillType = defsRef.current?.skills[skillId]?.type;
@@ -77,13 +86,14 @@ export function useActionTimer(
           if (skillType === 'artisan') pct += mods?.xpArtisan ?? 0;
           if (skillType === 'combat') pct += mods?.xpCombat ?? 0;
           pct += mods?.xpPerSkill?.[skillId] ?? 0;
-          const modifiedXp = ad.xp + Math.floor(ad.xp * pct / 100);
+          const modifiedXp = ad.xp + Math.floor(ad.xp * pct / 100)
+            + (ad2 ? ad2.xp + Math.floor(ad2.xp * pct / 100) : 0);
 
           onCycleRef.current({
             skill: skillId,
             xp: modifiedXp,
             outputs,
-            gp: ad.gpPerAction ?? 0,
+            gp: (ad.gpPerAction ?? 0) + (ad2?.gpPerAction ?? 0),
           });
         }
       }
@@ -134,14 +144,26 @@ export function useActionTimer(
     }
 
     const aa = state.activeAction;
-    const key = aa.skill + ':' + aa.target;
+    const key = aa.skill + ':' + aa.target + (aa.secondary ? ':' + aa.secondary : '');
     if (key === actionKeyRef.current) return;
 
     const ad = getActionDef(aa.skill, aa.target);
     if (!ad) return;
 
+    // Use max of primary and secondary base times (multitree)
+    let duration = ad.baseTime;
+    if (aa.secondary) {
+      const ad2 = getActionDef(aa.skill, aa.secondary);
+      if (ad2) duration = Math.max(duration, ad2.baseTime);
+    }
+    // Apply speed bonus
+    const speedBonus = state?.modifiers?.speedBonus ?? 0;
+    if (speedBonus > 0) {
+      duration = Math.max(500, duration - Math.floor(duration * speedBonus / 100));
+    }
+
     actionKeyRef.current = key;
-    actionDurationRef.current = ad.baseTime;
+    actionDurationRef.current = duration;
     actionStartRef.current = Date.now();
 
     if (!rafRef.current) {

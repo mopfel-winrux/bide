@@ -6,6 +6,7 @@ const SLOTS: { slot: EquipmentSlot; label: string }[] = [
   { slot: 'platebody', label: 'Platebody' },
   { slot: 'weapon', label: 'Weapon' },
   { slot: 'shield', label: 'Shield' },
+  { slot: 'ammo', label: 'Ammo' },
   { slot: 'cape', label: 'Cape' },
 ];
 
@@ -42,6 +43,7 @@ export function EquipmentSlotGrid({ slots, defs, onUnequip }: EquipmentSlotGridP
                     {stats.attackBonus > 0 && `Atk +${stats.attackBonus} `}
                     {stats.strengthBonus > 0 && `Str +${stats.strengthBonus} `}
                     {stats.rangedAttackBonus > 0 && `RAtk +${stats.rangedAttackBonus} `}
+                    {stats.rangedStrengthBonus > 0 && `RStr +${stats.rangedStrengthBonus} `}
                     {stats.defenceBonus > 0 && `Def +${stats.defenceBonus}`}
                   </div>
                 )}

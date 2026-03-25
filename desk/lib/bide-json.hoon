@@ -77,6 +77,7 @@
       :~  ['type' [%s 'skilling']]
           ['skill' [%s skill.aa]]
           ['target' [%s target.aa]]
+          ['secondary' ?~(secondary.aa ~ [%s u.secondary.aa])]
       ==
     ::
       %combat
@@ -260,9 +261,18 @@
       ^-  [@t json]
       =/  key-str=@t  (crip "{(trip -.key)}/{(a-co:co +.key)}")
       [key-str (numb:enjs:format level)]
+      :-  'skillUpgrades'
+      :-  %o
+      %-  ~(gas by *(map @t json))
+      %+  turn  ~(tap by skill-upgrades.gs)
+      |=  [key=[skill-id ?(%xp %speed %preservation)] tier=@ud]
+      ^-  [@t json]
+      =/  key-str=@t  (crip "{(trip -.key)}-{(trip +.key)}")
+      [key-str (numb:enjs:format tier)]
+      ['multitreeUnlocked' [%b multitree-unlocked.gs]]
       :-  'modifiers'
       =/  mods=modifier-set
-        (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+        (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
       %-  pairs:enjs:format
       :~  ['xpGlobal' (numb:enjs:format xp-global.mods)]
           ['xpGathering' (numb:enjs:format xp-gathering.mods)]

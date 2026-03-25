@@ -4,7 +4,7 @@
 ::  potions, prayers, pets, and capes into a single modifier-set.
 ::
 /-  *bide
-/+  bide-agility, bide-astrology, bide-summoning, bide-potions, bide-prayers, bide-pets, bide-capes, bide-xp
+/+  bide-agility, bide-astrology, bide-summoning, bide-potions, bide-prayers, bide-pets, bide-capes, bide-xp, bide-shop
 |%
 ::
 ::  Compute all modifiers from all bonus sources
@@ -15,8 +15,10 @@
           active-familiar=(unit familiar-state)
           active-potions=(list potion-effect)
           active-prayers=(set prayer-id)
-          active-pet=(unit pet-id)
+          pets-found=(set pet-id)
           star-levels=(map [action-id @ud] @ud)
+          skill-upgrades=(map [skill-id ?(%xp %speed %preservation)] @ud)
+          active-skill=(unit skill-id)
       ==
   ^-  modifier-set
   ::  agility level
@@ -33,7 +35,7 @@
   ::  familiar combat boosts
   =/  fam-boosts  (familiar-combat-boosts:bide-summoning active-familiar)
   ::  pet modifiers
-  =/  pet-mods  (pet-modifiers:bide-pets active-pet)
+  =/  pet-mods  (pet-modifiers:bide-pets pets-found)
   ::  cape modifiers
   =/  cape-mods  (cape-modifiers:bide-capes equipment)
   ::  familiar def lookup
@@ -129,8 +131,26 @@
     =/  cur=@ud  (fall (~(get by skill-map) -.i.star-skills) 0)
     =.  skill-map  (~(put by skill-map) -.i.star-skills (add cur +.i.star-skills))
     $(star-skills t.star-skills)
+  ::  shop skill upgrades: XP per-skill
+  =.  skill-map
+    =/  entries=(list [[skill-id ?(%xp %speed %preservation)] @ud])  ~(tap by skill-upgrades)
+    |-
+    ?~  entries  skill-map
+    =/  key  -.i.entries
+    =/  tier=@ud  +.i.entries
+    ?.  =(+.key %xp)  $(entries t.entries)
+    =/  bonus=@ud  (skill-upgrade-bonus:bide-shop %xp tier)
+    =/  cur=@ud  (fall (~(get by skill-map) -.key) 0)
+    =.  skill-map  (~(put by skill-map) -.key (add cur bonus))
+    $(entries t.entries)
+  ::  shop skill upgrades: speed (only for active skill)
+  =/  shop-speed=@ud
+    ?~  active-skill  0
+    =/  tier=@ud  (fall (~(get by skill-upgrades) [u.active-skill %speed]) 0)
+    ?:  =(tier 0)  0
+    (skill-upgrade-bonus:bide-shop %speed tier)
   ::  speed-bonus
-  =/  res-speed=@ud  (add speed-bonus.star-mods (add (speed-bonus:bide-agility agility-level) (add speed-bonus.pet-mods speed-bonus.cape-mods)))
+  =/  res-speed=@ud  (add shop-speed (add speed-bonus.star-mods (add (speed-bonus:bide-agility agility-level) (add speed-bonus.pet-mods speed-bonus.cape-mods))))
   ::  combat boosts
   =/  res-atk=@ud  (add atk-boost.pot-boosts (add atk.pra-boosts (add atk.fam-boosts atk-boost.cape-mods)))
   =/  res-str=@ud  (add str-boost.pot-boosts (add str.pra-boosts str.fam-boosts))

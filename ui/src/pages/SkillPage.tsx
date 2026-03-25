@@ -28,6 +28,7 @@ export function SkillPage() {
 
   const sd = defs.skills[skillId];
   const ds = getDisplaySkill(skillId);
+  const isMultitree = skillId === 'woodcutting' && !!state?.multitreeUnlocked;
 
   const filterAction = (act: ActionDef) => {
     if (filter === 'unlocked') return act.levelReq <= ds.level;
@@ -145,7 +146,7 @@ export function SkillPage() {
             {currentSection && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {currentSection.actions.map((act) => (
-                  <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} />
+                  <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} multitree={isMultitree} />
                 ))}
               </div>
             )}
@@ -155,7 +156,7 @@ export function SkillPage() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {flatFiltered!.map((act) => (
-              <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} />
+              <ActionCard key={act.id} action={act} skillId={skillId} playerLevel={ds.level} multitree={isMultitree} />
             ))}
           </div>
           {flatFiltered!.length === 0 && (

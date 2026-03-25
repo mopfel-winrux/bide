@@ -29,7 +29,8 @@ async function post(path: string): Promise<void> {
 export const api = {
   getState: () => fetchJSON<GameState>('/apps/bide/api/state'),
   getDefs: () => fetchJSON<GameDefs>('/apps/bide/api/defs'),
-  startAction: (skill: SkillId, action: ActionId) => post(`start/${skill}/${action}`),
+  startAction: (skill: SkillId, action: ActionId, secondary?: ActionId | null) =>
+    post(secondary ? `start/${skill}/${action}/${secondary}` : `start/${skill}/${action}`),
   stopAction: () => post('stop'),
   sell: (item: ItemId, qty: number) => post(`sell/${item}/${qty}`),
   sellAll: (item: ItemId) => post(`sell-all/${item}`),
@@ -56,4 +57,6 @@ export const api = {
   buy: (item: ItemId, qty: number) => post(`buy/${item}/${qty}`),
   setPet: (pet: PetId | null) => post(`set-pet/${pet ?? 'none'}`),
   upgradeStar: (constellation: ActionId, idx: number) => post(`upgrade-star/${constellation}/${idx}`),
+  buySkillUpgrade: (skill: SkillId, type: string) => post(`buy-skill-upgrade/${skill}/${type}`),
+  buyMultitree: () => post('buy-multitree'),
 };

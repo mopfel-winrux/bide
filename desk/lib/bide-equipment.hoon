@@ -1004,5 +1004,72 @@
           ^-  (map skill-id @ud)
           (~(gas by *(map skill-id @ud)) ~[[%slayer 99]])
       ==
+      ::  ┌─────────────────────────────────┐
+      ::  │  Ammo (arrows)                   │
+      ::  └─────────────────────────────────┘
+      ::
+      :-  %bronze-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=2
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 1]])
+      ==
+      :-  %iron-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=5
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 15]])
+      ==
+      :-  %steel-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=8
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 30]])
+      ==
+      :-  %mithril-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=12
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 45]])
+      ==
+      :-  %adamantite-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=18
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 55]])
+      ==
+      :-  %runite-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=25
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 70]])
+      ==
+      :-  %dragonite-arrows
+      :*  slot=%ammo
+          attack-bonus=0  strength-bonus=0
+          ranged-attack-bonus=0  ranged-strength-bonus=35
+          magic-attack-bonus=0  magic-strength-bonus=0
+          defence-bonus=0  attack-speed=0
+          ^-  (map skill-id @ud)
+          (~(gas by *(map skill-id @ud)) ~[[%ranged 85]])
+      ==
   ==
 --

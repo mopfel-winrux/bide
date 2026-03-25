@@ -1168,25 +1168,25 @@
 ::
 ++  bronze-arrows-def
   ^-  item-def
-  [id=%bronze-arrows name='Bronze Arrows' description='A bundle of bronze-tipped arrows.' category=%misc sell-price=15]
+  [id=%bronze-arrows name='Bronze Arrows' description='A bundle of bronze-tipped arrows.' category=%equipment sell-price=15]
 ++  iron-arrows-def
   ^-  item-def
-  [id=%iron-arrows name='Iron Arrows' description='A bundle of iron-tipped arrows.' category=%misc sell-price=45]
+  [id=%iron-arrows name='Iron Arrows' description='A bundle of iron-tipped arrows.' category=%equipment sell-price=45]
 ++  steel-arrows-def
   ^-  item-def
-  [id=%steel-arrows name='Steel Arrows' description='A bundle of steel-tipped arrows.' category=%misc sell-price=120]
+  [id=%steel-arrows name='Steel Arrows' description='A bundle of steel-tipped arrows.' category=%equipment sell-price=120]
 ++  mithril-arrows-def
   ^-  item-def
-  [id=%mithril-arrows name='Mithril Arrows' description='A bundle of mithril-tipped arrows.' category=%misc sell-price=225]
+  [id=%mithril-arrows name='Mithril Arrows' description='A bundle of mithril-tipped arrows.' category=%equipment sell-price=225]
 ++  adamantite-arrows-def
   ^-  item-def
-  [id=%adamantite-arrows name='Adamantite Arrows' description='A bundle of adamantite-tipped arrows.' category=%misc sell-price=450]
+  [id=%adamantite-arrows name='Adamantite Arrows' description='A bundle of adamantite-tipped arrows.' category=%equipment sell-price=450]
 ++  runite-arrows-def
   ^-  item-def
-  [id=%runite-arrows name='Runite Arrows' description='A bundle of runite-tipped arrows.' category=%misc sell-price=900]
+  [id=%runite-arrows name='Runite Arrows' description='A bundle of runite-tipped arrows.' category=%equipment sell-price=900]
 ++  dragonite-arrows-def
   ^-  item-def
-  [id=%dragonite-arrows name='Dragonite Arrows' description='A bundle of dragonite-tipped arrows.' category=%misc sell-price=1.800]
+  [id=%dragonite-arrows name='Dragonite Arrows' description='A bundle of dragonite-tipped arrows.' category=%equipment sell-price=1.800]
 ::
 ::  ┌──────────────────────────────────────────────────────────┐
 ::  │  Crafting — leather armor                                │

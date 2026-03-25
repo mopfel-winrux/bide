@@ -10,13 +10,17 @@ interface Props {
   action: ActionDef;
   skillId: SkillId;
   playerLevel: number;
+  multitree?: boolean;
 }
 
-export function ActionCard({ action, skillId, playerLevel }: Props) {
+export function ActionCard({ action, skillId, playerLevel, multitree }: Props) {
   const { state, defs, startAction, stopAction, getDisplayBank, upgradeStar } = useGame();
   const locked = action.levelReq > playerLevel;
   const aa = state?.activeAction;
-  const isActive = aa?.type === 'skilling' && aa.skill === skillId && aa.target === action.id;
+  const isPrimary = aa?.type === 'skilling' && aa.skill === skillId && aa.target === action.id;
+  const isSecondary = aa?.type === 'skilling' && aa.skill === skillId && aa.secondary === action.id;
+  const isActive = isPrimary || isSecondary;
+  const otherTreeActive = multitree && aa?.type === 'skilling' && aa.skill === skillId && !isActive;
   const bank = getDisplayBank();
 
   const hasInputs = action.inputs.every(inp => (bank[inp.item] || 0) >= inp.qty);
@@ -35,8 +39,11 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
           <GameIcon category="skill-icon" id={skillId} size={48} />
         )}
         <div className="font-semibold text-[14px] text-gray-200 flex-1">{action.name}</div>
-        {isActive && (
+        {isPrimary && (
           <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Training</span>
+        )}
+        {isSecondary && (
+          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">+Multi</span>
         )}
       </div>
 
@@ -49,7 +56,23 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">XP</span>
-          <span className="font-medium text-emerald-400 tabular-nums">{fmt(action.xp)}</span>
+          <span className="font-medium text-emerald-400 tabular-nums">
+            {(() => {
+              const mods = state?.modifiers;
+              const skillType = defs?.skills[skillId]?.type;
+              let pct = mods?.xpGlobal ?? 0;
+              if (skillType === 'gathering') pct += mods?.xpGathering ?? 0;
+              if (skillType === 'artisan') pct += mods?.xpArtisan ?? 0;
+              if (skillType === 'combat') pct += mods?.xpCombat ?? 0;
+              pct += mods?.xpPerSkill?.[skillId] ?? 0;
+              const modifiedXp = pct > 0
+                ? action.xp + Math.floor(action.xp * pct / 100)
+                : action.xp;
+              return modifiedXp !== action.xp
+                ? <>{fmt(modifiedXp)} <span className="line-through text-gray-600">{fmt(action.xp)}</span></>
+                : fmt(action.xp);
+            })()}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">Time</span>
@@ -193,8 +216,22 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
       <div className="flex gap-3">
         {locked ? (
           <Button disabled className="flex-1">Locked</Button>
-        ) : isActive ? (
+        ) : isSecondary ? (
+          <Button variant="stop" onClick={() => {
+            const primary = (aa as any).target;
+            startAction(skillId, primary);
+          }}>
+            Remove
+          </Button>
+        ) : isPrimary ? (
           <Button variant="stop" onClick={stopAction}>Stop</Button>
+        ) : otherTreeActive ? (
+          <Button variant="primary" disabled={!canStart} onClick={() => {
+            const primary = (aa as any).target;
+            startAction(skillId, primary, action.id);
+          }}>
+            {!hasInputs ? 'No Materials' : 'Add Tree'}
+          </Button>
         ) : (
           <Button variant="start" disabled={!canStart} onClick={() => startAction(skillId, action.id)}>
             {!hasInputs && !locked ? 'No Materials' : 'Start'}

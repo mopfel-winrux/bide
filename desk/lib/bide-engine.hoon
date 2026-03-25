@@ -38,10 +38,21 @@
     ?:  =(id.i.acts target.act)  `i.acts
     $(acts t.acts)
   ?~  adef  `gs
+  ::  look up secondary action def (multitree)
+  =/  adef2=(unit action-def)
+    ?~  secondary.act  ~
+    =/  acts=(list action-def)  actions.u.sdef
+    |-
+    ?~  acts  ~
+    ?:  =(id.i.acts u.secondary.act)  `i.acts
+    $(acts t.acts)
   ::  compute unified modifiers
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs `skill.act)
   =/  adjusted-time=@ud  (apply-speed-bonus:bide-modifiers mods base-time.u.adef)
+  ::  multitree: use max of both action times
+  =?  adjusted-time  ?=(^ adef2)
+    (max adjusted-time (apply-speed-bonus:bide-modifiers mods base-time.u.adef2))
   =/  base-dr=@dr  (div (mul ~s1 (max adjusted-time 500)) 1.000)
   ?:  =(base-dr *@dr)  `gs
   =/  elapsed=@dr  (sub now.bowl started.act)
@@ -91,6 +102,9 @@
   =/  pool-gain=@ud  (div mastery-gained 4)
   =.  pool-xp.mastery.ss  (add pool-xp.mastery.ss pool-gain)
   =.  skills.gs  (~(put by skills.gs) skill.act ss)
+  ::  update prayer max when prayer levels up
+  =?  prayer-max.player.gs  =(skill.act %prayer)
+    new-level
   =/  outputs=(list output-def)  outputs.u.adef
   ::  roll outputs respecting chance field (og door + eny entropy)
   =/  produced=(list [item-id @ud])
@@ -137,6 +151,44 @@
     $(prod t.prod)
   ::  stats: total XP earned
   =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs total-xp)
+  ::  multitree: process secondary action XP + outputs
+  =?  gs  ?=(^ adef2)
+    =/  sec-id=action-id  (need secondary.act)
+    =/  ss2=skill-state
+      (fall (~(get by skills.gs) skill.act) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
+    =/  base-xp2=@ud  (mul xp.u.adef2 num-actions)
+    =/  total-xp2=@ud  (apply-xp-bonus:bide-modifiers mods skill.act skill-type.u.sdef base-xp2)
+    =/  new-xp2=@ud  (add xp.ss2 total-xp2)
+    =.  ss2  ss2(xp new-xp2, level (level-from-xp:bide-xp new-xp2))
+    =/  m-gain2=@ud  (mul mastery-xp.u.adef2 num-actions)
+    =/  cur-m2=@ud  (fall (~(get by actions.mastery.ss2) sec-id) 0)
+    =.  actions.mastery.ss2  (~(put by actions.mastery.ss2) sec-id (add cur-m2 m-gain2))
+    =.  pool-xp.mastery.ss2  (add pool-xp.mastery.ss2 (div m-gain2 4))
+    =.  skills.gs  (~(put by skills.gs) skill.act ss2)
+    =.  total-xp-earned.stats.gs  (add total-xp-earned.stats.gs total-xp2)
+    ::  roll secondary outputs
+    =/  outs2  outputs.u.adef2
+    =/  rng2  ~(. og eny.bowl)
+    =/  prod2=(list [item-id @ud])
+      |-
+      ?~  outs2  ~
+      ?:  =(chance.i.outs2 100)
+        [[item.i.outs2 (mul num-actions max-qty.i.outs2)] $(outs2 t.outs2)]
+      =/  total=@ud  (mul num-actions chance.i.outs2)
+      =/  full=@ud  (div total 100)
+      =/  rem=@ud  (mod total 100)
+      =^  roll  rng2  (rads:rng2 100)
+      =/  drops=@ud  ?:((lth roll rem) (add full 1) full)
+      ?:  =(drops 0)  $(outs2 t.outs2)
+      [[item.i.outs2 (mul drops max-qty.i.outs2)] $(outs2 t.outs2)]
+    =.  items.bank.gs
+      =/  prod  prod2
+      |-
+      ?~  prod  items.bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) -.i.prod) 0)
+      =.  items.bank.gs  (~(put by items.bank.gs) -.i.prod (add cur +.i.prod))
+      $(prod t.prod)
+    gs
   ::  pet drop roll
   =^  found-pet  rng-seed.gs
     (roll-pet-drop:bide-pets rng-seed.gs %skilling skill.act pets-found.gs)
@@ -144,7 +196,7 @@
     (~(put in pets-found.gs) u.found-pet)
   =/  leftover=@dr  (mod elapsed base-dr)
   =.  active-action.gs
-    `[%skilling skill.act target.act (sub now.bowl leftover)]
+    `[%skilling skill.act target.act secondary.act (sub now.bowl leftover)]
   `gs
 ::
 ::  ┌─────────────────────────────────┐
@@ -203,6 +255,19 @@
   ::  player attacks next
   ::
   ?:  p-first
+    ::  check arrows before ranged attack
+    =/  has-arrows=?
+      ?.  =(style.act %ranged)  %.y
+      =/  ammo=(unit item-id)  (~(get by slots.equipment.gs) %ammo)
+      ?~  ammo  %.n
+      =/  cur=@ud  (fall (~(get by items.bank.gs) u.ammo) 0)
+      (gte cur 1)
+    ?.  has-arrows
+      ::  out of arrows — stop combat
+      =.  active-action.gs  ~
+      =.  rng-seed.gs  seed
+      =.  hitpoints-current.player.gs  p-hp
+      `gs
     ::  check runes before spell attack
     =/  has-runes=?
       ?~  spell.act  %.y
@@ -221,7 +286,7 @@
       `gs
     ::  compute unified modifiers
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -241,6 +306,16 @@
           (~(del by items.bank.gs) item.i.rune-list)
         (~(put by items.bank.gs) item.i.rune-list (sub cur need))
       $(rune-list t.rune-list)
+    ::  consume 1 arrow for ranged attack
+    =?  bank.gs  =(style.act %ranged)
+      =/  ammo=(unit item-id)  (~(get by slots.equipment.gs) %ammo)
+      ?~  ammo  bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) u.ammo) 0)
+      =.  items.bank.gs
+        ?:  (lte cur 1)
+          (~(del by items.bank.gs) u.ammo)
+        (~(put by items.bank.gs) u.ammo (sub cur 1))
+      bank.gs
     ::  special attack multiplier
     =/  weapon=(unit item-id)  (~(get by slots.equipment.gs) %weapon)
     =/  sdef=(unit special-attack-def)
@@ -325,16 +400,19 @@
       (roll-pet-drop:bide-pets seed %combat monster.act pets-found.gs)
     =?  pets-found.gs  ?=(^ found-pet)
       (~(put in pets-found.gs) u.found-pet)
-    ::  slayer task tracking
-    =?  slayer-task.gs  ?=(^ slayer-task.gs)
-      =/  st  u.slayer-task.gs
-      ?.  =(monster.st monster.act)  slayer-task.gs
-      ::  award slayer XP
+    ::  slayer XP (separate =? so skills.gs update persists)
+    =?  skills.gs  ?&  ?=(^ slayer-task.gs)
+                       =(monster.u.slayer-task.gs monster.act)
+                   ==
       =/  slayer-ss=skill-state
         (fall (~(get by skills.gs) %slayer) [xp=0 level=1 mastery=[pool-xp=0 actions=*(map action-id @ud)]])
       =/  new-slayer-xp=@ud  (add xp.slayer-ss combat-xp.u.mdef)
       =.  slayer-ss  slayer-ss(xp new-slayer-xp, level (level-from-xp:bide-xp new-slayer-xp))
-      =.  skills.gs  (~(put by skills.gs) %slayer slayer-ss)
+      (~(put by skills.gs) %slayer slayer-ss)
+    ::  slayer task tracking (decrement/complete)
+    =?  slayer-task.gs  ?=(^ slayer-task.gs)
+      =/  st  u.slayer-task.gs
+      ?.  =(monster.st monster.act)  slayer-task.gs
       =/  new-rem=@ud  (dec qty-remaining.st)
       ?:  =(new-rem 0)
         ~  ::  task complete
@@ -349,7 +427,7 @@
   ::  enemy attacks next
   ::
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)
@@ -440,6 +518,19 @@
     ==
   ::  player attacks
   ?:  p-first
+    ::  check arrows before ranged attack
+    =/  has-arrows=?
+      ?.  =(style.act %ranged)  %.y
+      =/  ammo=(unit item-id)  (~(get by slots.equipment.gs) %ammo)
+      ?~  ammo  %.n
+      =/  cur=@ud  (fall (~(get by items.bank.gs) u.ammo) 0)
+      (gte cur 1)
+    ?.  has-arrows
+      ::  out of arrows — stop dungeon
+      =.  active-action.gs  ~
+      =.  rng-seed.gs  seed
+      =.  hitpoints-current.player.gs  p-hp
+      `gs
     ::  check runes before spell attack
     =/  has-runes=?
       ?~  spell.act  %.y
@@ -457,7 +548,7 @@
       =.  hitpoints-current.player.gs  p-hp
       `gs
     =/  mods=modifier-set
-      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+      (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
     =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
     =^  dmg  seed
       ?~  spell.act
@@ -477,6 +568,16 @@
           (~(del by items.bank.gs) item.i.rune-list)
         (~(put by items.bank.gs) item.i.rune-list (sub cur need))
       $(rune-list t.rune-list)
+    ::  consume 1 arrow for ranged attack
+    =?  bank.gs  =(style.act %ranged)
+      =/  ammo=(unit item-id)  (~(get by slots.equipment.gs) %ammo)
+      ?~  ammo  bank.gs
+      =/  cur=@ud  (fall (~(get by items.bank.gs) u.ammo) 0)
+      =.  items.bank.gs
+        ?:  (lte cur 1)
+          (~(del by items.bank.gs) u.ammo)
+        (~(put by items.bank.gs) u.ammo (sub cur 1))
+      bank.gs
     =.  active-potions.gs  (tick-potions:bide-potions active-potions.gs)
     =/  drain=@ud  (total-drain:bide-prayers active-prayers.gs)
     =.  prayer-points.player.gs
@@ -581,7 +682,7 @@
     $(iterations (add iterations 1), mdef `u.nmdef)
   ::  enemy attacks
   =/  mods=modifier-set
-    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs active-pet.gs star-levels.gs)
+    (compute-modifiers:bide-modifiers skills.gs slots.equipment.gs active-familiar.gs active-potions.gs active-prayers.gs pets-found.gs star-levels.gs skill-upgrades.gs ~)
   =/  cboosts  (get-combat-boosts:bide-modifiers mods style.act)
   =^  dmg  seed
     (enemy-attack:bide-combat seed u.mdef skills.gs slots.equipment.gs style.act def.cboosts)

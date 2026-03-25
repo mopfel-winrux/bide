@@ -2718,8 +2718,8 @@
   :~  :*  id=%bury-bones
           name='Bury Bones'
           level-req=1
-          xp=5
-          base-time=3.000
+          xp=12
+          base-time=2.000
           inputs=~[[item=%bones qty=1]]
           outputs=~
           mastery-xp=1
@@ -2728,8 +2728,8 @@
       :*  id=%bury-big-bones
           name='Bury Big Bones'
           level-req=15
-          xp=15
-          base-time=3.000
+          xp=24
+          base-time=2.000
           inputs=~[[item=%big-bones qty=1]]
           outputs=~
           mastery-xp=2
@@ -2738,8 +2738,8 @@
       :*  id=%bury-dragon-bones
           name='Bury Dragon Bones'
           level-req=40
-          xp=50
-          base-time=3.000
+          xp=120
+          base-time=2.000
           inputs=~[[item=%dragon-bones qty=1]]
           outputs=~
           mastery-xp=5

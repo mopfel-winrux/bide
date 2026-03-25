@@ -80,5 +80,87 @@
       [%magic-cape 1.000.000]
       [%prayer-cape 1.000.000]
       [%slayer-cape 1.000.000]
+      ::  arrows
+      [%bronze-arrows 30]
+      [%iron-arrows 90]
+      [%steel-arrows 240]
+      [%mithril-arrows 450]
+      [%adamantite-arrows 900]
+      [%runite-arrows 1.800]
+      [%dragonite-arrows 3.600]
   ==
+::
+::  Skill upgrade tier definitions
+::  Returns (price, bonus-pct) for a given tier (1-3)
+::
+++  skill-upgrade-price
+  |=  [type=?(%xp %speed %preservation) tier=@ud]
+  ^-  @ud
+  ?-  type
+    %xp
+      ?:  =(tier 1)  100.000
+      ?:  =(tier 2)  500.000
+      2.000.000
+    ?(%speed %preservation)
+      ?:  =(tier 1)  150.000
+      ?:  =(tier 2)  750.000
+      3.000.000
+  ==
+::
+++  skill-upgrade-bonus
+  |=  [type=?(%xp %speed %preservation) tier=@ud]
+  ^-  @ud
+  ?-  type
+    %xp
+      ?:  =(tier 1)  3
+      ?:  =(tier 2)  5
+      8
+    ?(%speed %preservation)
+      ?:  =(tier 1)  3
+      ?:  =(tier 2)  5
+      8
+  ==
+::
+::  Valid skill+type combinations
+::  Gathering: xp + speed, Artisan: xp + preservation
+::
+++  valid-skill-upgrade
+  |=  [skill=skill-id type=?(%xp %speed %preservation)]
+  ^-  ?
+  ?-  type
+    %xp  (valid-upgrade-skill skill)
+    %speed
+      ?|  =(skill %woodcutting)
+          =(skill %fishing)
+          =(skill %mining)
+          =(skill %thieving)
+          =(skill %firemaking)
+      ==
+    %preservation
+      ?|  =(skill %cooking)
+          =(skill %smithing)
+          =(skill %fletching)
+          =(skill %crafting)
+          =(skill %runecrafting)
+          =(skill %herblore)
+      ==
+  ==
+::
+++  valid-upgrade-skill
+  |=  skill=skill-id
+  ^-  ?
+  ?|  =(skill %woodcutting)
+      =(skill %fishing)
+      =(skill %mining)
+      =(skill %thieving)
+      =(skill %firemaking)
+      =(skill %cooking)
+      =(skill %smithing)
+      =(skill %fletching)
+      =(skill %crafting)
+      =(skill %runecrafting)
+      =(skill %herblore)
+  ==
+::
+++  multitree-price  ^-  @ud  1.000.000
 --
