@@ -50,17 +50,18 @@ export function SkillPage() {
     for (const g of groups) {
       const acts = g.actionIds
         .map(id => actionMap.get(id))
-        .filter((a): a is ActionDef => !!a && filterAction(a));
+        .filter((a): a is ActionDef => !!a && filterAction(a))
+        .sort((a, b) => a.levelReq - b.levelReq);
       for (const id of g.actionIds) usedIds.add(id);
       if (acts.length > 0) sections.push({ label: g.label, actions: acts });
     }
     // "Other" section for ungrouped actions
-    const other = sd.actions.filter(a => !usedIds.has(a.id) && filterAction(a));
+    const other = sd.actions.filter(a => !usedIds.has(a.id) && filterAction(a)).sort((a, b) => a.levelReq - b.levelReq);
     if (other.length > 0) sections.push({ label: 'Other', actions: other });
     return sections;
   }, [groups, actionMap, sd.actions, filter, ds.level]);
 
-  const flatFiltered = groups ? null : sd.actions.filter(filterAction);
+  const flatFiltered = groups ? null : sd.actions.filter(filterAction).sort((a, b) => a.levelReq - b.levelReq);
 
   return (
     <div>
@@ -78,10 +79,11 @@ export function SkillPage() {
         const ss = state?.skills[skillId];
         const poolXp = ss?.poolXp ?? 0;
         const masteryActions = ss?.masteryActions ?? {};
-        const totalMasteryLevels = sd.actions.reduce((sum, a) => {
+        const masteryEligible = sd.actions.filter(a => a.masteryXp > 0);
+        const totalMasteryLevels = masteryEligible.reduce((sum, a) => {
           return sum + levelFromXp(masteryActions[a.id] ?? 0);
         }, 0);
-        const maxMasteryLevels = sd.actions.length * 99;
+        const maxMasteryLevels = masteryEligible.length * 99;
         return (
           <div className="flex items-center gap-6 text-sm text-gray-400 mb-6 bg-[#111827] border border-[#1e293b] rounded-lg px-4 py-2.5">
             <div>

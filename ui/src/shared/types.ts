@@ -387,6 +387,7 @@ export interface WelcomeBackSummary {
   dungeonsCompleted: { dungeonId: DungeonId; count: number }[];
   actionsCompleted: number;
   petsFound: PetId[];
+  actionStopped: boolean;
 }
 
 export interface DisplaySkill {

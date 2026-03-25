@@ -9,7 +9,8 @@ const COMBAT_SKILLS = new Set(['attack', 'strength', 'defence', 'hitpoints', 'ra
 const CUSTOM_ROUTES: Record<string, string> = { farming: '/farming' };
 
 export function Sidebar() {
-  const { defs, getDisplaySkill } = useGame();
+  const { defs, state, getDisplaySkill } = useGame();
+  const hasReadyPlots = state?.farmPlots?.some(p => p?.ready) ?? false;
 
   if (!defs) return null;
 
@@ -62,6 +63,9 @@ export function Sidebar() {
                         <GameIcon category="skill-icon" id={sid} size={24} className="shrink-0" />
                         <span className="flex-1">{sd.name}</span>
                         <Badge active={isActive}>{ds.level}</Badge>
+                        {sid === 'farming' && hasReadyPlots && (
+                          <span className="w-2 h-2 rounded-full bg-green-500 animate-[status-pulse_2s_ease-in-out_infinite]" />
+                        )}
                       </>
                     )}
                   </NavLink>

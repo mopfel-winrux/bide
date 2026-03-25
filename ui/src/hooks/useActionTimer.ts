@@ -69,9 +69,19 @@ export function useActionTimer(
             if (out.chance < 100) continue;
             outputs[out.item] = (outputs[out.item] || 0) + out.maxQty;
           }
+          const skillId = s.activeAction.skill;
+          const mods = s.modifiers;
+          const skillType = defsRef.current?.skills[skillId]?.type;
+          let pct = mods?.xpGlobal ?? 0;
+          if (skillType === 'gathering') pct += mods?.xpGathering ?? 0;
+          if (skillType === 'artisan') pct += mods?.xpArtisan ?? 0;
+          if (skillType === 'combat') pct += mods?.xpCombat ?? 0;
+          pct += mods?.xpPerSkill?.[skillId] ?? 0;
+          const modifiedXp = ad.xp + Math.floor(ad.xp * pct / 100);
+
           onCycleRef.current({
-            skill: s.activeAction.skill,
-            xp: ad.xp,
+            skill: skillId,
+            xp: modifiedXp,
             outputs,
             gp: ad.gpPerAction ?? 0,
           });

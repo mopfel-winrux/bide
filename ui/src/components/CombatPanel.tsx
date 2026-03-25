@@ -17,11 +17,12 @@ interface CombatPanelProps {
   bank: Record<ItemId, number>;
   defs: GameDefs;
   onDrinkPotion: (item: ItemId) => void;
+  equippedWeapon: ItemId | undefined;
   onSpecialAttack: () => void;
   onTogglePrayer: (prayer: PrayerId) => void;
 }
 
-export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, prayerPoints, prayerMax, prayerLevel, weaponSpeed, activePotions, activePrayers, bank, defs, onDrinkPotion, onSpecialAttack, onTogglePrayer }: CombatPanelProps) {
+export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, prayerPoints, prayerMax, prayerLevel, weaponSpeed, activePotions, activePrayers, bank, defs, equippedWeapon, onDrinkPotion, onSpecialAttack, onTogglePrayer }: CombatPanelProps) {
   const enemyDmgRef = useRef<HTMLDivElement | null>(null);
   const playerDmgRef = useRef<HTMLDivElement | null>(null);
 
@@ -108,22 +109,24 @@ export function CombatPanel({ combatAction, monsterDef, playerHp, playerHpMax, p
           Style: <span className="text-gray-400">{formatStyle(combatAction.style)}</span>
         </div>
         {/* Special energy bar */}
-        <div className="mt-3">
-          <div className="flex items-center justify-between text-xs mb-1">
-            <span className="text-gray-500">Special</span>
-            <span className="text-gray-500 tabular-nums">{combatAction.specialEnergy}%</span>
+        {equippedWeapon && defs.specials[equippedWeapon] && (
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-gray-500">Special</span>
+              <span className="text-gray-500 tabular-nums">{combatAction.specialEnergy}%</span>
+            </div>
+            <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-yellow-500 transition-all duration-300" style={{ width: combatAction.specialEnergy + '%' }} />
+            </div>
+            <button
+              onClick={onSpecialAttack}
+              disabled={combatAction.specialQueued || combatAction.specialEnergy < 25}
+              className="mt-1.5 px-3 py-1 rounded text-xs font-medium border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-yellow-500/10 border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20"
+            >
+              {combatAction.specialQueued ? 'Queued' : 'Special Attack'}
+            </button>
           </div>
-          <div className="h-3 bg-[#0d1117] rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-yellow-500 transition-all duration-300" style={{ width: combatAction.specialEnergy + '%' }} />
-          </div>
-          <button
-            onClick={onSpecialAttack}
-            disabled={combatAction.specialQueued || combatAction.specialEnergy < 25}
-            className="mt-1.5 px-3 py-1 rounded text-xs font-medium border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-yellow-500/10 border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20"
-          >
-            {combatAction.specialQueued ? 'Queued' : 'Special Attack'}
-          </button>
-        </div>
+        )}
         {/* Prayer points */}
         {prayerMax > 0 && (
           <div className="mt-3">

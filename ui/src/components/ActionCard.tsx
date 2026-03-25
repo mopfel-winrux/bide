@@ -53,7 +53,17 @@ export function ActionCard({ action, skillId, playerLevel }: Props) {
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">Time</span>
-          <span className="font-medium text-gray-300 tabular-nums">{fmtTime(action.baseTime)}</span>
+          <span className="font-medium text-gray-300 tabular-nums">
+            {(() => {
+              const speedBonus = state?.modifiers?.speedBonus ?? 0;
+              const modifiedTime = speedBonus > 0
+                ? Math.max(500, action.baseTime - Math.floor(action.baseTime * speedBonus / 100))
+                : action.baseTime;
+              return modifiedTime !== action.baseTime
+                ? <>{fmtTime(modifiedTime)} <span className="line-through text-gray-600">{fmtTime(action.baseTime)}</span></>
+                : fmtTime(action.baseTime);
+            })()}
+          </span>
         </div>
         {action.masteryXp > 0 && (
           <div className="flex justify-between">

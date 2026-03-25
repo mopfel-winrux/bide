@@ -21,6 +21,7 @@ interface SavedSnapshot {
     totalGpSpent: number;
   };
   petsFound: string[];
+  hadActiveAction: boolean;
 }
 
 function snapshotFromState(s: GameState): SavedSnapshot {
@@ -41,6 +42,7 @@ function snapshotFromState(s: GameState): SavedSnapshot {
       totalGpSpent: s.stats.totalGpSpent,
     },
     petsFound: [...(s.petsFound ?? [])],
+    hadActiveAction: !!s.activeAction,
   };
 }
 
@@ -93,6 +95,8 @@ function computeWelcomeBack(old: SavedSnapshot, cur: GameState, elapsedMs: numbe
   const oldPetSet = new Set(old.petsFound ?? []);
   const petsFound = (cur.petsFound ?? []).filter((p) => !oldPetSet.has(p));
 
+  const actionStopped = (old.hadActiveAction ?? false) && !cur.activeAction;
+
   return {
     elapsedMs,
     gpGained: cur.gp - old.gp,
@@ -105,6 +109,7 @@ function computeWelcomeBack(old: SavedSnapshot, cur: GameState, elapsedMs: numbe
     dungeonsCompleted,
     actionsCompleted,
     petsFound,
+    actionStopped,
   };
 }
 
@@ -113,6 +118,8 @@ function hasMeaningfulChanges(s: WelcomeBackSummary): boolean {
   return (
     s.xpEarned > 0 ||
     s.gpEarned > 0 ||
+    s.itemChanges.length > 0 ||
+    s.actionStopped ||
     s.monstersKilled.length > 0 ||
     s.petsFound.length > 0 ||
     s.dungeonsCompleted.length > 0

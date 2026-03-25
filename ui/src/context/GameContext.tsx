@@ -20,6 +20,7 @@ interface GameContextValue {
   getDisplayBank: () => Record<ItemId, number>;
   startAction: (skill: SkillId, action: ActionId) => void;
   stopAction: () => void;
+  sell: (item: ItemId, qty: number) => void;
   sellAll: (item: ItemId) => void;
   equip: (item: ItemId) => void;
   unequip: (slot: EquipmentSlot) => void;
@@ -131,6 +132,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     api.stopAction();
   }, []);
 
+  const sell = useCallback((item: ItemId, qty: number) => {
+    api.sell(item, qty);
+  }, []);
+
   const sellAll = useCallback((item: ItemId) => {
     api.sellAll(item);
   }, []);
@@ -219,7 +224,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     <GameContext.Provider value={{
       defs, state, error,
       getDisplaySkill, getDisplayBank,
-      startAction, stopAction, sellAll,
+      startAction, stopAction, sell, sellAll,
       equip, unequip,
       startCombat, stopCombat, setAutoEat, drinkPotion,
       togglePrayer, buryBones, getSlayerTask, specialAttack, changeSpell, startDungeon,

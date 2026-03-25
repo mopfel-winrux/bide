@@ -118,6 +118,7 @@ export function CombatPage() {
           activePrayers={state.activePrayers ?? []}
           bank={state.bank}
           defs={defs}
+          equippedWeapon={state.equipment?.slots?.weapon}
           onDrinkPotion={drinkPotion}
           onSpecialAttack={specialAttack}
           onTogglePrayer={togglePrayer}
